@@ -5,9 +5,9 @@ import lombok.Data;
 @Data
 public class Accumulator {
 
-    private float accumulator;
+    private int accumulator;
 
     public Accumulator(){
-        accumulator = Float.parseFloat(null);
+        accumulator = Integer.parseInt(null);
     }
 }
