@@ -5,5 +5,9 @@ import lombok.Data;
 @Data
 public class AddressRecorder {
 
-    private final int size = 16;
+    private int address;
+
+    public AddressRecorder(){
+        address = Integer.parseInt(null);
+    }
 }

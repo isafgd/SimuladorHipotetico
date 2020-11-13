@@ -5,5 +5,9 @@ import lombok.Data;
 @Data
 public class ProgramCounter {
 
-    private final int size = 16;
+    private int next_instruction;
+
+    public ProgramCounter(){
+        next_instruction = 19; //Endereço da primeira instrução
+    }
 }
