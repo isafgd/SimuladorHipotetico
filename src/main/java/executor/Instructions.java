@@ -1,60 +1,72 @@
 package executor;
+import executor.recorders.Accumulator;
+import executor.recorders.ProgramCounter;
+
 import java.util.*;
 
 public class Instructions {
 
     //executa uma soma entre o acumulador e o valor informado pelo operando
     //e devolve o valor desse somatório
-    public  int add (int acc, int opd1) {
-        return acc += opd1;
-    }
-    public  int addi (int pc, int acc, int opd1) {
-        return pc + opd1;
+    public  void add (Accumulator acc, int opd1) {
+        int ac = acc.getACC() + opd1;
+        acc.setACC(ac);
+        //return acc += opd1;
     }
 
-    //faz um pulo no prugrama para o lugar do valor indicado pelo operando
-    public int br (int pc, int opd1) {                //eu acho que aqui a gente vai ter calcular o lugar onde vai ser o pulo
-        return opd1;
+    public  void addi (ProgramCounter pc, Accumulator acc, int opd1) { // PC guarda o endereço da prox instrução a ser executada
+        int result = pc.get() + opd1;
+        pc.set(result);
+        //return pc + opd1;
+    }
+
+    //faz um pulo no programa para o lugar do valor indicado pelo operando
+    public void br (ProgramCounter pc, int opd1) {                //eu acho que aqui a gente vai ter calcular o lugar onde vai ser o pulo
+        pc.set(opd1);
+       // return pc = opd1;
     }
 
     //executa o pulo para o valor informado no operador
     //se o valor do acumulador for positivo/maior que zero
-    public int brpos (int pc, int acc, int opd1) {    //eu acho que aqui a gente vai ter calcular o lugar onde vai ser o pulo
-        if(acc > 0) {
-            return opd1;
+    public void brPos (ProgramCounter pc, Accumulator acc, int opd1) {    //eu acho que aqui a gente vai ter calcular o lugar onde vai ser o pulo
+        if(acc.getACC() > 0) {
+            pc.set(opd1);
+            //return opd1;
         }
-        else return pc;
     }
 
     //faz o pulo para o valor informado no operador
     //se o valor do acumulador foi igual a 0
-    public int brzero (int pc, int acc, int opd1) {    //eu acho que aqui a gente vai ter calcular o lugar onde vai ser o pulo
-        if(acc == 0) {
-            return opd1;
+    public void brZero (ProgramCounter pc, Accumulator acc, int opd1) {    //eu acho que aqui a gente vai ter calcular o lugar onde vai ser o pulo
+        if(acc.getACC() == 0) {
+            pc.set(opd1);
         }
-        else return pc;
+    }
+
+    public void brNeg (ProgramCounter pc, int opd1, Accumulator acc) {                //eu acho que aqui a gente vai ter calcular o lugar onde vai ser o pulo
+        if(acc.getACC() < 0) {
+            pc.set(opd1);
+        }
     }
 
     //copia a informação dentro do operador 1 para dentro do operador 2
     //e retorna o valor dentro do operador 2
     public int copy (int opd1, int opd2) {
-        return opd1;
+        return opd1 = opd2;
     }
 
     //faz a divisão do valor dentro do acumulador pelo valor do operando informado
     //o valor é armazenado novamente dentro do acumulador
-    public int divide (int acc, int opd1) {
-        acc = acc/opd1;
-        return acc;
+    public void divide (Accumulator acc, int opd1) {
+        acc.setACC(acc.getACC()/opd1);
     }
 
-    public int load (int acc, int opd1) {
-        return opd1;
+    public void load (Accumulator acc, int opd1) {
+        acc.setACC(opd1);
     }
 
-    public int mult (int acc, int opd1) {
-        acc = acc * opd1;
-        return acc;
+    public void mult (Accumulator acc, int opd1) {
+        acc.setACC(acc.getACC() * opd1);
     }
 
     public Scanner read (int opd1) {                     //COMO SE FAZ LEITURA EM JAVA SOCORRO
@@ -62,28 +74,31 @@ public class Instructions {
         return userInput;
     }
 
-    public void stop (int acc) {
+    public void stop (Accumulator acc) {
+        return ;
         //como mata o programa?????
     }
 
-    public int store (int acc, int opd1) {
-        return acc;
+    public int store (Accumulator acc, int opd1) {
+        return opd1 = acc.getACC();
     }
 
-    public int sub (int acc, int opd1) {
-        return acc -=opd1;
+    public void sub (Accumulator acc, int opd1) {
+        acc.setACC(acc.getACC() - opd1);
     }
 
     public void write (int opd1) {
         System.out.println(opd1);
     }
 
-    public void call (int sp, int pc, int opd1) {
+    public void call (StackPointer sp, int pc, int opd1) {
         //não sei o que isso faz GIU HELP
+        // Não sei também, ISA HELP
     }
 
-    public void ret (int pc, int sp) {
+    public void ret (ProgramCounter pc, StackPointer sp) {
         //também não sei o que isso faz HELP
+        // Não sei também, ISA HELP
     }
 
 }
