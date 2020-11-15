@@ -26,8 +26,8 @@ public class CPU {
         StackPointer sp = new StackPointer();
 
         // OPERANDOS VEM DE ONDE???
-        int opd1 = 11;
-        int testeDasInstrucoes = 0; // pra usar no switch case e nao precisar ficar convertendo binário
+        int opd1 = 14;
+        int testeDasInstrucoes = 14; // pra usar no switch case e nao precisar ficar convertendo binário
 
         switch (testeDasInstrucoes) {
             case 0:
@@ -83,9 +83,14 @@ public class CPU {
                 break;
             case 14:
                 System.out.println("Você escolheu MULT");
+                instruction.mult(acc, opd1);
+                System.out.println(acc.getACC()); // vai dar 0 porque o acc tá 0
                 break;
             case 15:
                 System.out.println("Você escolheu CALL");
+                instruction.call(sp, pc, opd1);
+                System.out.println(pc.get());
+                System.out.println(sp.pop()); // pc tá vazio entao tem que ser 0 o print
                 break;
             default:                                                // Terá valor default?
                 System.out.println("Número inválido");
