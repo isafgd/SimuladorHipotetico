@@ -1,6 +1,7 @@
 package executor;
 import executor.recorders.Accumulator;
 import executor.recorders.ProgramCounter;
+import executor.recorders.StackPointer;
 
 import java.util.*;
 
@@ -91,14 +92,13 @@ public class Instructions {
         System.out.println(opd1);
     }
 
-    public void call (StackPointer sp, int pc, int opd1) {
-        //não sei o que isso faz GIU HELP
-        // Não sei também, ISA HELP
+    public void call (StackPointer sp, ProgramCounter pc, int opd1) {
+        sp.push(pc.get());
+        pc.set(opd1);
     }
 
     public void ret (ProgramCounter pc, StackPointer sp) {
-        //também não sei o que isso faz HELP
-        // Não sei também, ISA HELP
+        pc.set(sp.pop());
     }
 
 }
