@@ -2,10 +2,11 @@ package executor;
 import executor.recorders.Accumulator;
 import executor.recorders.ProgramCounter;
 import executor.recorders.StackPointer;
+import executor.Memory;
 
 import java.util.*;
 
-public class Instructions {
+public class Operations {
 
     //executa uma soma entre o acumulador e o valor informado pelo operando
     //e devolve o valor desse somatório
@@ -15,11 +16,12 @@ public class Instructions {
         //return acc += opd1;
     }
 
-    public  void addi (ProgramCounter pc, Accumulator acc, int opd1) { // PC guarda o endereço da prox instrução a ser executada
+/*    public  void addi (ProgramCounter pc, Accumulator acc, int opd1) { // PC guarda o endereço da prox instrução a ser executada
         int result = pc.get() + opd1;
         pc.set(result);
         //return pc + opd1;
     }
+ */
 
     //faz um pulo no programa para o lugar do valor indicado pelo operando
     public void br (ProgramCounter pc, int opd1) {                //eu acho que aqui a gente vai ter calcular o lugar onde vai ser o pulo
@@ -44,7 +46,7 @@ public class Instructions {
         }
     }
 
-    public void brNeg (ProgramCounter pc, int opd1, Accumulator acc) {                //eu acho que aqui a gente vai ter calcular o lugar onde vai ser o pulo
+    public void brNeg (ProgramCounter pc, Accumulator acc, int opd1) {                //eu acho que aqui a gente vai ter calcular o lugar onde vai ser o pulo
         if(acc.getACC() < 0) {
             pc.set(opd1);
         }
@@ -80,8 +82,10 @@ public class Instructions {
         //como mata o programa?????
     }
 
-    public int store (Accumulator acc, int opd1) {
-        return opd1 = acc.getACC();
+    public void store (Accumulator acc, int opd1, Memory memory) {
+        //direto
+        memory.add_element(opd1, acc.getACC());
+        //indireto
     }
 
     public void sub (Accumulator acc, int opd1) {
@@ -92,13 +96,11 @@ public class Instructions {
         System.out.println(opd1);
     }
 
-    public void call (StackPointer sp, ProgramCounter pc, int opd1) {
-        sp.push(pc.get());
+    public void call (StackPointer sp, ProgramCounter pc, int opd1, Memory memory) {
+        memory.push(sp, pc.get());
         pc.set(opd1);
     }
 
-    public void ret (ProgramCounter pc, StackPointer sp) {
-        pc.set(sp.pop());
-    }
+    public void ret (ProgramCounter pc, StackPointer sp, Memory memory) { memory.pop(sp);}
 
 }
