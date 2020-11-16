@@ -5,14 +5,14 @@ import java.util.ArrayList;
 
 public class Memory {
 
-    ArrayList<Object> memory = new ArrayList();
+    ArrayList<Object> memory = new ArrayList<Object>(500);
 
     private final int max_size = 500; //Cada posição corresponde à uma palavra de 16bits - No total a memória terá 1KB
 
     public Memory (){ //Inicializa toda a memória
-      //  for (int i = 3;i<=12;i++){
-        //    memory.add(i,null); //Preenche a pilha com NULL
-        //}
+       for (int i = 0;i<500;i++){
+           memory.add(null); //Preenche a pilha com NULL
+        }
 
         StackPointer SP = new StackPointer(); //Inicializa o registrador com 0
         ProgramCounter PC = new ProgramCounter();

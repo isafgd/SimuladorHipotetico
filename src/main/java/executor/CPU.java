@@ -22,12 +22,12 @@ public class CPU {
 
         int opd1=0, opd2=0;
 
-        StackPointer sp = (StackPointer) memory.get_element(13);                       //cria a "variável local" a partir do objeto criado dentro da memória
-        ProgramCounter pc = (ProgramCounter) memory.get_element(14);                   //e faz isso para todas os registradores
-        Accumulator acc = (Accumulator) memory.get_element(15);
-        OperationMode opm = (OperationMode) memory.get_element(16);
-        InstructionRecorder ir = (InstructionRecorder) memory.get_element(17);
-        AddressRecorder ar = (AddressRecorder) memory.get_element(18);                  //acredito que o ar não tá em uso
+        StackPointer sp = (StackPointer) memory.get_element(14);                       //cria a "variável local" a partir do objeto criado dentro da memória
+        ProgramCounter pc = (ProgramCounter) memory.get_element(15);                   //e faz isso para todas os registradores
+        Accumulator acc = (Accumulator) memory.get_element(16);
+        OperationMode opm = (OperationMode) memory.get_element(17);
+        InstructionRecorder ir = (InstructionRecorder) memory.get_element(18);
+        AddressRecorder ar = (AddressRecorder) memory.get_element(19);                  //acredito que o ar não tá em uso
 
         String instruction = "0000000000000011";                                             // Vai vir em binário da leitura de arquivo. 16 bits-> 1 palavra de memória
 
