@@ -11,6 +11,10 @@ public class StackPointer {
         this.top = -1;
     } // Construtor
 
+    public int getPointer() {return this.top;}
+
+    public void setPointer(int top) {this.top = top;}
+
     public boolean push(int x) {
         if (top >= (MAX-1)) {
             System.out.println("Estouro de Pilha!");
