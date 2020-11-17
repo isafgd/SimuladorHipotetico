@@ -36,7 +36,7 @@ public class Memory {
         return index++;
     }
 
-    public Object get_element(int index) {
+    public Object get(int index) {
         return memory.get(index);
     }
 

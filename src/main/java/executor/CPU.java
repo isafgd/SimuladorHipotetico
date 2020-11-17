@@ -1,15 +1,12 @@
 package executor;
 
-//import com.sun.xml.internal.bind.v2.runtime.output.StAXExStreamWriterOutput;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.sql.SQLOutput;
 
-//Main Class
 public class CPU extends Application {
 
     public void start(Stage primaryStage) throws Exception {
@@ -23,32 +20,18 @@ public class CPU extends Application {
         Memory memory = new Memory();
         Operations operation = new Operations();
 
-        int opd1=0, opd2=0;
+        //int opd1=0, opd2=0;
 
-        String instruction = "0000000000000011";                                             // Vai vir em binário da leitura de arquivo. 16 bits-> 1 palavra de memória
+        String instruction = "0000000000000011";
 
-        String opcode = instruction.substring(0,4);                                          // Pega a substring do espaço 0 até 3
-        int decimalOpcode = Integer.parseInt(opcode,2);                                // Converte o binario para int
-        String operationCode = instruction.substring(4,7);                                         // Pega a substring do espaço 4 até 6
-        int decimalOperationCode = Integer.parseInt(operationCode,2);                        // Converte o binario para int
-        System.out.println("opcode convertido para decimal: ");
-        System.out.println(decimalOpcode);
-        String operand1 = instruction.substring(7,11);                                       // Pega a substring do espaço 8 até 15
-        int decimalOperand1 = Integer.parseInt(operand1,2);                              // Converte o binario para int
-        String operand2 = instruction.substring(12,16);                                       // Pega a substring do espaço 8 até 15
-        int decimalOperand2 = Integer.parseInt(operand2,2);                              // Converte o binario para int
-        //Tá sobrando um bit, será que é pro sinal? (são 9 bits pra 2 operandos, só da se dividir ao meio um bit)
-        //String bin2 = Integer.toBinaryString(9);//Converter um valor int para binario e atribui o valor a um tipo string
-        //System.out.println(bin2);
+        Integer opd1 = getFirstOP(instruction);
+        //Integer opd2 = getSecondOP(instruction);
 
-//        ir.setIR(decimalOpcode);                                                          //setta os valores decimais para os
-//        opm.setOPM(decimalOperationCode);                                                //registradores
+
+//        ir.setIR(decimalOpcode);
+//        opm.setOPM(decimalOperationCode);
 //
-//        //Atribui o valor correto ao operando
-//        //se for direto: pega o valor do operando da instrução em decimal e acessa o espaço de memória pra pegar o dado
-//        //se for indireto: pega o valor do operando da instrução em decimal, acessa o espaço de memória e depois acessa o espaço
-//        // de memória armanezado ali pra pegar o dado
-//        //se for imediato: pega o valor do operando decimal como o próprio dado a ser usado
+//
 //        switch (opm.getOPM()) {
 //            case 0:
 //                //direto
@@ -165,6 +148,22 @@ public class CPU extends Application {
 //            default:                                                // Terá valor default?
 //                System.out.println("Número inválido");
 //        }
+    }
+
+    public static Integer getOpcode(String instruction) {
+        return Integer.parseInt(instruction.substring(0, 4), 2);     //Retorna um inteiro da substring do espaço 0 até 3
+    }
+
+    public static Integer getAddressMode(String instruction) {
+        return Integer.parseInt(instruction.substring(4, 7), 2);     //Retorna um inteiro da substring do espaço 0 até 3
+    }
+
+    public static Integer getFirstOP(String instruction) {
+        return Integer.parseInt(instruction.substring(7, 11), 2);     //Retorna um inteiro da substring do espaço 0 até 3
+    }
+
+    public static Integer getSecondOP(String instruction) {
+        return Integer.parseInt(instruction.substring(12, 16), 2);     //Retorna um inteiro da substring do espaço 0 até 3
     }
 
 }
