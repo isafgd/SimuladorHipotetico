@@ -12,6 +12,6 @@ public class InstructionRecorder {
     private int opcode;
 
     public InstructionRecorder(){
-        opcode = Integer.parseInt(null);
+        opcode = 0;
     }
 }

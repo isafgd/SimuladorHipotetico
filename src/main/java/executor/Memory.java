@@ -22,11 +22,11 @@ public class Memory {
         InstructionRecorder RI = new InstructionRecorder();
 
         memory.add(13,SP); //Cria o registrador SP na posição 13 da memória
-        memory.add(14,PC);
-        memory.add(15,ACC);
-        memory.add(16,MOP);
-        memory.add(17,RI);
-        memory.add(18,RE);
+        memory.add(14,PC); //Cria o registrador SP na posição 14 da memória
+        memory.add(15,ACC); //Cria o registrador SP na posição 15 da memória
+        memory.add(16,MOP); //Cria o registrador SP na posição 16 da memória
+        memory.add(17,RI); //Cria o registrador SP na posição 17 da memória
+        memory.add(18,RE); //Cria o registrador SP na posição 18 da memória
 
         memory.add(2,10); //Cria a base da pilha, na posição de memória 2, nele está salvo o tamanho máximo da pilha
     }

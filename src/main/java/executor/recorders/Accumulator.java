@@ -8,6 +8,6 @@ public class Accumulator {
     private int accumulator;
 
     public Accumulator(){
-        accumulator = Integer.parseInt(null);
+        accumulator = 0;
     }
 }

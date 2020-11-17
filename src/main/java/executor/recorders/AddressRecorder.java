@@ -8,6 +8,6 @@ public class AddressRecorder {
     private int address;
 
     public AddressRecorder(){
-        address = Integer.parseInt(null);
+        address = 0;
     }
 }

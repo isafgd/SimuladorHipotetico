@@ -8,6 +8,6 @@ public class OperationMode {
     private int mode;
 
     public OperationMode(){
-        mode = 0; //default
+        mode = 0;
     }
 }

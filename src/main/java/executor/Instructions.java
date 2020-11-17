@@ -1,13 +1,13 @@
 package executor;
+import executor.recorders.Accumulator;
+
 import java.util.*;
 
 public class Instructions {
 
     //executa uma soma entre o acumulador e o valor informado pelo operando
     //e devolve o valor desse somatório
-    public  int add (int acc, int opd1) {
-        return acc += opd1;
-    }
+    public  int add (int acc, int opd1) { return acc += opd1;}
     public  int addi (int pc, int acc, int opd1) {
         return pc + opd1;
     }

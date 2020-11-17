@@ -1,9 +1,28 @@
 package executor;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
 //Main Class
 public class CPU {
 
     public static void main(String[] args) {
+
+        try {
+            FileReader arq = new FileReader("/Users/bela/student/PS/teste.txt");
+            BufferedReader lerArq = new BufferedReader(arq);
+
+            String linha = lerArq.readLine(); //lê a primeira linha
+            while (linha != null) { //lê as próximas linhas
+                System.out.printf("%s\n", linha);
+                linha = lerArq.readLine();
+            }
+            arq.close();
+        } catch (IOException e) {
+            System.err.printf("Erro na abertura do arquivo: %s.\n",
+                    e.getMessage());
+        }
 
         String opcode = "0000000000000010";                                 // Vai vir em binário da leitura de arquivo. 16 bits-> 1 palavra de memória
         int opcodeDecimal = Integer.parseInt(opcode,2);               // Converte o binario para int
