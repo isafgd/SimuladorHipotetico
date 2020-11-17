@@ -1,0 +1,6 @@
+Organização do arquivo binário:
+    Todos: os primeiros quatro bits são opcode
+    Todos: bit 5 indica se o endereço do primeiro operando é indireto
+    copy: bit 6 indica que o endereço do segundo operando é indireto
+    add, copy, divide, load, mult, sub, wirte: bit 7 indica que o operando é imediato
+    Ou seja: [0000] opcode [000] endereçamentos [000000000] operandos
