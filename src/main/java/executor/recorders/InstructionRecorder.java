@@ -6,17 +6,7 @@ import lombok.Data;
 public class InstructionRecorder {
 
     private final int size = 16;
-    int IR;
+    int ri;
 
-    public InstructionRecorder() {
-        this.IR = 0;
-    }
-
-    public int getIR() {
-        return this.IR;
-    }
-
-    public void setIR(int IR) {
-        this.IR = IR;
-    }
+    public InstructionRecorder() {}
 }

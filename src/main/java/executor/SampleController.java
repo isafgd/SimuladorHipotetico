@@ -3,7 +3,7 @@ package executor;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 
-public class sampleController {
+public class SampleController {
     int i = 0;
 
     @FXML
@@ -13,6 +13,10 @@ public class sampleController {
     public void onBotaoStepAciotn(){
         i++;
         System.out.println(i);
+    }
+
+    public int getI (){
+        return i;
     }
 
 }

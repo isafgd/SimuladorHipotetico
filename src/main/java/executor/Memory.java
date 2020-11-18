@@ -31,9 +31,8 @@ public class Memory {
         memory.set(18,RE);
     }
 
-    public int add_element (int index, int element){
+    public void set_element (int index, int element){
         memory.set(index,element);
-        return index++;
     }
 
     public Object get(int index) {
