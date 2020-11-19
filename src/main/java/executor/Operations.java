@@ -10,13 +10,13 @@ public class Operations {
 
     //executa uma soma entre o acumulador e o valor informado pelo operando
     //e devolve o valor desse somatório
-    public  void add (Accumulator acc, int opd1) {
+    public void add (Accumulator acc, int opd1) {
         int ac = acc.getAcc() + opd1;
         acc.setAcc(ac);
         //return acc += opd1;
     }
 
-    public  void addi (ProgramCounter pc, Accumulator acc, int opd1) { // PC guarda o endereço da prox instrução a ser executada
+    public void addi (ProgramCounter pc, Accumulator acc, int opd1) { // PC guarda o endereço da prox instrução a ser executada
         int result = pc.getPc() + opd1;
         pc.setPc(result);
         //return pc + opd1;

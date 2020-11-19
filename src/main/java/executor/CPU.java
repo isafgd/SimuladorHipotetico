@@ -24,9 +24,8 @@ public class CPU extends Application {
     public static void main(String[] args) throws FileNotFoundException {
         launch(args);
         Memory memory = new Memory();
-        //System.out.println("Teste");
-        /*Reader reader = new Reader();
-        executionMode(memory, reader);*/
+        Reader reader = new Reader();
+        executionMode(memory, reader);
     }
 
     public static void executionMode(Memory memory, Reader reader){

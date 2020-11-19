@@ -5,18 +5,22 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="executor.SampleController">
         <children>
-                <TableView editable="true" layoutX="40.0" layoutY="99.0" prefHeight="541.0" prefWidth="151.0">
+                <TableView fx:id="tableView" editable="true" layoutX="40.0" layoutY="99.0" prefHeight="541.0" prefWidth="213.0">
                         <columns>
-                                <TableColumn prefWidth="75.0" text="Endereços" />
-                                <TableColumn prefWidth="75.0" text="Valores" />
+                                <TableColumn fx:id="colunaEndereco" prefWidth="106.4000015258789" text="Endereços" />
+                                <TableColumn fx:id="colunaValor" prefWidth="103.99996948242188" text="Valores" />
                         </columns>
                 </TableView>
-                <Button fx:id="botaoStep" layoutX="760.0" layoutY="181.0" mnemonicParsing="false" onAction="#onBotaoStepAciotn" prefHeight="35.0" prefWidth="56.0" text="Step" />
+                <Button fx:id="botaoStep" layoutX="743.0" layoutY="181.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="56.0" text="Step" />
                 <Button layoutX="835.0" layoutY="181.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="56.0" text="Reset" />
-                <Label alignment="CENTER" layoutX="75.0" layoutY="55.0" prefHeight="35.0" prefWidth="56.0" text="adasdw" textAlignment="CENTER" />
+                <Label alignment="CENTER" layoutX="75.0" layoutY="55.0" prefHeight="35.0" prefWidth="133.0" text="Memory" textAlignment="CENTER">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font></Label>
                 <Pane layoutX="354.0" layoutY="81.0" prefHeight="200.0" prefWidth="200.0" />
         </children>
 </Pane>
