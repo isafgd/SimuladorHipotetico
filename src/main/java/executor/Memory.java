@@ -29,6 +29,8 @@ public class Memory {
         memory.set(16,MOP);
         memory.set(17,RI);
         memory.set(18,RE);
+
+        memory.set(19,0); //Operando 1
     }
 
     public void set_element (int index, int element){
@@ -55,7 +57,7 @@ public class Memory {
         }
     }
 
-    public void pop (StackPointer SP){
+    public int pop (StackPointer SP){
         if (SP.getPointer() == 0 && memory.get(3) == null || SP.getPointer() == 2){
             System.out.println("Empty Stack");
         }else{
@@ -68,5 +70,6 @@ public class Memory {
                 SP.setPointer(index--);
             }
         }
+        return SP.getPointer();
     }
 }

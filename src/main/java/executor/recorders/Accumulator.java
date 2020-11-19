@@ -8,5 +8,7 @@ public class Accumulator {
     private final int size = 16;
     int acc;
 
-    public Accumulator(){}
+    public Accumulator(){
+        acc = 0;
+    }
 }

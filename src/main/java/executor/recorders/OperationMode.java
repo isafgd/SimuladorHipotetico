@@ -8,6 +8,6 @@ public class OperationMode {
     private final int size = 8;
     int mop;
 
-    public OperationMode(){}
+    public OperationMode(){mop = -1;}
 
 }

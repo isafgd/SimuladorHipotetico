@@ -4,6 +4,12 @@ Organização do arquivo binário:
     copy: bit 6 indica que o endereço do segundo operando é indireto
     add, copy, divide, load, mult, sub, wirte: bit 7 indica que o operando é imediato
     Ou seja: [0000] opcode [000] endereçamentos [000000000] operandos
+                            110
+                            101
+                            100
+                            010
+                            001
+                            000
 
     String instruction = "0000000000000011"
 

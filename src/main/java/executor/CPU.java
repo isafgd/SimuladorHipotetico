@@ -23,7 +23,8 @@ public class CPU extends Application {
 
     public static void main(String[] args) throws FileNotFoundException {
         launch(args);
-        Memory memory = new Memory();
+        SampleController sampleController = new SampleController();
+        Memory memory = sampleController.getMemory();
         Reader reader = new Reader();
         executionMode(memory, reader);
     }
@@ -66,9 +67,6 @@ public class CPU extends Application {
 
         InstructionRecorder RI = (InstructionRecorder) memory.get(17);
         RI.setRi(getOpcode(line));
-//        AddressRecorder RE = (AddressRecorder) memory.get(18);
-//        memory.set_element(RE.getRe(),getFirstOP(line));
-//        RE.increment();
 
         return attributes;
     }
@@ -78,70 +76,70 @@ public class CPU extends Application {
         Operations operation = new Operations();
         switch (RI.getRi()) {
             case 0:
-                operation.br((ProgramCounter) memory.get(14), attributes.get(1));
+                operation.br((ProgramCounter) memory.get(14), attributes.get(1), attributes.get(0), memory);
                 break;
             case 1:
-                operation.brPos((ProgramCounter) memory.get(14), (Accumulator) memory.get(15), attributes.get(1));
+                operation.brPos((ProgramCounter) memory.get(14), (Accumulator) memory.get(15), attributes.get(1), attributes.get(0), memory);
                 break;
             case 2:
-                operation.add((Accumulator) memory.get(15), attributes.get(1));                 // Raquel, basicamente é chamar a instrução aqui e printar o que ela deu set/get
+                operation.add((Accumulator) memory.get(15), attributes.get(1), attributes.get(0), memory);
                 break;
             case 3:
-                operation.load((Accumulator) memory.get(15), attributes.get(1));
+                operation.load((Accumulator) memory.get(15), attributes.get(1), attributes.get(0), memory);
                 break;
             case 4:
-                operation.brZero((ProgramCounter) memory.get(14), (Accumulator) memory.get(15), attributes.get(1));
+                operation.brZero((ProgramCounter) memory.get(14), (Accumulator) memory.get(15), attributes.get(1), attributes.get(0), memory);
                 break;
             case 5:
-                operation.brNeg((ProgramCounter) memory.get(14), (Accumulator) memory.get(15), attributes.get(1));
+                operation.brNeg((ProgramCounter) memory.get(14), (Accumulator) memory.get(15), attributes.get(1), attributes.get(0), memory);
                 break;
             case 6:
-                operation.sub((Accumulator) memory.get(15), attributes.get(1));
+                operation.sub((Accumulator) memory.get(15), attributes.get(1), attributes.get(0), memory);
                 break;
             case 7:
-                operation.store((Accumulator) memory.get(15), attributes.get(1), memory);
+                operation.store((Accumulator) memory.get(15), attributes.get(1), memory, attributes.get(0));
                 break;
             case 8:
-                operation.write(attributes.get(1));
+                operation.write(attributes.get(1), attributes.get(0), memory);
                 break;
             case 9:
                 operation.ret((ProgramCounter) memory.get(14), (StackPointer) memory.get(13), memory);
                 break;
             case 10:
-                operation.divide((Accumulator) memory.get(15), attributes.get(1));
+                operation.divide((Accumulator) memory.get(15), attributes.get(1), attributes.get(0), memory);
                 break;
             case 11:
-                operation.stop((Accumulator) memory.get(15));
+                operation.stop();
                 break;
             case 12:
-                operation.read(attributes.get(1));
+                //operation.read(attributes.get(1), attributes.get(0), memory);
                 break;
             case 13:
-                attributes.set(1,operation.copy(attributes.get(1), attributes.get(2)));
+                //attributes.set(1,operation.copy(attributes.get(1), attributes.get(2), attributes.get(0), memory));
                 break;
             case 14:
-                operation.mult((Accumulator) memory.get(15), attributes.get(1));
+                operation.multi((Accumulator) memory.get(15), attributes.get(1), attributes.get(0), memory);
                 break;
             case 15:
-                operation.call((StackPointer) memory.get(13), (ProgramCounter) memory.get(14), attributes.get(1), memory);
+                operation.call((StackPointer) memory.get(13), (ProgramCounter) memory.get(14), attributes.get(1), memory, attributes.get(0));
                 break;
         }
     }
 
     public static Integer getOpcode(String instruction) {
-        return Integer.parseInt(instruction.substring(0, 4), 2);     //Retorna um inteiro da substring do espaço 0 até 3
+        return Integer.parseInt(instruction.substring(0, 4), 2);
     }
 
     public static Integer getAddressMode(String instruction) {
-        return Integer.parseInt(instruction.substring(4, 7), 2);     //Retorna um inteiro da substring do espaço 0 até 3
+        return Integer.parseInt(instruction.substring(4, 7), 2);
     }
 
     public static Integer getFirstOP(String instruction) {
-        return Integer.parseInt(instruction.substring(7, 11), 2);     //Retorna um inteiro da substring do espaço 0 até 3
+        return Integer.parseInt(instruction.substring(7, 11), 2);
     }
 
     public static Integer getSecondOP(String instruction) {
-        return Integer.parseInt(instruction.substring(12, 16), 2);     //Retorna um inteiro da substring do espaço 0 até 3
+        return Integer.parseInt(instruction.substring(12, 16), 2);
     }
 
 }

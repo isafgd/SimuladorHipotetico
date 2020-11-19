@@ -9,6 +9,6 @@ public class StackPointer {
     int pointer;
 
     public StackPointer() {
-        this.pointer = 0;
+        pointer = 0;
     }
 }
