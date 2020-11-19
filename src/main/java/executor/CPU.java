@@ -13,17 +13,20 @@ import java.util.ArrayList;
 
 public class CPU extends Application {
 
+    @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/sample.fxml"));
         primaryStage.setTitle("Simulador");
         primaryStage.setScene(new Scene(root, 1000, 900));
         primaryStage.show();
     }
 
     public static void main(String[] args) throws FileNotFoundException {
+        launch(args);
         Memory memory = new Memory();
-        Reader reader = new Reader();
-        executionMode(memory, reader);
+        //System.out.println("Teste");
+        /*Reader reader = new Reader();
+        executionMode(memory, reader);*/
     }
 
     public static void executionMode(Memory memory, Reader reader){
