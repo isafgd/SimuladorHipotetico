@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -17,7 +18,10 @@ public class CPU extends Application {
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/sample.fxml"));
         primaryStage.setTitle("Simulador");
-        primaryStage.setScene(new Scene(root, 1000, 900));
+        Scene scene = new Scene(root, 1000, 900);
+        primaryStage.setScene(scene);
+        primaryStage.initStyle(StageStyle.DECORATED);
+        scene.getStylesheets().add(getClass().getResource("/css/Style.css").toExternalForm());
         primaryStage.show();
     }
 
