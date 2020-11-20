@@ -2,17 +2,29 @@ package executor;
 
 import executor.recorders.*;
 import javafx.application.Application;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import lombok.Data;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
-
+@Data
 public class CPU extends Application {
+
+    private Integer choice = 0;
+
+    @FXML
+    private Button initialButton;
+
+    @FXML
+    private TextArea textArea;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -20,17 +32,21 @@ public class CPU extends Application {
         primaryStage.setTitle("Simulador");
         Scene scene = new Scene(root, 1000, 900);
         primaryStage.setScene(scene);
-        primaryStage.initStyle(StageStyle.DECORATED);
         scene.getStylesheets().add(getClass().getResource("/css/Style.css").toExternalForm());
+        primaryStage.initStyle(StageStyle.UTILITY);
+        primaryStage.setMinHeight(950);
+        primaryStage.setMaxHeight(950);
+        primaryStage.setMaxWidth(1050);
+        primaryStage.setMinWidth(1050);
         primaryStage.show();
     }
 
     public static void main(String[] args) throws FileNotFoundException {
         launch(args);
-        SampleController sampleController = new SampleController();
-        Memory memory = sampleController.getMemory();
+        //SampleController sampleController = new SampleController();
+        /*Memory memory = sampleController.getMemory();
         Reader reader = new Reader();
-        executionMode(memory, reader);
+        executionMode(memory, reader);*/
     }
 
     public static void executionMode(Memory memory, Reader reader){

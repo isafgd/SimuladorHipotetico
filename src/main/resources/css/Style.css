@@ -11,8 +11,9 @@
 }
 
 .label{
-    -fx-text-fill: #FFFFFF;
-    -fx-background-color: #5c555c;
+    -fx-text-fill: #000000;
+    -fx-background-color: transparent;
+    //-fx-background-color: #5c555c;
     -fx-background-radius: 2;
 }
 
@@ -39,24 +40,24 @@
     -fx-size: 40;
     -fx-border-width: 0 0 10 0;
     -fx-background-color: transparent;
-    -fx-border-insets: 10 //Enter value depending on thickness;
+    -fx-border-insets: 10;
     -fx-font-weight: bold;
     -fx-alignment: CENTER_LEFT;
 }
 
 .table-view .table-cell{
-    -fx-text-fill: white;
+    -fx-text-fill: black;
     -fx-border-color: transparent;
 }
 
 .table-row-cell{
-    -fx-background-color: -fx-table-cell-border-color, #616161;
+    -fx-background-color: -fx-table-cell-border-color, #ffebee;
     -fx-background-insets: 0, 0 0 1 0;
     -fx-padding: 0.0em; /* 0 */
 }
 
 .table-row-cell:odd{
-    -fx-background-color: -fx-table-cell-border-color, #424242;
+    -fx-background-color: -fx-table-cell-border-color, #ffc0cb;
     -fx-background-insets: 0, 0 0 1 0;
     -fx-padding: 0.0em; /* 0 */
 }

@@ -8,7 +8,7 @@ import java.io.IOException;
 public class Reader {
 
     private FileReader arq;
-    private  BufferedReader lerArq;
+    private BufferedReader lerArq;
     private String caminho;
 
     public Reader() throws FileNotFoundException{

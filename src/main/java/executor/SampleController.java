@@ -1,16 +1,23 @@
 package executor;
 
+import executor.Memory;
+import executor.Registradores;
 import executor.recorders.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
 import lombok.Data;
 
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -18,7 +25,19 @@ import java.util.ResourceBundle;
 public class SampleController implements Initializable {
     int i = 0;
 
+    ObservableList<String> executionModeList = FXCollections.observableArrayList("Continuo", "Semi-Continuo","Depuracao");
+    private String instrucoesLeitura;
+
     private Memory memory = new Memory();
+
+    @FXML
+    private TextArea instructions;
+
+    @FXML
+    private ChoiceBox<String> executionMode;
+
+    @FXML
+    private Button insertText;
 
     @FXML
     private TableView<Registradores> tableView;
@@ -37,14 +56,39 @@ public class SampleController implements Initializable {
         colunaEndereco.setCellValueFactory(new PropertyValueFactory<Registradores,String>("enderecos"));
         colunaValor.setCellValueFactory(new PropertyValueFactory<Registradores,String>("valor"));
         tableView.setItems(getRegistradores());
+        executionMode.setItems(executionModeList);
+
+        /*
+        instrucoesLeitura = instructions.getText();*/
     }
+
+    public void onInsertTextAction(){
+        instrucoesLeitura = instructions.getText().replaceAll("\n", System.getProperty("line.separator"));
+        String teste = executionMode.getValue();
+        //escrevotxt
+        //Covnverte bonito
+        //imprimir na caixa de texto
+        instructions.clear();
+        System.out.println(instrucoesLeitura);
+        System.out.println(teste);
+    }
+
+
+
+    /*@FXML
+    public void changeScreenButtonPushed (ActionEvent event) throws IOException {
+        Parent tableViewParent = FXMLLoader.load(getClass().getResource("/fxml/initializer.fxml"));
+        Scene tableViewScene = new Scene(tableViewParent);
+        Stage window = (Stage) ((javafx.scene.Node)event.getSource()).getScene().getWindow();
+        window.setScene(tableViewScene);
+        window.show();
+    }*/
 
     @FXML
     public void onBotaoStepAciotn(){
         i++;
         System.out.println(i);
     }
-
 
     //Esse metodo tem que retornar como um ObservableList
 
