@@ -22,3 +22,6 @@ se for direto: pega o valor do operando da instrução em decimal e acessa o esp
 se for indireto: pega o valor do operando da instrução em decimal, acessa o espaço de memória e depois acessa o espaço
 de memória armanezado ali pra pegar o dado
 se for imediato: pega o valor do operando decimal como o próprio dado a ser usado
+
+
+-fx-background-color: #787a79;

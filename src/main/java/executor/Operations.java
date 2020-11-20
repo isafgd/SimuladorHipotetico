@@ -123,10 +123,14 @@ public class Operations {
         }
     }
 
-/*    public Scanner read (int opd1, Integer addressMode, Memory memory) {
-        Scanner userInput = new Scanner(System.in);
-        return userInput;
-    }*/
+    public void read (Integer addressMode, Memory memory, int input) {
+        if(addressMode==4){
+            int pointer = (Integer) memory.get(input);
+            memory.set_element(19, (Integer) memory.get(pointer));
+        }else {
+            memory.set_element(19, (Integer) memory.get(input));
+        }
+    }
 
     public void stop () {
         exit(0);

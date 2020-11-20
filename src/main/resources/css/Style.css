@@ -1,5 +1,5 @@
 .root{
-  -fx-background-color: #787a79;
+  -fx-background-color: linear-gradient(#FFDAB9, #EE82EE);
 }
 
 .button{
