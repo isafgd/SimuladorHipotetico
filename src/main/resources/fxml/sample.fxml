@@ -6,7 +6,6 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
@@ -34,14 +33,13 @@
             <Font name="System Bold" size="30.0" />
          </font>
       </Label>
-                <Button fx:id="botaoStep" layoutX="757.0" layoutY="130.0" mnemonicParsing="false" prefHeight="68.0" prefWidth="95.0" text="Step" />
+                <Button fx:id="botaoStep" layoutX="757.0" layoutY="130.0" mnemonicParsing="false" onAction="#onBotaoStepAciotn" prefHeight="68.0" prefWidth="95.0" text="Step" />
       <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="836.0" layoutY="736.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../png/computacao-1.png" />
          </image>
       </ImageView>
-      <TextField layoutX="793.0" layoutY="321.0" prefHeight="25.0" prefWidth="150.0" />
-      <Label alignment="CENTER" layoutX="783.0" layoutY="242.0" prefHeight="49.0" prefWidth="161.0" text="Input" textAlignment="CENTER">
+      <Label alignment="CENTER" layoutX="783.0" layoutY="242.0" prefHeight="49.0" prefWidth="161.0" text="Output" textAlignment="CENTER">
          <font>
             <Font name="System Bold" size="30.0" />
          </font>
@@ -59,5 +57,10 @@
          </font>
       </Label>
       <Button fx:id="insertText" layoutX="609.0" layoutY="736.0" mnemonicParsing="false" onAction="#onInsertTextAction" prefHeight="49.0" prefWidth="76.0" text="Insert" />
+      <TextArea fx:id="console" layoutX="811.0" layoutY="304.0" prefHeight="49.0" prefWidth="109.0">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </TextArea>
         </children>
 </Pane>

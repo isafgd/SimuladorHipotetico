@@ -58,7 +58,19 @@ public class CPU extends Application {
 
     }
 
-    public static void executionMode(Memory memory, Read reader, int choice, ObservableList<Registradores> list){
+    public static void executionMode(Memory memory, Read reader, String choiceString, ObservableList<Registradores> list){
+        int choice = 0;
+        switch (choiceString){
+            case "Continuo":
+                choice = 0;
+                break;
+            case "Semi-Continuo":
+                choice = 1;
+                break;
+            case "Depuracao":
+                choice = 2;
+                break;
+        }
         OperationMode MOP = (OperationMode) memory.get(16);
         MOP.setMop(choice);
         list.set(16,new Registradores("MOP",MOP.getMop()));

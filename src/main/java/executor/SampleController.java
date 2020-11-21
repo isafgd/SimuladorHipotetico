@@ -16,9 +16,9 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
 import lombok.Data;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
+
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -39,6 +39,9 @@ public class SampleController implements Initializable {
     private Memory memory = new Memory(list);
 
     private CPU cpu = new CPU();
+
+    @FXML
+    private TextArea console;
 
     @FXML
     private TextArea instructions;
@@ -74,31 +77,21 @@ public class SampleController implements Initializable {
     public void onInsertTextAction() throws IOException, InterruptedException {
         Read reader = new Read();
         instrucoesLeitura = instructions.getText().replaceAll("\n", System.getProperty("line.separator"));
-        String teste = executionMode.getValue();
+        String executionModeValue = executionMode.getValue();
         Writer.writeFile(instrucoesLeitura);
         //Covnverte bonito
         //imprimir na caixa de texto
         instructions.clear();
         System.out.println(instrucoesLeitura);
-        System.out.println(teste);
         cpu.initialMemory(memory,list);
-        cpu.executionMode(memory, reader, i, list);
+        cpu.executionMode(memory, reader, executionModeValue, list);
     }
-
-
-    /*@FXML
-    public void changeScreenButtonPushed (ActionEvent event) throws IOException {
-        Parent tableViewParent = FXMLLoader.load(getClass().getResource("/fxml/initializer.fxml"));
-        Scene tableViewScene = new Scene(tableViewParent);
-        Stage window = (Stage) ((javafx.scene.Node)event.getSource()).getScene().getWindow();
-        window.setScene(tableViewScene);
-        window.show();
-    }*/
 
     @FXML
     public void onBotaoStepAciotn(){
         i++;
         System.out.println(i);
+        console.setText("QlqrCoisa");
     }
 
     //Esse metodo tem que retornar como um ObservableList
@@ -106,5 +99,6 @@ public class SampleController implements Initializable {
     public ObservableList<Registradores> getRegistradores(){
         return list;
     }
+
 
 }
