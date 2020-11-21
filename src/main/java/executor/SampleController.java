@@ -57,7 +57,6 @@ public class SampleController implements Initializable {
         colunaValor.setCellValueFactory(new PropertyValueFactory<Registradores,String>("valor"));
         tableView.setItems(getRegistradores());
         executionMode.setItems(executionModeList);
-
         /*
         instrucoesLeitura = instructions.getText();*/
     }
@@ -65,7 +64,7 @@ public class SampleController implements Initializable {
     public void onInsertTextAction(){
         instrucoesLeitura = instructions.getText().replaceAll("\n", System.getProperty("line.separator"));
         String teste = executionMode.getValue();
-        //escrevotxt
+        Writer.writeFile(instrucoesLeitura);
         //Covnverte bonito
         //imprimir na caixa de texto
         instructions.clear();

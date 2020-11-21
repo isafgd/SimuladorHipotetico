@@ -20,7 +20,7 @@ public class Read {
         properties = new GetProperties();
         arq = new FileReader(properties.getPropValues("caminho"));
         lerArq = new BufferedReader(arq);
-        teste.set();
+       // teste.set();
     }
 
     public String readLine(){
