@@ -2,6 +2,7 @@ package executor;
 import executor.recorders.Accumulator;
 import executor.recorders.ProgramCounter;
 import executor.recorders.StackPointer;
+import javafx.collections.ObservableList;
 import javafx.stage.Stage;
 
 
@@ -18,7 +19,15 @@ import static java.lang.System.exit;
 
 public class Operations {
 
-    public void add (Accumulator acc, int opd1, Integer addressMode, Memory memory) {
+    public void next(Memory memory, ObservableList<Registradores> list) {
+        ProgramCounter PC = (ProgramCounter) memory.get(14);
+        Integer count = PC.getPc();
+        count++;
+        PC.setPc(count);
+        list.set(14, new Registradores("PC", PC.getPc()));
+    }
+
+    public void add (Accumulator acc, int opd1, Integer addressMode, Memory memory, ObservableList<Registradores> list) {
         if (addressMode==1) {
             acc.setAcc(acc.getAcc() + opd1);
         }else{
@@ -29,18 +38,21 @@ public class Operations {
                 acc.setAcc(acc.getAcc() + (Integer) memory.get(opd1));
             }
         }
+        list.set(15,new Registradores("ACC", acc.getAcc()));
+        next(memory,list);
     }
 
-    public void br (ProgramCounter pc, int opd1, Integer addressMode, Memory memory) {
+    public void br (ProgramCounter pc, int opd1, Integer addressMode, Memory memory, ObservableList<Registradores> list) {
         if(addressMode==4){
             int pointer = (Integer) memory.get(opd1);
             pc.setPc((Integer) memory.get(pointer));
         }else {
             pc.setPc((Integer) memory.get(opd1));
         }
+        list.set(14, new Registradores("PC", pc.getPc()));
     }
 
-    public void brPos (ProgramCounter pc, Accumulator acc, int opd1, Integer addressMode, Memory memory) {
+    public void brPos (ProgramCounter pc, Accumulator acc, int opd1, Integer addressMode, Memory memory, ObservableList<Registradores> list) {
         if(acc.getAcc() > 0) {
             if(addressMode==4){
                 int pointer = (Integer) memory.get(opd1);
@@ -49,9 +61,10 @@ public class Operations {
                 pc.setPc((Integer) memory.get(opd1));
             }
         }
+        list.set(14, new Registradores("PC", pc.getPc()));
     }
 
-    public void brZero (ProgramCounter pc, Accumulator acc, int opd1, Integer addressMode, Memory memory) {
+    public void brZero (ProgramCounter pc, Accumulator acc, int opd1, Integer addressMode, Memory memory, ObservableList<Registradores> list) {
         if(acc.getAcc() == 0) {
             if(addressMode==4){
                 int pointer = (Integer) memory.get(opd1);
@@ -60,9 +73,10 @@ public class Operations {
                 pc.setPc((Integer) memory.get(opd1));
             }
         }
+        list.set(14, new Registradores("PC", pc.getPc()));
     }
 
-    public void brNeg (ProgramCounter pc, Accumulator acc, int opd1, Integer addressMode, Memory memory) {
+    public void brNeg (ProgramCounter pc, Accumulator acc, int opd1, Integer addressMode, Memory memory, ObservableList<Registradores> list) {
         if(acc.getAcc() < 0) {
             if(addressMode==4){
                 int pointer = (Integer) memory.get(opd1);
@@ -71,9 +85,10 @@ public class Operations {
                 pc.setPc((Integer) memory.get(opd1));
             }
         }
+        list.set(14, new Registradores("PC", pc.getPc()));
     }
 
-    public void copy (int opd1, int opd2, Integer addressMode, Memory memory) {
+    public void copy (int opd1, int opd2, Integer addressMode, Memory memory, ObservableList<Registradores> list) {
         if(addressMode == 1){
             //Operando 1 é DIRETO e Operando 2 é IMEDIATO
             memory.set_element((Integer) memory.get(opd1),opd2);
@@ -101,9 +116,10 @@ public class Operations {
                 }
             }
         }
+        next(memory,list);
     }
 
-    public void divide (Accumulator acc, int opd1, Integer addressMode, Memory memory) {
+    public void divide (Accumulator acc, int opd1, Integer addressMode, Memory memory, ObservableList<Registradores> list) {
         if (addressMode==1) {
             acc.setAcc(acc.getAcc() / opd1);
         }else{
@@ -114,9 +130,11 @@ public class Operations {
                 acc.setAcc(acc.getAcc() / (Integer) memory.get(opd1));
             }
         }
+        list.set(15,new Registradores("ACC", acc.getAcc()));
+        next(memory,list);
     }
 
-    public void load (Accumulator acc, int opd1, Integer addressMode, Memory memory) {
+    public void load (Accumulator acc, int opd1, Integer addressMode, Memory memory, ObservableList<Registradores> list) {
         if (addressMode==1) {
             acc.setAcc(opd1);
         }else{
@@ -127,9 +145,11 @@ public class Operations {
                 acc.setAcc((Integer) memory.get(opd1));
             }
         }
+        list.set(15,new Registradores("ACC", acc.getAcc()));
+        next(memory,list);
     }
 
-    public void multi (Accumulator acc, int opd1, Integer addressMode, Memory memory) {
+    public void multi (Accumulator acc, int opd1, Integer addressMode, Memory memory, ObservableList<Registradores> list) {
         if (addressMode==1) {
             acc.setAcc(acc.getAcc() * opd1);
         }else{
@@ -140,31 +160,35 @@ public class Operations {
                 acc.setAcc(acc.getAcc() * (Integer) memory.get(opd1));
             }
         }
+        list.set(15,new Registradores("ACC", acc.getAcc()));
+        next(memory,list);
     }
 
-    public void read (Integer addressMode, int opd1, Memory memory) {
+    public void read (Integer addressMode, int opd1, Memory memory, ObservableList<Registradores> list) {
         if(addressMode==4){
             int pointer = (Integer) memory.get(opd1);
             memory.set_element(19, (Integer) memory.get(pointer));
         }else {
             memory.set_element(19, (Integer) memory.get(opd1));
         }
+        next(memory,list);
     }
 
     public void stop (){
         exit(0);
     }
 
-    public void store (Accumulator acc, int opd1, Memory memory, Integer addressMode) {
+    public void store (Accumulator acc, int opd1, Memory memory, Integer addressMode, ObservableList<Registradores> list) {
         if(addressMode==4){
             int pointer = (Integer) memory.get(acc.getAcc());
             memory.set_element(19, (Integer) memory.get(pointer));
         }else {
             memory.set_element(19, (Integer) memory.get(acc.getAcc()));
         }
+        next(memory,list);
     }
 
-    public void sub (Accumulator acc, int opd1, Integer addressMode, Memory memory) {
+    public void sub (Accumulator acc, int opd1, Integer addressMode, Memory memory, ObservableList<Registradores> list) {
         if (addressMode==1) {
             acc.setAcc(acc.getAcc() - opd1);
         }else{
@@ -175,9 +199,11 @@ public class Operations {
                 acc.setAcc(acc.getAcc() - (Integer) memory.get(opd1));
             }
         }
+        list.set(15,new Registradores("ACC", acc.getAcc()));
+        next(memory,list);
     }
 
-    public void write (int opd1, Integer addressMode, Memory memory) {
+    public void write (int opd1, Integer addressMode, Memory memory, ObservableList<Registradores> list) {
         if (addressMode==1) {
             System.out.println(opd1);
         }else{
@@ -188,9 +214,10 @@ public class Operations {
                 System.out.println(memory.get(opd1));
             }
         }
+        next(memory,list);
     }
 
-    public void call (StackPointer sp, ProgramCounter pc, int opd1, Memory memory, Integer addressMode) {
+    public void call (StackPointer sp, ProgramCounter pc, int opd1, Memory memory, Integer addressMode, ObservableList<Registradores> list) {
         if(addressMode==4){
             int pointer = (Integer) memory.get(opd1);
             pc.setPc((Integer) memory.get(pointer));
@@ -200,7 +227,7 @@ public class Operations {
         memory.push(sp, pc.getPc());
     }
 
-    public void ret (ProgramCounter pc, StackPointer sp, Memory memory) {
+    public void ret (ProgramCounter pc, StackPointer sp, Memory memory, ObservableList<Registradores> list) {
         pc.setPc(memory.pop(sp));
     }
 

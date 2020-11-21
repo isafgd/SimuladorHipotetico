@@ -13,14 +13,14 @@ public class Memory {
 
     Registradores registradores;
 
-    public Memory (ObservableList<Registradores> lista){ //Inicializa toda a memória
+    public Memory (ObservableList<Registradores> list){ //Inicializa toda a memória
        for (Integer i = 0;i<500;i++){
            memory.add(null); //Preenche a pilha com NULL
-           lista.add(i,new Registradores(i.toString(),0));
+           list.add(i,new Registradores(i.toString(),0));
         }
 
         memory.set(2,10); //Cria a base da pilha, na posição de memória 2, nele está salvo o tamanho máximo da pilha
-        lista.set(2,new Registradores("2",10));
+        list.set(2,new Registradores("2",10));
 
         StackPointer SP = new StackPointer(); //Inicializa o registrador com 0
         ProgramCounter PC = new ProgramCounter();
@@ -30,28 +30,22 @@ public class Memory {
         InstructionRecorder RI = new InstructionRecorder();
 
         memory.set(13,SP); //Cria o registrador SP na posição 13 da memória
-        lista.set(13,new Registradores("13", SP.getPointer()));
+        list.set(13,new Registradores("SP", SP.getPointer()));
 
         memory.set(14,PC);
-        lista.set(14,new Registradores("14", PC.getPc()));
+        list.set(14,new Registradores("PC", PC.getPc()));
 
         memory.set(15,ACC);
-        lista.set(15,new Registradores("15", ACC.getAcc()));
+        list.set(15,new Registradores("ACC", ACC.getAcc()));
 
         memory.set(16,MOP);
-        lista.set(16,new Registradores("16",MOP.getMop()));
+        list.set(16,new Registradores("MOP",MOP.getMop()));
 
         memory.set(17,RI);
-        lista.set(17,new Registradores("17", RI.getRi()));
+        list.set(17,new Registradores("RI", RI.getRi()));
 
         memory.set(18,RE);
-        lista.set(18,new Registradores("18", RE.getRe()));
-
-        memory.set(19,0); //Operando 1
-        lista.set(19,new Registradores("19",0));
-
-        memory.set(20,0); //Operando 2
-        lista.set(20,new Registradores("20",0));
+        list.set(18,new Registradores("RE", RE.getRe()));
     }
 
     public void set_element (int index, int element){

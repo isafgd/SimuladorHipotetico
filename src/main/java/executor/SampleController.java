@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static java.lang.System.exit;
+
 @Data
 public class SampleController implements Initializable {
     int i = 0;
@@ -102,34 +104,6 @@ public class SampleController implements Initializable {
     //Esse metodo tem que retornar como um ObservableList
 
     public ObservableList<Registradores> getRegistradores(){
-        /*StackPointer SP = (StackPointer) memory.get(13);
-        ProgramCounter PC = (ProgramCounter) memory.get(14);
-        Accumulator ACC = (Accumulator) memory.get(15);
-        OperationMode MOP = (OperationMode) memory.get(16);
-        AddressRecorder RE = (AddressRecorder) memory.get(18);
-        InstructionRecorder RI = (InstructionRecorder) memory.get(17);*/
-/*
-        list.add(new Registradores("0",0));
-        list.add(new Registradores("1",0));
-        list.add(new Registradores("2",10));
-        list.add(new Registradores("3",0));
-        list.add(new Registradores("4",0));
-        list.add(new Registradores("5",0));
-        list.add(new Registradores("6",0));
-        list.add(new Registradores("7",0));
-        list.add(new Registradores("8",0));
-        list.add(new Registradores("9",0));
-        list.add(new Registradores("10",0));
-        list.add(new Registradores("11",0));
-        list.add(new Registradores("12",0));
-        list.add(new Registradores("SP", SP.getPointer()));
-        list.add(new Registradores("PC", PC.getPc()));
-        list.add(new Registradores("ACC",ACC.getAcc()));
-        list.add(new Registradores("MOP",MOP.getMop()));
-        list.add(new Registradores("RI",RI.getRi()));
-        list.add(new Registradores("RE",RE.getRe()));
-        list.add(new Registradores("OPD1",(Integer) memory.get(19)));*/
-
         return list;
     }
 
