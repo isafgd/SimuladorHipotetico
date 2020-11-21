@@ -132,10 +132,10 @@ public class CPU extends Application {
                 operation.stop();
                 break;
             case 12:
-                //operation.read(attributes.get(1), attributes.get(0), memory);
+                operation.read(attributes.get(0), attributes.get(1), memory);
                 break;
             case 13:
-                //attributes.set(1,operation.copy(attributes.get(1), attributes.get(2), attributes.get(0), memory));
+                operation.copy(attributes.get(1), attributes.get(2), attributes.get(0), memory);
                 break;
             case 14:
                 operation.multi((Accumulator) memory.get(15), attributes.get(1), attributes.get(0), memory);

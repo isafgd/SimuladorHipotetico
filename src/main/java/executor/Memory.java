@@ -31,6 +31,7 @@ public class Memory {
         memory.set(18,RE);
 
         memory.set(19,0); //Operando 1
+        memory.set(20,0); //Operando 2
     }
 
     public void set_element (int index, int element){

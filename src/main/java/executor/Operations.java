@@ -4,8 +4,6 @@ import executor.recorders.ProgramCounter;
 import executor.recorders.StackPointer;
 
 
-import java.util.*;
-
 import static java.lang.System.exit;
 
 /*AdressMode {
@@ -31,12 +29,6 @@ public class Operations {
             }
         }
     }
-
-/*    public void addi (ProgramCounter pc, Accumulator acc, int opd1, Integer addressMode, Memory memory) { // PC guarda o endereço da prox instrução a ser executada
-        int result = pc.getPc() + opd1;
-        pc.setPc(result);
-        //return pc + opd1;
-    }*/
 
     public void br (ProgramCounter pc, int opd1, Integer addressMode, Memory memory) {
         if(addressMode==4){
@@ -80,9 +72,35 @@ public class Operations {
         }
     }
 
-/*    public int copy (int opd1, int opd2, Integer addressMode, Memory memory) {
-        return opd1 = opd2;
-    }*/
+    public void copy (int opd1, int opd2, Integer addressMode, Memory memory) {
+        if(addressMode == 1){
+            //Operando 1 é DIRETO e Operando 2 é IMEDIATO
+            memory.set_element((Integer) memory.get(opd1),opd2);
+        }else {
+            if(addressMode == 2){
+                //Operando 1 é DIRETO e Operando 2 é INDIRETO
+                memory.set_element((Integer) memory.get(opd1), (Integer) memory.get((Integer) memory.get(opd2)));
+            }else{
+                if(addressMode == 4){
+                    //Operando 1 é INDIRETO e Operando 2 é DIRETO
+                    memory.set_element((Integer) memory.get((Integer) memory.get(opd1)), (Integer) memory.get(opd2));
+                }else{
+                    if(addressMode == 5){
+                        //Operando 1 é INDIRETO e Operando 2 é IMEDIATO
+                        memory.set_element((Integer) memory.get((Integer) memory.get(opd1)), opd2);
+                    }else{
+                        if(addressMode == 6){
+                            //Operando 1 é INDIRETO e Operando 2 é INDIRETO
+                            memory.set_element((Integer) memory.get((Integer) memory.get(opd1)), (Integer) memory.get((Integer) memory.get(opd2)));
+                        }else {
+                            //Operando 1 é DIRETO e Operando 2 é DIRETO
+                            memory.set_element((Integer) memory.get(opd1),(Integer) memory.get(opd2));
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     public void divide (Accumulator acc, int opd1, Integer addressMode, Memory memory) {
         if (addressMode==1) {
@@ -123,12 +141,12 @@ public class Operations {
         }
     }
 
-    public void read (Integer addressMode, Memory memory, int input) {
+    public void read (Integer addressMode, int opd1, Memory memory) {
         if(addressMode==4){
-            int pointer = (Integer) memory.get(input);
+            int pointer = (Integer) memory.get(opd1);
             memory.set_element(19, (Integer) memory.get(pointer));
         }else {
-            memory.set_element(19, (Integer) memory.get(input));
+            memory.set_element(19, (Integer) memory.get(opd1));
         }
     }
 
