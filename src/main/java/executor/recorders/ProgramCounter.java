@@ -6,4 +6,8 @@ import lombok.Data;
 public class ProgramCounter {
 
     private final int size = 16;
+    int pc;
+
+    public ProgramCounter(){pc = 0;}
+
 }
