@@ -30,14 +30,28 @@ public class Memory {
         InstructionRecorder RI = new InstructionRecorder();
 
         memory.set(13,SP); //Cria o registrador SP na posição 13 da memória
+        lista.set(13,new Registradores("13", SP.getPointer()));
+
         memory.set(14,PC);
+        lista.set(14,new Registradores("14", PC.getPc()));
+
         memory.set(15,ACC);
+        lista.set(15,new Registradores("15", ACC.getAcc()));
+
         memory.set(16,MOP);
+        lista.set(16,new Registradores("16",MOP.getMop()));
+
         memory.set(17,RI);
+        lista.set(17,new Registradores("17", RI.getRi()));
+
         memory.set(18,RE);
+        lista.set(18,new Registradores("18", RE.getRe()));
 
         memory.set(19,0); //Operando 1
+        lista.set(19,new Registradores("19",0));
+
         memory.set(20,0); //Operando 2
+        lista.set(20,new Registradores("20",0));
     }
 
     public void set_element (int index, int element){

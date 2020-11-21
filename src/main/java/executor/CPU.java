@@ -45,24 +45,24 @@ public class CPU extends Application {
         launch(args);
     }
 
-    public void initialMemory(Memory memory, ObservableList<Registradores> lista) throws IOException {
+    public void initialMemory(Memory memory, ObservableList<Registradores> list) throws IOException {
         Read reader = new Read();
         String line = reader.readLine();
         Integer i = 21;
         while (line!=null){
             memory.set_element(i,getInstruction(line));
-            lista.set(i,new Registradores(i.toString(),getInstruction(line)));
+            list.set(i,new Registradores(i.toString(),getInstruction(line)));
             i++;
             line = reader.readLine();
         }
 
     }
 
-    public static void executionMode(Memory memory, Read reader, int choice){
+    public static void executionMode(Memory memory, Read reader, int choice, ObservableList<Registradores> list){
         OperationMode MOP = (OperationMode) memory.get(16);
         MOP.setMop(choice);
         if (choice==0){
-            continuousMode(memory, reader);
+            continuousMode(memory, reader, list);
         }else{
             if(choice==1){
                 semiContinuousMode(memory, reader);
@@ -72,11 +72,11 @@ public class CPU extends Application {
         }
     }
 
-    public static void continuousMode(Memory memory, Read reader){
+    public static void continuousMode(Memory memory, Read reader, ObservableList<Registradores> list){
         String line = reader.readLine();
         while (line!=null){
-            ArrayList<Integer> attributes = convert(memory, line);
-            execute(memory, attributes);
+            ArrayList<Integer> attributes = convert(memory, line, list);
+            execute(memory, attributes, list);
             line = reader.readLine();
         }
     }
@@ -85,7 +85,7 @@ public class CPU extends Application {
 
     public static void debugMode(Memory memory, Read reader){}
 
-    public static ArrayList<Integer> convert (Memory memory, String line){
+    public static ArrayList<Integer> convert (Memory memory, String line, ObservableList<Registradores> list){
         InstructionRecorder RI = (InstructionRecorder) memory.get(17);
         RI.setRi(getOpcode(line));
         ArrayList<Integer> attributes = new ArrayList<Integer>();
@@ -103,7 +103,7 @@ public class CPU extends Application {
         return attributes;
     }
 
-    public static void execute (Memory memory, ArrayList<Integer> attributes){
+    public static void execute (Memory memory, ArrayList<Integer> attributes, ObservableList<Registradores> list){
         InstructionRecorder RI = (InstructionRecorder) memory.get(17);
         Operations operation = new Operations();
         switch (RI.getRi()) {

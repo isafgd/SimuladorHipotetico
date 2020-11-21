@@ -32,9 +32,9 @@ public class SampleController implements Initializable {
 
     private String instrucoesLeitura;
 
-    private ObservableList<Registradores> lista = FXCollections.observableArrayList();
+    private ObservableList<Registradores> list = FXCollections.observableArrayList();
 
-    private Memory memory = new Memory(lista);
+    private Memory memory = new Memory(list);
 
     private CPU cpu = new CPU();
 
@@ -79,8 +79,8 @@ public class SampleController implements Initializable {
         instructions.clear();
         System.out.println(instrucoesLeitura);
         System.out.println(teste);
-        cpu.initialMemory(memory,lista);
-        cpu.executionMode(memory, reader, i);
+        cpu.initialMemory(memory,list);
+        cpu.executionMode(memory, reader, i, list);
     }
 
 
@@ -109,28 +109,28 @@ public class SampleController implements Initializable {
         AddressRecorder RE = (AddressRecorder) memory.get(18);
         InstructionRecorder RI = (InstructionRecorder) memory.get(17);*/
 /*
-        lista.add(new Registradores("0",0));
-        lista.add(new Registradores("1",0));
-        lista.add(new Registradores("2",10));
-        lista.add(new Registradores("3",0));
-        lista.add(new Registradores("4",0));
-        lista.add(new Registradores("5",0));
-        lista.add(new Registradores("6",0));
-        lista.add(new Registradores("7",0));
-        lista.add(new Registradores("8",0));
-        lista.add(new Registradores("9",0));
-        lista.add(new Registradores("10",0));
-        lista.add(new Registradores("11",0));
-        lista.add(new Registradores("12",0));
-        lista.add(new Registradores("SP", SP.getPointer()));
-        lista.add(new Registradores("PC", PC.getPc()));
-        lista.add(new Registradores("ACC",ACC.getAcc()));
-        lista.add(new Registradores("MOP",MOP.getMop()));
-        lista.add(new Registradores("RI",RI.getRi()));
-        lista.add(new Registradores("RE",RE.getRe()));
-        lista.add(new Registradores("OPD1",(Integer) memory.get(19)));*/
+        list.add(new Registradores("0",0));
+        list.add(new Registradores("1",0));
+        list.add(new Registradores("2",10));
+        list.add(new Registradores("3",0));
+        list.add(new Registradores("4",0));
+        list.add(new Registradores("5",0));
+        list.add(new Registradores("6",0));
+        list.add(new Registradores("7",0));
+        list.add(new Registradores("8",0));
+        list.add(new Registradores("9",0));
+        list.add(new Registradores("10",0));
+        list.add(new Registradores("11",0));
+        list.add(new Registradores("12",0));
+        list.add(new Registradores("SP", SP.getPointer()));
+        list.add(new Registradores("PC", PC.getPc()));
+        list.add(new Registradores("ACC",ACC.getAcc()));
+        list.add(new Registradores("MOP",MOP.getMop()));
+        list.add(new Registradores("RI",RI.getRi()));
+        list.add(new Registradores("RE",RE.getRe()));
+        list.add(new Registradores("OPD1",(Integer) memory.get(19)));*/
 
-        return lista;
+        return list;
     }
 
 }
