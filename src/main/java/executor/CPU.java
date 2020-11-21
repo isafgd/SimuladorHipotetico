@@ -1,87 +1,165 @@
 package executor;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import executor.recorders.*;
+import javafx.application.Application;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import lombok.Data;
 
-//Main Class
-public class CPU {
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 
-    public static void main(String[] args) {
+@Data
+public class CPU extends Application {
 
-        try {
-            FileReader arq = new FileReader("/Users/bela/student/PS/teste.txt");
-            BufferedReader lerArq = new BufferedReader(arq);
+    private Integer choice = 0;
 
-            String linha = lerArq.readLine(); //lê a primeira linha
-            while (linha != null) { //lê as próximas linhas
-                System.out.printf("%s\n", linha);
-                linha = lerArq.readLine();
+    @FXML
+    private Button initialButton;
+
+    @FXML
+    private TextArea textArea;
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/sample.fxml"));
+        primaryStage.setTitle("Simulador");
+        Scene scene = new Scene(root, 1000, 900);
+        primaryStage.setScene(scene);
+        scene.getStylesheets().add(getClass().getResource("/css/Style.css").toExternalForm());
+        primaryStage.initStyle(StageStyle.UTILITY);
+        primaryStage.setMinHeight(950);
+        primaryStage.setMaxHeight(950);
+        primaryStage.setMaxWidth(1050);
+        primaryStage.setMinWidth(1050);
+        primaryStage.show();
+    }
+
+    public static void main(String[] args) throws FileNotFoundException {
+        launch(args);
+        //SampleController sampleController = new SampleController();
+        /*Memory memory = sampleController.getMemory();
+        Reader reader = new Reader();
+        executionMode(memory, reader);*/
+    }
+
+    public static void executionMode(Memory memory, Reader reader){
+        SampleController sampleController = new SampleController();
+        int choice = sampleController.getI();
+        OperationMode MOP = (OperationMode) memory.get(16);
+        MOP.setMop(choice);
+
+        if (choice==0){
+            continuousMode(memory, reader);
+        }else{
+            if(choice==1){
+                semiContinuousMode(memory, reader);
+            }else{
+                debugMode(memory, reader);
             }
-            arq.close();
-        } catch (IOException e) {
-            System.err.printf("Erro na abertura do arquivo: %s.\n",
-                    e.getMessage());
-        }
-
-        String opcode = "0000000000000010";                                 // Vai vir em binário da leitura de arquivo. 16 bits-> 1 palavra de memória
-        int opcodeDecimal = Integer.parseInt(opcode,2);               // Converte o binario para int
-        System.out.println(opcodeDecimal);
-        //String bin2 = Integer.toBinaryString(9);//Converter um valor int para binario e atribui o valor a um tipo string
-        //System.out.println(bin2);
-
-        switch (opcodeDecimal) {
-            case 0:
-                System.out.println("Você escolheu BR");                    // Chamar as funções
-                break;
-            case 1:
-                System.out.println("Você escolheu BRPOS");
-                break;
-            case 2:
-                // ADD
-                System.out.println("Você escolheu ADD");
-                break;
-            case 3:
-                System.out.println("Você escolheu LOAD");
-                break;
-            case 4:
-                System.out.println("Você escolheu BRZERO");
-                break;
-            case 5:
-                System.out.println("Você escolheu BRNEG");
-                break;
-            case 6:
-                System.out.println("Você escolheu SUB");
-                break;
-            case 7:
-                System.out.println("Você escolheu STORE");
-                break;
-            case 8:
-                System.out.println("Você escolheu WRITE");
-                break;
-            case 9:
-                System.out.println("Você escolheu RET");
-                break;
-            case 10:
-                System.out.println("Você escolheu DIVIDE");
-                break;
-            case 11:
-                System.out.println("Você escolheu STOP");
-                break;
-            case 12:
-                System.out.println("Você escolheu READ");
-                break;
-            case 13:
-                System.out.println("Você escolheu COPY");
-                break;
-            case 14:
-                System.out.println("Você escolheu MULT");
-                break;
-            case 15:
-                System.out.println("Você escolheu CALL");
-                break;
-            default:                                                // Terá valor default?
-                System.out.println("Número inválido");
         }
     }
+
+    public static void continuousMode(Memory memory, Reader reader){
+        String line = reader.readLine();
+        while (line!=null){
+            ArrayList<Integer> attributes = convert(memory, line);
+            execute(memory, attributes);
+            line = reader.readLine();
+        }
+    }
+
+    public static void semiContinuousMode(Memory memory, Reader reader){}
+
+    public static void debugMode(Memory memory, Reader reader){}
+
+    public static ArrayList<Integer> convert (Memory memory, String line){
+        ArrayList<Integer> attributes = new ArrayList<Integer>();
+        attributes.add(getAddressMode(line));
+        attributes.add(getFirstOP(line));
+        attributes.add(getSecondOP(line));
+
+        InstructionRecorder RI = (InstructionRecorder) memory.get(17);
+        RI.setRi(getOpcode(line));
+
+        return attributes;
+    }
+
+    public static void execute (Memory memory, ArrayList<Integer> attributes){
+        InstructionRecorder RI = (InstructionRecorder) memory.get(17);
+        Operations operation = new Operations();
+        switch (RI.getRi()) {
+            case 0:
+                operation.br((ProgramCounter) memory.get(14), attributes.get(1), attributes.get(0), memory);
+                break;
+            case 1:
+                operation.brPos((ProgramCounter) memory.get(14), (Accumulator) memory.get(15), attributes.get(1), attributes.get(0), memory);
+                break;
+            case 2:
+                operation.add((Accumulator) memory.get(15), attributes.get(1), attributes.get(0), memory);
+                break;
+            case 3:
+                operation.load((Accumulator) memory.get(15), attributes.get(1), attributes.get(0), memory);
+                break;
+            case 4:
+                operation.brZero((ProgramCounter) memory.get(14), (Accumulator) memory.get(15), attributes.get(1), attributes.get(0), memory);
+                break;
+            case 5:
+                operation.brNeg((ProgramCounter) memory.get(14), (Accumulator) memory.get(15), attributes.get(1), attributes.get(0), memory);
+                break;
+            case 6:
+                operation.sub((Accumulator) memory.get(15), attributes.get(1), attributes.get(0), memory);
+                break;
+            case 7:
+                operation.store((Accumulator) memory.get(15), attributes.get(1), memory, attributes.get(0));
+                break;
+            case 8:
+                operation.write(attributes.get(1), attributes.get(0), memory);
+                break;
+            case 9:
+                operation.ret((ProgramCounter) memory.get(14), (StackPointer) memory.get(13), memory);
+                break;
+            case 10:
+                operation.divide((Accumulator) memory.get(15), attributes.get(1), attributes.get(0), memory);
+                break;
+            case 11:
+                operation.stop();
+                break;
+            case 12:
+                //operation.read(attributes.get(1), attributes.get(0), memory);
+                break;
+            case 13:
+                //attributes.set(1,operation.copy(attributes.get(1), attributes.get(2), attributes.get(0), memory));
+                break;
+            case 14:
+                operation.multi((Accumulator) memory.get(15), attributes.get(1), attributes.get(0), memory);
+                break;
+            case 15:
+                operation.call((StackPointer) memory.get(13), (ProgramCounter) memory.get(14), attributes.get(1), memory, attributes.get(0));
+                break;
+        }
+    }
+
+    public static Integer getOpcode(String instruction) {
+        return Integer.parseInt(instruction.substring(0, 4), 2);
+    }
+
+    public static Integer getAddressMode(String instruction) {
+        return Integer.parseInt(instruction.substring(4, 7), 2);
+    }
+
+    public static Integer getFirstOP(String instruction) {
+        return Integer.parseInt(instruction.substring(7, 11), 2);
+    }
+
+    public static Integer getSecondOP(String instruction) {
+        return Integer.parseInt(instruction.substring(12, 16), 2);
+    }
+
 }

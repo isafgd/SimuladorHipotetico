@@ -5,9 +5,9 @@ import lombok.Data;
 @Data
 public class OperationMode {
 
-    private int mode;
+    private final int size = 8;
+    int mop;
 
-    public OperationMode(){
-        mode = 0;
-    }
+    public OperationMode(){mop = -1;}
+
 }

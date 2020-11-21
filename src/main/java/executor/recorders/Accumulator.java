@@ -5,9 +5,10 @@ import lombok.Data;
 @Data
 public class Accumulator {
 
-    private int accumulator;
+    private final int size = 16;
+    int acc;
 
     public Accumulator(){
-        accumulator = 0;
+        acc = 0;
     }
 }

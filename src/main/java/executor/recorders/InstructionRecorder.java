@@ -2,16 +2,11 @@ package executor.recorders;
 
 import lombok.Data;
 
-/*String bin = "0111";
-  int numero = Integer.parseInt(bin, 2);//Nome da variavel e tipo, 2 = binary. Converte o binario para int
-  System.out.println(numero);*/
-
 @Data
 public class InstructionRecorder {
 
-    private int opcode;
+    private final int size = 16;
+    int ri;
 
-    public InstructionRecorder(){
-        opcode = 0;
-    }
+    public InstructionRecorder() {ri = 0;}
 }

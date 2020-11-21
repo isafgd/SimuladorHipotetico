@@ -5,9 +5,16 @@ import lombok.Data;
 @Data
 public class AddressRecorder {
 
-    private int address;
+    private final int size = 16;
+    int re;
 
     public AddressRecorder(){
-        address = 0;
+        re = 19;
+    }
+
+    public void increment(){
+        if (re<500) {
+            re++;
+        } //Sinalizar que a memória está cheia
     }
 }

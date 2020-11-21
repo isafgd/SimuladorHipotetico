@@ -5,9 +5,10 @@ import lombok.Data;
 @Data
 public class StackPointer {
 
-    private int pointer;
+    private final int size = 16;
+    int pointer;
 
-    public StackPointer(){
+    public StackPointer() {
         pointer = 0;
     }
 }
