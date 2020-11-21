@@ -11,7 +11,8 @@ Organização do arquivo binário:
                             001
                             000
 
-    String instruction = "0000000000000011"
+    String instruction = "[000000000[000][0000]][0000000000000000][0000000000000000]"
+                                   opcode             opd1               opd2
 
 Tá sobrando um bit, será que é pro sinal? (são 9 bits pra 2 operandos, só da se dividir ao meio um bit)
 String bin2 = Integer.toBinaryString(9);//Converter um valor int para binario e atribui o valor a um tipo string

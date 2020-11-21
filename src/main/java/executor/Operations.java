@@ -2,6 +2,7 @@ package executor;
 import executor.recorders.Accumulator;
 import executor.recorders.ProgramCounter;
 import executor.recorders.StackPointer;
+import javafx.stage.Stage;
 
 
 import static java.lang.System.exit;
@@ -150,7 +151,7 @@ public class Operations {
         }
     }
 
-    public void stop () {
+    public void stop (){
         exit(0);
     }
 

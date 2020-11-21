@@ -1,5 +1,6 @@
 package executor;
 
+import ReadingFile.Read;
 import executor.Memory;
 import executor.Registradores;
 import executor.recorders.*;
@@ -25,10 +26,17 @@ import java.util.ResourceBundle;
 public class SampleController implements Initializable {
     int i = 0;
 
+    int insert = 0;
+
     ObservableList<String> executionModeList = FXCollections.observableArrayList("Continuo", "Semi-Continuo","Depuracao");
+
     private String instrucoesLeitura;
 
-    private Memory memory = new Memory();
+    private ObservableList<Registradores> lista = FXCollections.observableArrayList();
+
+    private Memory memory = new Memory(lista);
+
+    private CPU cpu = new CPU();
 
     @FXML
     private TextArea instructions;
@@ -61,7 +69,8 @@ public class SampleController implements Initializable {
         instrucoesLeitura = instructions.getText();*/
     }
 
-    public void onInsertTextAction(){
+    public void onInsertTextAction() throws IOException, InterruptedException {
+        Read reader = new Read();
         instrucoesLeitura = instructions.getText().replaceAll("\n", System.getProperty("line.separator"));
         String teste = executionMode.getValue();
         Writer.writeFile(instrucoesLeitura);
@@ -70,8 +79,9 @@ public class SampleController implements Initializable {
         instructions.clear();
         System.out.println(instrucoesLeitura);
         System.out.println(teste);
+        cpu.initialMemory(memory,lista);
+        cpu.executionMode(memory, reader, i);
     }
-
 
 
     /*@FXML
@@ -92,14 +102,13 @@ public class SampleController implements Initializable {
     //Esse metodo tem que retornar como um ObservableList
 
     public ObservableList<Registradores> getRegistradores(){
-        StackPointer SP = (StackPointer) memory.get(13);
+        /*StackPointer SP = (StackPointer) memory.get(13);
         ProgramCounter PC = (ProgramCounter) memory.get(14);
         Accumulator ACC = (Accumulator) memory.get(15);
         OperationMode MOP = (OperationMode) memory.get(16);
         AddressRecorder RE = (AddressRecorder) memory.get(18);
-        InstructionRecorder RI = (InstructionRecorder) memory.get(17);
-
-        ObservableList<Registradores> lista = FXCollections.observableArrayList();
+        InstructionRecorder RI = (InstructionRecorder) memory.get(17);*/
+/*
         lista.add(new Registradores("0",0));
         lista.add(new Registradores("1",0));
         lista.add(new Registradores("2",10));
@@ -119,7 +128,7 @@ public class SampleController implements Initializable {
         lista.add(new Registradores("MOP",MOP.getMop()));
         lista.add(new Registradores("RI",RI.getRi()));
         lista.add(new Registradores("RE",RE.getRe()));
-        lista.add(new Registradores("OPD1",(Integer) memory.get(19)));
+        lista.add(new Registradores("OPD1",(Integer) memory.get(19)));*/
 
         return lista;
     }

@@ -1,7 +1,9 @@
 package executor;
 
+import ReadingFile.Read;
 import executor.recorders.*;
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,13 +14,11 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import lombok.Data;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 @Data
 public class CPU extends Application {
-
-    private Integer choice = 0;
 
     @FXML
     private Button initialButton;
@@ -41,20 +41,26 @@ public class CPU extends Application {
         primaryStage.show();
     }
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws IOException {
         launch(args);
-        //SampleController sampleController = new SampleController();
-        /*Memory memory = sampleController.getMemory();
-        Reader reader = new Reader();
-        executionMode(memory, reader);*/
     }
 
-    public static void executionMode(Memory memory, Reader reader){
-        SampleController sampleController = new SampleController();
-        int choice = sampleController.getI();
+    public void initialMemory(Memory memory, ObservableList<Registradores> lista) throws IOException {
+        Read reader = new Read();
+        String line = reader.readLine();
+        Integer i = 21;
+        while (line!=null){
+            memory.set_element(i,getInstruction(line));
+            lista.set(i,new Registradores(i.toString(),getInstruction(line)));
+            i++;
+            line = reader.readLine();
+        }
+
+    }
+
+    public static void executionMode(Memory memory, Read reader, int choice){
         OperationMode MOP = (OperationMode) memory.get(16);
         MOP.setMop(choice);
-
         if (choice==0){
             continuousMode(memory, reader);
         }else{
@@ -66,7 +72,7 @@ public class CPU extends Application {
         }
     }
 
-    public static void continuousMode(Memory memory, Reader reader){
+    public static void continuousMode(Memory memory, Read reader){
         String line = reader.readLine();
         while (line!=null){
             ArrayList<Integer> attributes = convert(memory, line);
@@ -75,18 +81,24 @@ public class CPU extends Application {
         }
     }
 
-    public static void semiContinuousMode(Memory memory, Reader reader){}
+    public static void semiContinuousMode(Memory memory, Read reader){}
 
-    public static void debugMode(Memory memory, Reader reader){}
+    public static void debugMode(Memory memory, Read reader){}
 
     public static ArrayList<Integer> convert (Memory memory, String line){
-        ArrayList<Integer> attributes = new ArrayList<Integer>();
-        attributes.add(getAddressMode(line));
-        attributes.add(getFirstOP(line));
-        attributes.add(getSecondOP(line));
-
         InstructionRecorder RI = (InstructionRecorder) memory.get(17);
         RI.setRi(getOpcode(line));
+        ArrayList<Integer> attributes = new ArrayList<Integer>();
+        if (RI.getRi()!=9 && RI.getRi()!=13 && RI.getRi()!=11) {
+            attributes.add(getAddressMode(line));
+            attributes.add(getFirstOP(line));
+        }else{
+            if (RI.getRi() == 13){
+                attributes.add(getAddressMode(line));
+                attributes.add(getFirstOP(line));
+                attributes.add(getSecondOP(line));
+            }
+        }
 
         return attributes;
     }
@@ -147,19 +159,23 @@ public class CPU extends Application {
     }
 
     public static Integer getOpcode(String instruction) {
-        return Integer.parseInt(instruction.substring(0, 4), 2);
+        return Integer.parseInt(instruction.substring(12, 16), 2);
     }
 
     public static Integer getAddressMode(String instruction) {
-        return Integer.parseInt(instruction.substring(4, 7), 2);
+        return Integer.parseInt(instruction.substring(9, 12), 2);
     }
 
     public static Integer getFirstOP(String instruction) {
-        return Integer.parseInt(instruction.substring(7, 11), 2);
+        return Integer.parseInt(instruction.substring(16, 32),  2);
     }
 
     public static Integer getSecondOP(String instruction) {
-        return Integer.parseInt(instruction.substring(12, 16), 2);
+        return Integer.parseInt(instruction.substring(32, 48), 2);
+    }
+
+    public static Integer getInstruction(String instruction) {
+        return Integer.parseInt(instruction.substring(0, 16));
     }
 
 }

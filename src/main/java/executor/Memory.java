@@ -1,6 +1,8 @@
 package executor;
 
 import executor.recorders.*;
+import javafx.collections.ObservableList;
+
 import java.util.ArrayList;
 
 public class Memory {
@@ -9,12 +11,16 @@ public class Memory {
 
     private final int max_size = 500; //Cada posição corresponde à uma palavra de 16bits - No total a memória terá 1KB
 
-    public Memory (){ //Inicializa toda a memória
-       for (int i = 0;i<500;i++){
+    Registradores registradores;
+
+    public Memory (ObservableList<Registradores> lista){ //Inicializa toda a memória
+       for (Integer i = 0;i<500;i++){
            memory.add(null); //Preenche a pilha com NULL
+           lista.add(i,new Registradores(i.toString(),0));
         }
 
         memory.set(2,10); //Cria a base da pilha, na posição de memória 2, nele está salvo o tamanho máximo da pilha
+        lista.set(2,new Registradores("2",10));
 
         StackPointer SP = new StackPointer(); //Inicializa o registrador com 0
         ProgramCounter PC = new ProgramCounter();
