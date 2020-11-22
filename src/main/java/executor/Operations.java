@@ -205,14 +205,13 @@ public class Operations {
         new Thread(task).start();
     }
 
-    public void store (Accumulator acc, int opd1, Memory memory, Integer addressMode, ObservableList<MemoryList> list) {
+    public void store (Accumulator acc, Integer opd1, Memory memory, Integer addressMode, ObservableList<MemoryList> list) {
         if(addressMode==1){
-            int pointer = (Integer) memory.get(opd1);
-            memory.set_element((Integer) memory.get(pointer),acc.getAcc());
-            list.set((Integer) memory.get(pointer),new MemoryList(memory.get(pointer).toString(), acc.getAcc().toString()));
-        }else {
             memory.set_element((Integer) memory.get(opd1), acc.getAcc());
             list.set((Integer) memory.get(opd1),new MemoryList(memory.get(opd1).toString(), acc.getAcc().toString()));
+        }else {
+            memory.set_element(opd1, acc.getAcc());
+            list.set(opd1,new MemoryList(opd1.toString(), acc.getAcc().toString()));
         }
         next(memory,list);
     }

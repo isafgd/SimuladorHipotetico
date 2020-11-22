@@ -26,4 +26,3 @@ de memória armanezado ali pra pegar o dado
 se for imediato: pega o valor do operando decimal como o próprio dado a ser usado
 
 
--fx-background-color: #787a79;
