@@ -3,7 +3,10 @@ package executor;
 import ReadingFile.Read;
 import executor.recorders.*;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import javafx.concurrent.ScheduledService;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,6 +15,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 import lombok.Data;
 
 import java.io.IOException;
@@ -45,7 +49,7 @@ public class CPU extends Application {
         launch(args);
     }
 
-    public void initialMemory(Memory memory, ObservableList<MemoryList> list) throws IOException {
+    public void initialMemory(Memory memory, ObservableList<MemoryList> list, TextArea console) throws IOException {
         Read reader = new Read();
         String line = reader.readLine();
         Integer i = 19;
@@ -56,18 +60,24 @@ public class CPU extends Application {
             if(line.length()==32){
                 memory.set_string(j, line.substring(16, 32));
                 list.set(j, new MemoryList(j.toString(), line.substring(16, 32)));
-            }else{
-                Integer k = j + 1;
-                memory.set_string(j, line.substring(16, 32));
-                list.set(j, new MemoryList(j.toString(), line.substring(16, 32)));
-                memory.set_string(k, line.substring(32, 48));
-                list.set(j, new MemoryList(k.toString(), line.substring(32, 48)));
                 j++;
+            }else{
+                if(line.length()>32) {
+                    Integer k = j + 1;
+                    memory.set_string(j, line.substring(16, 32));
+                    list.set(j, new MemoryList(j.toString(), line.substring(16, 32)));
+                    memory.set_string(k, line.substring(32, 48));
+                    list.set(j, new MemoryList(k.toString(), line.substring(32, 48)));
+                    j = j + 2;
+                }
             }
             i++;
-            j++;
             line = reader.readLine();
         }
+        if (i == 239 || j == 499){
+            console.setText("Memory Limit");
+        }
+
     }
 
 
@@ -106,12 +116,30 @@ public class CPU extends Application {
     }
 
     public static void semiContinuousMode(Memory memory, Read reader, ObservableList<MemoryList> list, TextArea console){
+        ScheduledService scheduledService = new ScheduledService() {
+            @Override
+            protected Task createTask() {
+                return new Task() {
+                    @Override
+                    protected String call() throws Exception {
+                        ProgramCounter PC = (ProgramCounter) memory.get(14);
+                        if((String) memory.get(PC.getPc()) != null) {
+                            Platform.runLater(() -> executeSemiContinuos(memory,list,console));
+                        }
+                        return null;
+                    }
+                };
+            }
+        };
+        scheduledService.setPeriod(Duration.seconds(5));
+        scheduledService.start();
+    }
+
+    public static void executeSemiContinuos(Memory memory, ObservableList<MemoryList> list, TextArea console){
         ProgramCounter PC = (ProgramCounter) memory.get(14);
         AddressRecorder RE = (AddressRecorder) memory.get(18);
-        while((String) memory.get(PC.getPc()) != null) {
-            ArrayList<Integer> attributes = convert(memory, (String) memory.get(PC.getPc()), (String) memory.get(RE.getRe()),list);
-            execute(memory, attributes, list, console);
-        }
+        ArrayList<Integer> attributes = convert(memory, (String) memory.get(PC.getPc()), (String) memory.get(RE.getRe()),list);
+        execute(memory, attributes, list, console);
     }
 
     public static void debugMode(Memory memory, Read reader, ObservableList<MemoryList> list, TextArea console){

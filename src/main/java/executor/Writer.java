@@ -11,7 +11,7 @@ public class Writer {
 
     public static void writeFile(String instructions){
         FileWriter arq;
-        File output = new File("src/main/resources/Example.txt");
+        File output = new File("src/main/resources/InputCode.txt");
         try {
             arq = new FileWriter(output);
             arq.write(instructions);

@@ -61,33 +61,44 @@ public class Memory {
         return memory.get(index);
     }
 
-    public void push (StackPointer SP, int element, TextArea console){
+    public void push (StackPointer SP, Integer element, TextArea console, ObservableList<MemoryList> list){
         if (SP.getPointer() == 0 && memory.get(3) == null){ //Pilha está vazia
-            SP.setPointer(4);
             memory.set(3,element);
+            list.set(3,new MemoryList("3", element.toString()));
+            SP.setPointer(4);
+            list.set(13,new MemoryList("SP", SP.getPointer().toString()));
         }else{
             if(SP.getPointer() == 13 || SP.getPointer() == 0){
                 SP.setPointer(0);
+                list.set(13,new MemoryList("SP", SP.getPointer().toString()));
                 console.setText("Stack Overflow");
             }else{
                 memory.set(SP.getPointer(),element);
+                list.set(SP.getPointer(),new MemoryList(SP.getPointer().toString(), element.toString()));
                 int index = SP.getPointer();
-                SP.setPointer(index++);
+                index++;
+                SP.setPointer(index);
+                list.set(13,new MemoryList("SP", SP.getPointer().toString()));
             }
         }
     }
 
-    public int pop (StackPointer SP, TextArea console){
+    public int pop (StackPointer SP, TextArea console, ObservableList<MemoryList> list){
         if (SP.getPointer() == 0 && memory.get(3) == null || SP.getPointer() == 2){
             console.setText("Empty Stack");
         }else{
-            if (SP.getPointer() == 0){ //Veio de um Stack Overflow (Desempilha do topo)
+            if (SP.getPointer() == 0 || SP.getPointer() == 13){ //Veio de um Stack Overflow (Desempilha do topo)
                 memory.set(12,null);
+                list.set(12,new MemoryList("12", "0"));
                 SP.setPointer(11);
+                list.set(13,new MemoryList("SP", SP.getPointer().toString()));
             }else{
                 memory.set(SP.getPointer(),null);
+                list.set(SP.getPointer(),new MemoryList(SP.getPointer().toString(), "0"));
                 int index = SP.getPointer();
-                SP.setPointer(index--);
+                index--;
+                SP.setPointer(index);
+                list.set(13,new MemoryList("SP", SP.getPointer().toString()));
             }
         }
         return SP.getPointer();

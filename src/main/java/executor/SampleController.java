@@ -61,6 +61,9 @@ public class SampleController implements Initializable {
     @FXML
     private Button botaoStep;
 
+    @FXML
+    private Button botaoReset;
+
     public SampleController () throws IOException {}
 
     @Override
@@ -75,18 +78,24 @@ public class SampleController implements Initializable {
         fileWrite();
         String executionModeValue = executionMode.getValue();
         System.out.println(instrucoesLeitura);
-        cpu.initialMemory(memory,list);
+        cpu.initialMemory(memory,list, console);
         cpu.executionMode(memory, reader, executionModeValue, list, console);
     }
 
     @FXML
     public void onBotaoStepAciotn() throws IOException {
         fileWrite();
-        cpu.initialMemory(memory,list);
+        cpu.initialMemory(memory,list, console);
         OperationMode MOP = (OperationMode) memory.get(16);
         MOP.setMop(2);
         list.set(16,new MemoryList("MOP",MOP.getMop().toString()));
         cpu.debugMode(memory,reader,list,console);
+    }
+
+    @FXML
+    public void onBotaoResetAciotn() throws IOException {
+        memory = new Memory(list);
+        console.clear();
     }
 
     public ObservableList<MemoryList> getRegistradores(){
