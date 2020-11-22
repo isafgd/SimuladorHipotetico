@@ -9,6 +9,12 @@ import javafx.scene.control.TextArea;
 
 import static java.lang.System.exit;
 
+/*
+                               address
+String instruction = "[000000000[000][0000]][0000000000000000][0000000000000000]"
+                                     opcode        opd1               opd2
+*/
+
 /*AdressMode {
     4: Operando 1 ou 2 é Imediato
     2: Operando 1 é Direto e Operando 2 é Indireto
@@ -18,8 +24,13 @@ import static java.lang.System.exit;
     Default: Direto
 }*/
 
+/*
+Classe que contem cada operacao
+*/
+
 public class Operations {
 
+    //Incrementa o PC e o RE
     public void next(Memory memory, ObservableList<MemoryList> list) {
         ProgramCounter PC = (ProgramCounter) memory.get(14);
         PC.setPc(PC.getPc() + 1);

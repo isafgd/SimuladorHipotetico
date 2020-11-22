@@ -6,7 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 
-
+/*Escreve no arquivo InputCode*/
 public class Writer {
 
     public static void writeFile(String instructions){

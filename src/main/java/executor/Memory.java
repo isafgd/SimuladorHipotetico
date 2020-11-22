@@ -14,6 +14,7 @@ public class Memory {
 
     MemoryList memoryList;
 
+    /*Construtor da memoria*/
     public Memory (ObservableList<MemoryList> list){ //Inicializa toda a memória
        for (Integer i = 0;i<500;i++){
            memory.add(null); //Preenche a pilha com NULL
@@ -23,15 +24,15 @@ public class Memory {
         memory.set(2,10); //Cria a base da pilha, na posição de memória 2, nele está salvo o tamanho máximo da pilha
         list.set(2,new MemoryList("2","10"));
 
-        StackPointer SP = new StackPointer(); //Inicializa o registrador com 0
+        StackPointer SP = new StackPointer();
         ProgramCounter PC = new ProgramCounter();
         Accumulator ACC = new Accumulator();
         OperationMode MOP = new OperationMode();
         AddressRecorder RE = new AddressRecorder();
         InstructionRecorder RI = new InstructionRecorder();
 
-        memory.set(13,SP); //Cria o registrador SP na posição 13 da memória
-        list.set(13,new MemoryList("SP", SP.getPointer().toString()));
+        memory.set(13,SP);
+            list.set(13,new MemoryList("SP", SP.getPointer().toString()));
 
         memory.set(14,PC);
         list.set(14,new MemoryList("PC", PC.getPc().toString()));
@@ -61,6 +62,7 @@ public class Memory {
         return memory.get(index);
     }
 
+    /*Funcao da pilha*/
     public void push (StackPointer SP, Integer element, TextArea console, ObservableList<MemoryList> list){
         if (SP.getPointer() == 0 && memory.get(3) == null){ //Pilha está vazia
             memory.set(3,element);
@@ -83,6 +85,7 @@ public class Memory {
         }
     }
 
+    /*Funcao da pilha*/
     public int pop (StackPointer SP, TextArea console, ObservableList<MemoryList> list){
         if (SP.getPointer() == 0 && memory.get(3) == null || SP.getPointer() == 2){
             console.setText("Empty Stack");

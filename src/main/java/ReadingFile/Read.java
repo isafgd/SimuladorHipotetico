@@ -7,7 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-
+/*Le o arquivo que foi escrito de acordo com a entreda na interface, le linha por linha*/
 public class Read {
 
     private FileReader arq;
