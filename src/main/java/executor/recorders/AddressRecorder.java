@@ -6,7 +6,7 @@ import lombok.Data;
 public class AddressRecorder {
 
     private final int size = 16;
-    int re;
+    Integer re;
 
     public AddressRecorder(){
         re = 240;

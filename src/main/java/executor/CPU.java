@@ -52,8 +52,8 @@ public class CPU extends Application {
         String line = reader.readLine();
         Integer i = 19;
         while (line!=null){
-            memory.set_element(i,getInstruction(line));
-            list.set(i,new Registradores(i.toString(),getInstruction(line)));
+            memory.set_string(i,line);
+            list.set(i,new Registradores(i.toString(),line));
             i++;
             line = reader.readLine();
         }
@@ -75,7 +75,7 @@ public class CPU extends Application {
         }
         OperationMode MOP = (OperationMode) memory.get(16);
         MOP.setMop(choice);
-        list.set(16,new Registradores("MOP",MOP.getMop()));
+        list.set(16,new Registradores("MOP",MOP.getMop().toString()));
         if (choice==0){
             continuousMode(memory, reader, list, console);
         }else{
@@ -86,36 +86,31 @@ public class CPU extends Application {
     }
 
     public static void continuousMode(Memory memory, Read reader, ObservableList<Registradores> list, TextArea console){
-        String line = reader.readLine();
-        while (line!=null){
-            ArrayList<Integer> attributes = convert(memory, line, list);
+        ProgramCounter PC = (ProgramCounter) memory.get(14);
+        while((String) memory.get(PC.getPc()) != null) {
+            ArrayList<Integer> attributes = convert(memory, (String) memory.get(PC.getPc()), list);
             execute(memory, attributes, list, console);
-            line = reader.readLine();
         }
     }
 
     public static void semiContinuousMode(Memory memory, Read reader, ObservableList<Registradores> list, TextArea console){
-        String line = reader.readLine();
-        while (line!=null){
-            ArrayList<Integer> attributes = convert(memory, line, list);
+        ProgramCounter PC = (ProgramCounter) memory.get(14);
+        while((String) memory.get(PC.getPc()) != null) {
+            ArrayList<Integer> attributes = convert(memory, (String) memory.get(PC.getPc()), list);
             execute(memory, attributes, list, console);
-            line = reader.readLine();
         }
     }
 
     public static void debugMode(Memory memory, Read reader, ObservableList<Registradores> list, TextArea console){
-        String line = reader.readLine();
-        if (line == null){
-            exit(0);
-        }
-        ArrayList<Integer> attributes = convert(memory, line, list);
+        ProgramCounter PC = (ProgramCounter) memory.get(14);
+        ArrayList<Integer> attributes = convert(memory, (String) memory.get(PC.getPc()), list);
         execute(memory, attributes, list, console);
     }
 
     public static ArrayList<Integer> convert (Memory memory, String line, ObservableList<Registradores> list){
         InstructionRecorder RI = (InstructionRecorder) memory.get(17);
         RI.setRi(getOpcode(line));
-        list.set(17,new Registradores("RI", RI.getRi()));
+        list.set(17,new Registradores("RI", RI.getRi().toString()));
         ArrayList<Integer> attributes = new ArrayList<Integer>();
         if (RI.getRi()!=9 && RI.getRi()!=13 && RI.getRi()!=11) {
             attributes.add(getAddressMode(line));
@@ -195,15 +190,27 @@ public class CPU extends Application {
     }
 
     public static Integer getFirstOP(String instruction) {
-        return Integer.parseInt(instruction.substring(16, 32),  2);
+        if (isNegative(instruction,16)){
+            return (Integer.parseInt(instruction.substring(17, 32),  2) * -1);
+        }else{
+            return Integer.parseInt(instruction.substring(17, 32),  2);
+        }
     }
 
     public static Integer getSecondOP(String instruction) {
-        return Integer.parseInt(instruction.substring(32, 48), 2);
+        if (isNegative(instruction,32)){
+            return (Integer.parseInt(instruction.substring(33, 48), 2) * -1);
+        }else{
+            return Integer.parseInt(instruction.substring(33, 48), 2);
+        }
     }
 
-    public static Integer getInstruction(String instruction) {
-        return Integer.parseInt(instruction.substring(0, 16));
+    public static Boolean isNegative(String instruction, int bit){
+        if (instruction.charAt(bit) == '1'){
+            return true;
+        }else{
+            return false;
+        }
     }
 
 }

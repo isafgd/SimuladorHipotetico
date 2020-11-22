@@ -72,10 +72,8 @@ public class SampleController implements Initializable {
     }
 
     public void onInsertTextAction() throws IOException, InterruptedException {
-        instrucoesLeitura = instructions.getText().replaceAll("\n", System.getProperty("line.separator"));
+        fileWrite();
         String executionModeValue = executionMode.getValue();
-        Writer.writeFile(instrucoesLeitura);
-        instructions.clear();
         System.out.println(instrucoesLeitura);
         cpu.initialMemory(memory,list);
         cpu.executionMode(memory, reader, executionModeValue, list, console);
@@ -83,14 +81,21 @@ public class SampleController implements Initializable {
 
     @FXML
     public void onBotaoStepAciotn() throws IOException {
+        fileWrite();
+        cpu.initialMemory(memory,list);
         OperationMode MOP = (OperationMode) memory.get(16);
         MOP.setMop(2);
-        list.set(16,new Registradores("MOP",MOP.getMop()));
+        list.set(16,new Registradores("MOP",MOP.getMop().toString()));
         cpu.debugMode(memory,reader,list,console);
     }
 
     public ObservableList<Registradores> getRegistradores(){
         return list;
+    }
+
+    public void fileWrite (){
+        instrucoesLeitura = instructions.getText().replaceAll("\n", System.getProperty("line.separator"));
+        Writer.writeFile(instrucoesLeitura);
     }
 
 

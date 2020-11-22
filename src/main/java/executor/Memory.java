@@ -16,11 +16,11 @@ public class Memory {
     public Memory (ObservableList<Registradores> list){ //Inicializa toda a memória
        for (Integer i = 0;i<500;i++){
            memory.add(null); //Preenche a pilha com NULL
-           list.add(i,new Registradores(i.toString(),0));
+           list.add(i,new Registradores(i.toString(),"0"));
         }
 
         memory.set(2,10); //Cria a base da pilha, na posição de memória 2, nele está salvo o tamanho máximo da pilha
-        list.set(2,new Registradores("2",10));
+        list.set(2,new Registradores("2","10"));
 
         StackPointer SP = new StackPointer(); //Inicializa o registrador com 0
         ProgramCounter PC = new ProgramCounter();
@@ -30,25 +30,29 @@ public class Memory {
         InstructionRecorder RI = new InstructionRecorder();
 
         memory.set(13,SP); //Cria o registrador SP na posição 13 da memória
-        list.set(13,new Registradores("SP", SP.getPointer()));
+        list.set(13,new Registradores("SP", SP.getPointer().toString()));
 
         memory.set(14,PC);
-        list.set(14,new Registradores("PC", PC.getPc()));
+        list.set(14,new Registradores("PC", PC.getPc().toString()));
 
         memory.set(15,ACC);
-        list.set(15,new Registradores("ACC", ACC.getAcc()));
+        list.set(15,new Registradores("ACC", ACC.getAcc().toString()));
 
         memory.set(16,MOP);
-        list.set(16,new Registradores("MOP",MOP.getMop()));
+        list.set(16,new Registradores("MOP",MOP.getMop().toString()));
 
         memory.set(17,RI);
-        list.set(17,new Registradores("RI", RI.getRi()));
+        list.set(17,new Registradores("RI", RI.getRi().toString()));
 
         memory.set(18,RE);
-        list.set(18,new Registradores("RE", RE.getRe()));
+        list.set(18,new Registradores("RE", RE.getRe().toString()));
     }
 
-    public void set_element (int index, int element){
+    public void set_element (int index, Integer element){
+        memory.set(index,element);
+    }
+
+    public void set_string (int index, String element){
         memory.set(index,element);
     }
 

@@ -24,7 +24,7 @@ public class Operations {
         Integer count = PC.getPc();
         count++;
         PC.setPc(count);
-        list.set(14, new Registradores("PC", PC.getPc()));
+        list.set(14, new Registradores("PC", PC.getPc().toString()));
     }
 
     public void add (Accumulator acc, int opd1, Integer addressMode, Memory memory, ObservableList<Registradores> list) {
@@ -38,7 +38,7 @@ public class Operations {
                 acc.setAcc(acc.getAcc() + (Integer) memory.get(opd1));
             }
         }
-        list.set(15,new Registradores("ACC", acc.getAcc()));
+        list.set(15,new Registradores("ACC", acc.getAcc().toString()));
         next(memory,list);
     }
 
@@ -49,7 +49,7 @@ public class Operations {
         }else {
             pc.setPc((Integer) memory.get(opd1));
         }
-        list.set(14, new Registradores("PC", pc.getPc()));
+        list.set(14, new Registradores("PC", pc.getPc().toString()));
     }
 
     public void brPos (ProgramCounter pc, Accumulator acc, int opd1, Integer addressMode, Memory memory, ObservableList<Registradores> list) {
@@ -61,7 +61,7 @@ public class Operations {
                 pc.setPc((Integer) memory.get(opd1));
             }
         }
-        list.set(14, new Registradores("PC", pc.getPc()));
+        list.set(14, new Registradores("PC", pc.getPc().toString()));
     }
 
     public void brZero (ProgramCounter pc, Accumulator acc, int opd1, Integer addressMode, Memory memory, ObservableList<Registradores> list) {
@@ -73,7 +73,7 @@ public class Operations {
                 pc.setPc((Integer) memory.get(opd1));
             }
         }
-        list.set(14, new Registradores("PC", pc.getPc()));
+        list.set(14, new Registradores("PC", pc.getPc().toString()));
     }
 
     public void brNeg (ProgramCounter pc, Accumulator acc, int opd1, Integer addressMode, Memory memory, ObservableList<Registradores> list) {
@@ -85,7 +85,7 @@ public class Operations {
                 pc.setPc((Integer) memory.get(opd1));
             }
         }
-        list.set(14, new Registradores("PC", pc.getPc()));
+        list.set(14, new Registradores("PC", pc.getPc().toString()));
     }
 
     public void copy (int opd1, int opd2, Integer addressMode, Memory memory, ObservableList<Registradores> list) {
@@ -130,7 +130,7 @@ public class Operations {
                 acc.setAcc(acc.getAcc() / (Integer) memory.get(opd1));
             }
         }
-        list.set(15,new Registradores("ACC", acc.getAcc()));
+        list.set(15,new Registradores("ACC", acc.getAcc().toString()));
         next(memory,list);
     }
 
@@ -145,7 +145,7 @@ public class Operations {
                 acc.setAcc((Integer) memory.get(opd1));
             }
         }
-        list.set(15,new Registradores("ACC", acc.getAcc()));
+        list.set(15,new Registradores("ACC", acc.getAcc().toString()));
         next(memory,list);
     }
 
@@ -160,7 +160,7 @@ public class Operations {
                 acc.setAcc(acc.getAcc() * (Integer) memory.get(opd1));
             }
         }
-        list.set(15,new Registradores("ACC", acc.getAcc()));
+        list.set(15,new Registradores("ACC", acc.getAcc().toString()));
         next(memory,list);
     }
 
@@ -199,7 +199,7 @@ public class Operations {
                 acc.setAcc(acc.getAcc() - (Integer) memory.get(opd1));
             }
         }
-        list.set(15,new Registradores("ACC", acc.getAcc()));
+        list.set(15,new Registradores("ACC", acc.getAcc().toString()));
         next(memory,list);
     }
 

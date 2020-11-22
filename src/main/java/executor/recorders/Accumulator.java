@@ -6,7 +6,7 @@ import lombok.Data;
 public class Accumulator {
 
     private final int size = 16;
-    int acc;
+    Integer acc;
 
     public Accumulator(){
         acc = 0;
