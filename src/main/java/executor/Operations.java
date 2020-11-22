@@ -89,29 +89,35 @@ public class Operations {
         list.set(14, new MemoryList("PC", pc.getPc().toString()));
     }
 
-    public void copy (int opd1, int opd2, Integer addressMode, Memory memory, ObservableList<MemoryList> list) {
+    public void copy (int opd1, Integer opd2, Integer addressMode, Memory memory, ObservableList<MemoryList> list) {
         if(addressMode == 4){
             //Operando 1 é DIRETO e Operando 2 é IMEDIATO
             memory.set_element((Integer) memory.get(opd1),opd2);
+            list.set((Integer) memory.get(opd1),new MemoryList(memory.get(opd1).toString(), opd2.toString()));
         }else {
             if(addressMode == 2){
                 //Operando 1 é DIRETO e Operando 2 é INDIRETO
                 memory.set_element((Integer) memory.get(opd1), (Integer) memory.get((Integer) memory.get(opd2)));
+                list.set((Integer) memory.get(opd1),new MemoryList(memory.get(opd1).toString(), memory.get((Integer) memory.get(opd2)).toString()));
             }else{
                 if(addressMode == 1){
                     //Operando 1 é INDIRETO e Operando 2 é DIRETO
                     memory.set_element((Integer) memory.get((Integer) memory.get(opd1)), (Integer) memory.get(opd2));
+                    list.set((Integer) memory.get((Integer) memory.get(opd1)),new MemoryList(memory.get((Integer) memory.get(opd1)).toString(),memory.get(opd2).toString()));
                 }else{
                     if(addressMode == 5){
                         //Operando 1 é INDIRETO e Operando 2 é IMEDIATO
                         memory.set_element((Integer) memory.get((Integer) memory.get(opd1)), opd2);
+                        list.set((Integer) memory.get((Integer) memory.get(opd1)),new MemoryList(memory.get((Integer) memory.get(opd1)).toString(), opd2.toString()));
                     }else{
                         if(addressMode == 3){
                             //Operando 1 é INDIRETO e Operando 2 é INDIRETO
                             memory.set_element((Integer) memory.get((Integer) memory.get(opd1)), (Integer) memory.get((Integer) memory.get(opd2)));
+                            list.set((Integer) memory.get((Integer) memory.get(opd1)),new MemoryList(memory.get((Integer) memory.get(opd1)).toString(), memory.get((Integer) memory.get(opd2)).toString()));
                         }else {
                             //Operando 1 é DIRETO e Operando 2 é DIRETO
                             memory.set_element((Integer) memory.get(opd1),(Integer) memory.get(opd2));
+                            list.set((Integer) memory.get(opd1),new MemoryList(memory.get(opd1).toString(),  memory.get(opd2).toString()));
                         }
                     }
                 }
@@ -165,12 +171,14 @@ public class Operations {
         next(memory,list);
     }
 
-    public void read (Integer addressMode, int opd1, Memory memory, ObservableList<MemoryList> list) {
+    public void read (Integer addressMode, int opd1, Memory memory, ObservableList<MemoryList> list, String input) {
         if(addressMode==1){
             int pointer = (Integer) memory.get(opd1);
-            memory.set_element(19, (Integer) memory.get(pointer));
+            memory.set_string((Integer) memory.get(pointer), input);
+            list.set((Integer) memory.get(pointer),new MemoryList(memory.get(pointer).toString(), input));
         }else {
-            memory.set_element(19, (Integer) memory.get(opd1));
+            memory.set_string((Integer) memory.get(opd1), input);
+            list.set((Integer) memory.get(opd1),new MemoryList(memory.get(opd1).toString(),input));
         }
         next(memory,list);
     }
@@ -181,10 +189,12 @@ public class Operations {
 
     public void store (Accumulator acc, int opd1, Memory memory, Integer addressMode, ObservableList<MemoryList> list) {
         if(addressMode==1){
-            int pointer = (Integer) memory.get(acc.getAcc());
-            memory.set_element(19, (Integer) memory.get(pointer));
+            int pointer = (Integer) memory.get(opd1);
+            memory.set_element((Integer) memory.get(pointer),acc.getAcc());
+            list.set((Integer) memory.get(pointer),new MemoryList(memory.get(pointer).toString(), acc.getAcc().toString()));
         }else {
-            memory.set_element(19, (Integer) memory.get(acc.getAcc()));
+            memory.set_element((Integer) memory.get(opd1), acc.getAcc());
+            list.set((Integer) memory.get(opd1),new MemoryList(memory.get(opd1).toString(), acc.getAcc().toString()));
         }
         next(memory,list);
     }
@@ -220,7 +230,6 @@ public class Operations {
     }
 
     public void call (StackPointer sp, ProgramCounter pc, int opd1, Memory memory, Integer addressMode, ObservableList<MemoryList> list, TextArea console) {
-        int back = pc.getPc();
         if(addressMode==1){
             int pointer = (Integer) memory.get(opd1);
             pc.setPc((Integer) memory.get(pointer));
@@ -229,17 +238,10 @@ public class Operations {
         }
         memory.push(sp, pc.getPc(), console, list);
         list.set(14, new MemoryList("PC", pc.getPc().toString()));
-        back++;
-        pc.setPc(back);
-        list.set(14, new MemoryList("PC", pc.getPc().toString()));
     }
 
     public void ret (ProgramCounter pc, StackPointer sp, Memory memory, ObservableList<MemoryList> list, TextArea console) {
-        int back = pc.getPc();
         pc.setPc(memory.pop(sp,console, list));
-        list.set(14, new MemoryList("PC", pc.getPc().toString()));
-        back++;
-        pc.setPc(back);
         list.set(14, new MemoryList("PC", pc.getPc().toString()));
     }
 

@@ -211,7 +211,7 @@ public class CPU extends Application {
                 operation.stop();
                 break;
             case 12:
-                operation.read(attributes.get(0), attributes.get(1), memory, list);
+                operation.read(attributes.get(0), attributes.get(1), memory, list, "");
                 break;
             case 13:
                 operation.copy(attributes.get(1), attributes.get(2), attributes.get(0), memory, list);
