@@ -3,7 +3,7 @@ import executor.recorders.Accumulator;
 import executor.recorders.ProgramCounter;
 import executor.recorders.StackPointer;
 import javafx.collections.ObservableList;
-import javafx.stage.Stage;
+import javafx.scene.control.TextArea;
 
 
 import static java.lang.System.exit;
@@ -203,15 +203,16 @@ public class Operations {
         next(memory,list);
     }
 
-    public void write (int opd1, Integer addressMode, Memory memory, ObservableList<Registradores> list) {
+    public void write (int opd1, Integer addressMode, Memory memory, ObservableList<Registradores> list, TextArea console) {
         if (addressMode==1) {
             System.out.println(opd1);
+            console.setText(String.valueOf(opd1));
         }else{
             if(addressMode==4){
                 int pointer = (Integer) memory.get(opd1);
-                System.out.println(memory.get(pointer));
+                console.setText(String.valueOf(memory.get(pointer)));
             }else{
-                System.out.println(memory.get(opd1));
+                console.setText(String.valueOf(memory.get(opd1)));
             }
         }
         next(memory,list);

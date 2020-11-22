@@ -17,6 +17,8 @@ import lombok.Data;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static java.lang.System.exit;
+
 @Data
 public class CPU extends Application {
 
@@ -58,7 +60,7 @@ public class CPU extends Application {
 
     }
 
-    public static void executionMode(Memory memory, Read reader, String choiceString, ObservableList<Registradores> list){
+    public static void executionMode(Memory memory, Read reader, String choiceString, ObservableList<Registradores> list, TextArea console){
         int choice = 0;
         switch (choiceString){
             case "Continuo":
@@ -75,36 +77,40 @@ public class CPU extends Application {
         MOP.setMop(choice);
         list.set(16,new Registradores("MOP",MOP.getMop()));
         if (choice==0){
-            continuousMode(memory, reader, list);
+            continuousMode(memory, reader, list, console);
         }else{
-            if(choice==1){
-                semiContinuousMode(memory, reader, list);
-            }else{
-                debugMode(memory, reader, list);
+            if(choice==1) {
+                semiContinuousMode(memory, reader, list, console);
             }
         }
     }
 
-    public static void continuousMode(Memory memory, Read reader, ObservableList<Registradores> list){
+    public static void continuousMode(Memory memory, Read reader, ObservableList<Registradores> list, TextArea console){
         String line = reader.readLine();
         while (line!=null){
             ArrayList<Integer> attributes = convert(memory, line, list);
-            execute(memory, attributes, list);
+            execute(memory, attributes, list, console);
             line = reader.readLine();
         }
     }
 
-    public static void semiContinuousMode(Memory memory, Read reader, ObservableList<Registradores> list){
+    public static void semiContinuousMode(Memory memory, Read reader, ObservableList<Registradores> list, TextArea console){
         String line = reader.readLine();
         while (line!=null){
             ArrayList<Integer> attributes = convert(memory, line, list);
-            execute(memory, attributes, list);
+            execute(memory, attributes, list, console);
             line = reader.readLine();
-
         }
     }
 
-    public static void debugMode(Memory memory, Read reader, ObservableList<Registradores> list){}
+    public static void debugMode(Memory memory, Read reader, ObservableList<Registradores> list, TextArea console){
+        String line = reader.readLine();
+        if (line == null){
+            exit(0);
+        }
+        ArrayList<Integer> attributes = convert(memory, line, list);
+        execute(memory, attributes, list, console);
+    }
 
     public static ArrayList<Integer> convert (Memory memory, String line, ObservableList<Registradores> list){
         InstructionRecorder RI = (InstructionRecorder) memory.get(17);
@@ -125,7 +131,7 @@ public class CPU extends Application {
         return attributes;
     }
 
-    public static void execute (Memory memory, ArrayList<Integer> attributes, ObservableList<Registradores> list){
+    public static void execute (Memory memory, ArrayList<Integer> attributes, ObservableList<Registradores> list, TextArea console){
         InstructionRecorder RI = (InstructionRecorder) memory.get(17);
         Operations operation = new Operations();
         switch (RI.getRi()) {
@@ -154,7 +160,7 @@ public class CPU extends Application {
                 operation.store((Accumulator) memory.get(15), attributes.get(1), memory, attributes.get(0), list);
                 break;
             case 8:
-                operation.write(attributes.get(1), attributes.get(0), memory, list);
+                operation.write(attributes.get(1), attributes.get(0), memory, list, console);
                 break;
             case 9:
                 operation.ret((ProgramCounter) memory.get(14), (StackPointer) memory.get(13), memory, list);

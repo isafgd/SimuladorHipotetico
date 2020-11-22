@@ -1,13 +1,10 @@
 package executor;
 
 import ReadingFile.Read;
-import executor.Memory;
-import executor.Registradores;
-import executor.recorders.*;
+import executor.recorders.OperationMode;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 
 import javafx.scene.control.*;
@@ -18,11 +15,9 @@ import lombok.Data;
 
 
 import java.io.IOException;
-import java.io.PrintStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static java.lang.System.exit;
 
 @Data
 public class SampleController implements Initializable {
@@ -39,6 +34,8 @@ public class SampleController implements Initializable {
     private Memory memory = new Memory(list);
 
     private CPU cpu = new CPU();
+
+    private Read reader = new Read();
 
     @FXML
     private TextArea console;
@@ -64,37 +61,33 @@ public class SampleController implements Initializable {
     @FXML
     private Button botaoStep;
 
+    public SampleController () throws IOException {}
+
     @Override
     public void initialize (URL url, ResourceBundle rb){
         colunaEndereco.setCellValueFactory(new PropertyValueFactory<Registradores,String>("enderecos"));
         colunaValor.setCellValueFactory(new PropertyValueFactory<Registradores,String>("valor"));
         tableView.setItems(getRegistradores());
         executionMode.setItems(executionModeList);
-        /*
-        instrucoesLeitura = instructions.getText();*/
     }
 
     public void onInsertTextAction() throws IOException, InterruptedException {
-        Read reader = new Read();
         instrucoesLeitura = instructions.getText().replaceAll("\n", System.getProperty("line.separator"));
         String executionModeValue = executionMode.getValue();
         Writer.writeFile(instrucoesLeitura);
-        //Covnverte bonito
-        //imprimir na caixa de texto
         instructions.clear();
         System.out.println(instrucoesLeitura);
         cpu.initialMemory(memory,list);
-        cpu.executionMode(memory, reader, executionModeValue, list);
+        cpu.executionMode(memory, reader, executionModeValue, list, console);
     }
 
     @FXML
-    public void onBotaoStepAciotn(){
-        i++;
-        System.out.println(i);
-        console.setText("QlqrCoisa");
+    public void onBotaoStepAciotn() throws IOException {
+        OperationMode MOP = (OperationMode) memory.get(16);
+        MOP.setMop(2);
+        list.set(16,new Registradores("MOP",MOP.getMop()));
+        cpu.debugMode(memory,reader,list,console);
     }
-
-    //Esse metodo tem que retornar como um ObservableList
 
     public ObservableList<Registradores> getRegistradores(){
         return list;
