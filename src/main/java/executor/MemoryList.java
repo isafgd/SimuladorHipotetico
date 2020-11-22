@@ -5,7 +5,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 
-public class Registradores {
+public class MemoryList {
 
     private SimpleStringProperty enderecos;
     private SimpleStringProperty valor;
@@ -26,7 +26,7 @@ public class Registradores {
         this.valor = valor;
     }
 
-    public Registradores(String enderecos, String valor) {
+    public MemoryList(String enderecos, String valor) {
         this.enderecos = new SimpleStringProperty(enderecos);
         this.valor = new SimpleStringProperty(valor);
     }

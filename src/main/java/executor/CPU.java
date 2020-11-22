@@ -17,8 +17,6 @@ import lombok.Data;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static java.lang.System.exit;
-
 @Data
 public class CPU extends Application {
 
@@ -47,20 +45,33 @@ public class CPU extends Application {
         launch(args);
     }
 
-    public void initialMemory(Memory memory, ObservableList<Registradores> list) throws IOException {
+    public void initialMemory(Memory memory, ObservableList<MemoryList> list) throws IOException {
         Read reader = new Read();
         String line = reader.readLine();
         Integer i = 19;
-        while (line!=null){
-            memory.set_string(i,line);
-            list.set(i,new Registradores(i.toString(),line));
+        Integer j = 240;
+        while (line!=null && i<240 && j<500){
+            memory.set_string(i, line.substring(0, 16));
+            list.set(i, new MemoryList(i.toString(), line.substring(0, 16)));
+            if(line.length()==32){
+                memory.set_string(j, line.substring(16, 32));
+                list.set(j, new MemoryList(j.toString(), line.substring(16, 32)));
+            }else{
+                Integer k = j + 1;
+                memory.set_string(j, line.substring(16, 32));
+                list.set(j, new MemoryList(j.toString(), line.substring(16, 32)));
+                memory.set_string(k, line.substring(32, 48));
+                list.set(j, new MemoryList(k.toString(), line.substring(32, 48)));
+                j++;
+            }
             i++;
+            j++;
             line = reader.readLine();
         }
-
     }
 
-    public static void executionMode(Memory memory, Read reader, String choiceString, ObservableList<Registradores> list, TextArea console){
+
+    public static void executionMode(Memory memory, Read reader, String choiceString, ObservableList<MemoryList> list, TextArea console){
         int choice = 0;
         switch (choiceString){
             case "Continuo":
@@ -75,7 +86,7 @@ public class CPU extends Application {
         }
         OperationMode MOP = (OperationMode) memory.get(16);
         MOP.setMop(choice);
-        list.set(16,new Registradores("MOP",MOP.getMop().toString()));
+        list.set(16,new MemoryList("MOP",MOP.getMop().toString()));
         if (choice==0){
             continuousMode(memory, reader, list, console);
         }else{
@@ -85,48 +96,53 @@ public class CPU extends Application {
         }
     }
 
-    public static void continuousMode(Memory memory, Read reader, ObservableList<Registradores> list, TextArea console){
+    public static void continuousMode(Memory memory, Read reader, ObservableList<MemoryList> list, TextArea console){
         ProgramCounter PC = (ProgramCounter) memory.get(14);
+        AddressRecorder RE = (AddressRecorder) memory.get(18);
         while((String) memory.get(PC.getPc()) != null) {
-            ArrayList<Integer> attributes = convert(memory, (String) memory.get(PC.getPc()), list);
+            ArrayList<Integer> attributes = convert(memory, (String) memory.get(PC.getPc()), (String) memory.get(RE.getRe()),list);
             execute(memory, attributes, list, console);
         }
     }
 
-    public static void semiContinuousMode(Memory memory, Read reader, ObservableList<Registradores> list, TextArea console){
+    public static void semiContinuousMode(Memory memory, Read reader, ObservableList<MemoryList> list, TextArea console){
         ProgramCounter PC = (ProgramCounter) memory.get(14);
+        AddressRecorder RE = (AddressRecorder) memory.get(18);
         while((String) memory.get(PC.getPc()) != null) {
-            ArrayList<Integer> attributes = convert(memory, (String) memory.get(PC.getPc()), list);
+            ArrayList<Integer> attributes = convert(memory, (String) memory.get(PC.getPc()), (String) memory.get(RE.getRe()),list);
             execute(memory, attributes, list, console);
         }
     }
 
-    public static void debugMode(Memory memory, Read reader, ObservableList<Registradores> list, TextArea console){
+    public static void debugMode(Memory memory, Read reader, ObservableList<MemoryList> list, TextArea console){
         ProgramCounter PC = (ProgramCounter) memory.get(14);
-        ArrayList<Integer> attributes = convert(memory, (String) memory.get(PC.getPc()), list);
+        AddressRecorder RE = (AddressRecorder) memory.get(18);
+        ArrayList<Integer> attributes = convert(memory, (String) memory.get(PC.getPc()), (String) memory.get(RE.getRe()),list);
         execute(memory, attributes, list, console);
     }
 
-    public static ArrayList<Integer> convert (Memory memory, String line, ObservableList<Registradores> list){
+    public static ArrayList<Integer> convert (Memory memory, String line, String data,ObservableList<MemoryList> list){
         InstructionRecorder RI = (InstructionRecorder) memory.get(17);
         RI.setRi(getOpcode(line));
-        list.set(17,new Registradores("RI", RI.getRi().toString()));
+        list.set(17,new MemoryList("RI", RI.getRi().toString()));
         ArrayList<Integer> attributes = new ArrayList<Integer>();
         if (RI.getRi()!=9 && RI.getRi()!=13 && RI.getRi()!=11) {
             attributes.add(getAddressMode(line));
-            attributes.add(getFirstOP(line));
+            attributes.add(getFirstOP(data));
         }else{
             if (RI.getRi() == 13){
                 attributes.add(getAddressMode(line));
-                attributes.add(getFirstOP(line));
-                attributes.add(getSecondOP(line));
+                attributes.add(getFirstOP(data));
+                AddressRecorder RE = (AddressRecorder) memory.get(18);
+                RE.setRe(RE.getRe() + 1);
+                attributes.add(getSecondOP((String) memory.get(RE.getRe())));
             }
         }
 
         return attributes;
     }
 
-    public static void execute (Memory memory, ArrayList<Integer> attributes, ObservableList<Registradores> list, TextArea console){
+    public static void execute (Memory memory, ArrayList<Integer> attributes, ObservableList<MemoryList> list, TextArea console){
         InstructionRecorder RI = (InstructionRecorder) memory.get(17);
         Operations operation = new Operations();
         switch (RI.getRi()) {
@@ -158,7 +174,7 @@ public class CPU extends Application {
                 operation.write(attributes.get(1), attributes.get(0), memory, list, console);
                 break;
             case 9:
-                operation.ret((ProgramCounter) memory.get(14), (StackPointer) memory.get(13), memory, list);
+                operation.ret((ProgramCounter) memory.get(14), (StackPointer) memory.get(13), memory, list, console);
                 break;
             case 10:
                 operation.divide((Accumulator) memory.get(15), attributes.get(1), attributes.get(0), memory, list);
@@ -176,7 +192,7 @@ public class CPU extends Application {
                 operation.multi((Accumulator) memory.get(15), attributes.get(1), attributes.get(0), memory, list);
                 break;
             case 15:
-                operation.call((StackPointer) memory.get(13), (ProgramCounter) memory.get(14), attributes.get(1), memory, attributes.get(0), list);
+                operation.call((StackPointer) memory.get(13), (ProgramCounter) memory.get(14), attributes.get(1), memory, attributes.get(0), list, console);
                 break;
         }
     }
@@ -190,18 +206,18 @@ public class CPU extends Application {
     }
 
     public static Integer getFirstOP(String instruction) {
-        if (isNegative(instruction,16)){
-            return (Integer.parseInt(instruction.substring(17, 32),  2) * -1);
+        if (isNegative(instruction,0)){
+            return (Integer.parseInt(instruction.substring(1, 16),  2) * -1);
         }else{
-            return Integer.parseInt(instruction.substring(17, 32),  2);
+            return Integer.parseInt(instruction.substring(1, 16),  2);
         }
     }
 
     public static Integer getSecondOP(String instruction) {
-        if (isNegative(instruction,32)){
-            return (Integer.parseInt(instruction.substring(33, 48), 2) * -1);
+        if (isNegative(instruction,0)){
+            return (Integer.parseInt(instruction.substring(1, 16), 2) * -1);
         }else{
-            return Integer.parseInt(instruction.substring(33, 48), 2);
+            return Integer.parseInt(instruction.substring(1, 16), 2);
         }
     }
 

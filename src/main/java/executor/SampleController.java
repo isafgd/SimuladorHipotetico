@@ -29,7 +29,7 @@ public class SampleController implements Initializable {
 
     private String instrucoesLeitura;
 
-    private ObservableList<Registradores> list = FXCollections.observableArrayList();
+    private ObservableList<MemoryList> list = FXCollections.observableArrayList();
 
     private Memory memory = new Memory(list);
 
@@ -50,13 +50,13 @@ public class SampleController implements Initializable {
     private Button insertText;
 
     @FXML
-    private TableView<Registradores> tableView;
+    private TableView<MemoryList> tableView;
 
     @FXML
-    private TableColumn<Registradores, String> colunaEndereco;
+    private TableColumn<MemoryList, String> colunaEndereco;
 
     @FXML
-    private TableColumn<Registradores, String> colunaValor;
+    private TableColumn<MemoryList, String> colunaValor;
 
     @FXML
     private Button botaoStep;
@@ -65,8 +65,8 @@ public class SampleController implements Initializable {
 
     @Override
     public void initialize (URL url, ResourceBundle rb){
-        colunaEndereco.setCellValueFactory(new PropertyValueFactory<Registradores,String>("enderecos"));
-        colunaValor.setCellValueFactory(new PropertyValueFactory<Registradores,String>("valor"));
+        colunaEndereco.setCellValueFactory(new PropertyValueFactory<MemoryList,String>("enderecos"));
+        colunaValor.setCellValueFactory(new PropertyValueFactory<MemoryList,String>("valor"));
         tableView.setItems(getRegistradores());
         executionMode.setItems(executionModeList);
     }
@@ -85,11 +85,11 @@ public class SampleController implements Initializable {
         cpu.initialMemory(memory,list);
         OperationMode MOP = (OperationMode) memory.get(16);
         MOP.setMop(2);
-        list.set(16,new Registradores("MOP",MOP.getMop().toString()));
+        list.set(16,new MemoryList("MOP",MOP.getMop().toString()));
         cpu.debugMode(memory,reader,list,console);
     }
 
-    public ObservableList<Registradores> getRegistradores(){
+    public ObservableList<MemoryList> getRegistradores(){
         return list;
     }
 
