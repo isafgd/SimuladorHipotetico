@@ -4,6 +4,7 @@ import executor.recorders.AddressRecorder;
 import executor.recorders.ProgramCounter;
 import executor.recorders.StackPointer;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.scene.control.TextArea;
 
 import static java.lang.System.exit;
@@ -61,8 +62,10 @@ public class Operations {
             }else {
                 pc.setPc((Integer) memory.get(opd1));
             }
+            list.set(14, new MemoryList("PC", pc.getPc().toString()));
+        }else{
+            next(memory,list);
         }
-        list.set(14, new MemoryList("PC", pc.getPc().toString()));
     }
 
     public void brZero (ProgramCounter pc, Accumulator acc, int opd1, Integer addressMode, Memory memory, ObservableList<MemoryList> list) {
@@ -73,8 +76,10 @@ public class Operations {
             }else {
                 pc.setPc((Integer) memory.get(opd1));
             }
+            list.set(14, new MemoryList("PC", pc.getPc().toString()));
+        }else{
+            next(memory,list);
         }
-        list.set(14, new MemoryList("PC", pc.getPc().toString()));
     }
 
     public void brNeg (ProgramCounter pc, Accumulator acc, int opd1, Integer addressMode, Memory memory, ObservableList<MemoryList> list) {
@@ -85,8 +90,10 @@ public class Operations {
             }else {
                 pc.setPc((Integer) memory.get(opd1));
             }
+            list.set(14, new MemoryList("PC", pc.getPc().toString()));
+        }else{
+            next(memory,list);
         }
-        list.set(14, new MemoryList("PC", pc.getPc().toString()));
     }
 
     public void copy (int opd1, Integer opd2, Integer addressMode, Memory memory, ObservableList<MemoryList> list) {
@@ -184,7 +191,18 @@ public class Operations {
     }
 
     public void stop (){
-        exit(0);
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                try {
+                    Thread.sleep(10000);
+                } catch (Exception e) {
+                }
+                exit(0);
+                return null;
+            }
+        };
+        new Thread(task).start();
     }
 
     public void store (Accumulator acc, int opd1, Memory memory, Integer addressMode, ObservableList<MemoryList> list) {
@@ -230,6 +248,7 @@ public class Operations {
     }
 
     public void call (StackPointer sp, ProgramCounter pc, int opd1, Memory memory, Integer addressMode, ObservableList<MemoryList> list, TextArea console) {
+        int back = pc.getPc();
         if(addressMode==1){
             int pointer = (Integer) memory.get(opd1);
             pc.setPc((Integer) memory.get(pointer));
@@ -238,10 +257,17 @@ public class Operations {
         }
         memory.push(sp, pc.getPc(), console, list);
         list.set(14, new MemoryList("PC", pc.getPc().toString()));
+        back++;
+        pc.setPc(back);
+        list.set(14, new MemoryList("PC", pc.getPc().toString()));
     }
 
     public void ret (ProgramCounter pc, StackPointer sp, Memory memory, ObservableList<MemoryList> list, TextArea console) {
+        int back = pc.getPc();
         pc.setPc(memory.pop(sp,console, list));
+        list.set(14, new MemoryList("PC", pc.getPc().toString()));
+        back++;
+        pc.setPc(back);
         list.set(14, new MemoryList("PC", pc.getPc().toString()));
     }
 

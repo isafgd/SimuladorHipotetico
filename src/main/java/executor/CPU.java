@@ -226,11 +226,11 @@ public class CPU extends Application {
     }
 
     public static Integer getOpcode(String instruction) {
-        return Integer.parseInt(instruction.substring(12, 16), 2);
+        return Integer.parseInt(instruction.substring(11, 16), 2);
     }
 
     public static Integer getAddressMode(String instruction) {
-        return Integer.parseInt(instruction.substring(9, 12), 2);
+        return Integer.parseInt(instruction.substring(8, 11), 2);
     }
 
     public static Integer getFirstOP(String instruction) {
