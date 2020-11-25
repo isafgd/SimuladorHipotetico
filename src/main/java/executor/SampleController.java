@@ -64,6 +64,12 @@ public class SampleController implements Initializable {
     @FXML
     private Button botaoReset;
 
+    @FXML
+    private Button botaoInput;
+
+    @FXML
+    private TextField inputText;
+
     public SampleController () throws IOException {}
 
     @Override
@@ -96,6 +102,11 @@ public class SampleController implements Initializable {
     public void onBotaoResetAciotn() throws IOException {
         memory = new Memory(list);
         console.clear();
+    }
+
+    @FXML
+    public void onBotaoInputAction(){
+
     }
 
     public ObservableList<MemoryList> getRegistradores(){
