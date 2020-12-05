@@ -147,19 +147,19 @@ public class CPU extends Application {
     }
 
     public static Integer getOpcode(String instruction) {
-        return Integer.parseInt(instruction.substring(0, 4), 2);
+        return Integer.parseInt(instruction.substring(12, 16), 2);
     }
 
     public static Integer getAddressMode(String instruction) {
-        return Integer.parseInt(instruction.substring(4, 7), 2);
+        return Integer.parseInt(instruction.substring(9, 12), 2);
     }
 
     public static Integer getFirstOP(String instruction) {
-        return Integer.parseInt(instruction.substring(7, 11), 2);
+        return Integer.parseInt(instruction.substring(16, 32), 2);
     }
 
     public static Integer getSecondOP(String instruction) {
-        return Integer.parseInt(instruction.substring(12, 16), 2);
+        return Integer.parseInt(instruction.substring(32, 48), 2);
     }
 
 }
