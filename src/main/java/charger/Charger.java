@@ -3,13 +3,12 @@ package charger;
 import ReadingFile.Read;
 import executor.Memory;
 import executor.MemoryList;
-import executor.Operations;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TextArea;
 
 import java.io.IOException;
 
-public class Charger extends Operations {
+public class Charger {
 
     public void initialMemory(Memory memory, ObservableList<MemoryList> list, TextArea console) throws IOException {
         Read reader = new Read();
