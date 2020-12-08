@@ -79,7 +79,6 @@ public class CPU extends Application {
         if (i == 239 || j == 499){
             console.setText("Memory Limit");
         }
-
     }
 
     /*Redireciona para o modo de execucao*/
