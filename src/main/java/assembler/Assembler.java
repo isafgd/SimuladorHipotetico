@@ -1,87 +1,185 @@
 package assembler;
 
-import ReadingFile.Read;
-import executor.Memory;
-import executor.MemoryList;
-import javafx.collections.ObservableList;
-import javafx.scene.control.palavraArea;
 
-import java.io.FileNotFoundException;
+import ReadingFile.Read;
+import lombok.Data;
+
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
 
+@Data
 public class Assembler {
+    private LineCounter fontLineCounter;
+    private LineCounter lineCounter;
+    private AdressCounter adressCounter;
+    private HashMap<String, Integer> tabelaSimbolos;  //Tabela de Símbolos: Label / Adress
 
-    public void firstRead() {
-        //Read reader = new Read();
-        //String line = reader.readLine();
+    public void firstRead() throws IOException {
+        Read reader = new Read();
+        String line = reader.readLine();
+        Integer tamanho = 0;
 
-        String line = "FRONT LOAD OLDER";
         String[] palavra = line.split(" ");
 
-        Instruction instrucao = new Instruction("ADD", 2, "00101");
-        List<Instruction> instrucoes = new ArrayList<>();
-
-        instrucoes.add(instrucao);
-        HashMap<String, Integer> tabelaSimbolos = new HashMap<String, Integer>(); //Tabela de Símbolos: Label / Adress
-
         while (line!=null) {
-            if (line.charAt(0) == '*') {
-                //line = reader.readLine();
-                System.out.println("Comentário");
-            } else if {
-                Integer tamanho = 0;
-                switch (palavra[0]) {
-                    case "ADD":
-                    case "BR":
-                    case "BRNEG":
-                    case "BRPOS":
-                    case "BRZERO":
-                    case "CALL":
-                    case "DIVIDE":
-                    case "LOAD":
-                    case "MULT":
-                    case "READ":
-                    case "STORE":
-                    case "SUB":
-                    case "WRITE":
-                        tamanho = 1;
-                        break;
-                    case "COPY":
-                        tamanho = 2;
-                        break;
-                    case "RET":
-                    case "STOP":
-                        tamanho = 0;
-                        break;
-                    default:
-                        System.out.println("Label");
-                        if (tabelaSimbolos.get(palavra[0]) == null){
-                            tabelaSimbolos.put(palavra[0], -1);
-                        } else {
-                            tabelaSimbolos.remove(palavra[0]);
-                            tabelaSimbolos.put(palavra[0], adress);
-                        }
-                        break;
+            if (line.charAt(0) != '*') {
+                //tamanho = getLength(palavra[0]);
+                if (getLength(palavra[0]) == 1){
+                    if (isLabel(palavra[1]) && !isInTable(palavra[1])) {
+                        tabelaSimbolos.put(palavra[1], -1);
+                    } else {
+
+                    }
+                    LER O OPERANDO
+
+                } else if (getLength(palavra[0]) == 2){
+                    LER OS DOIS OPERANDOS
+
+                } else if (getLength(palavra[0]) == -1){
+                    É UM LABEL
                 }
+
+
+                System.out.println("Label");
+                if (tabelaSimbolos.get(palavra[0]) == null){    //LABEL AINDA NÃO ESTÁ NA TABELA
+                    tabelaSimbolos.put(palavra[0], -1);
+                } else {                                        //LABEL JÁ ESTÁ NA TABELA, COLOCAR O ADRESS
+                    //tabelaSimbolos.remove(palavra[0]);
+                    tabelaSimbolos.put(palavra[0], adressCounter.get());
+                }
+                break;
+
                 Integer texto = 1;
                 for ( ; tamanho > 0 ; tamanho--){
                     if (tabelaSimbolos.get(palavra[texto]) == null){
                         tabelaSimbolos.put(palavra[texto], -1);
                     } else {
-                        tabelaSimbolos.remove(palavra[texto]);
-                        tabelaSimbolos.put(palavra[texto], adress);
+                        //tabelaSimbolos.remove(palavra[texto]);
+                        tabelaSimbolos.put(palavra[texto], adressCounter.get());
                     }
 
                 }
             }
 
+            line = reader.readLine();
+
         }
 
+    }
+
+    public int getLength (String string) {
+        switch (string) {
+            case "ADD":
+            case "BR":
+            case "BRNEG":
+            case "BRPOS":
+            case "BRZERO":
+            case "CALL":
+            case "DIVIDE":
+            case "LOAD":
+            case "MULT":
+            case "READ":
+            case "STORE":
+            case "SUB":
+            case "WRITE":
+                return 1;
+            break;
+            case "COPY":
+                return 2;
+            break;
+            case "RET":
+            case "STOP":
+                return 0;
+            break;
+            default:
+                return -1;
+            break;
+        }
+    }
+
+    public String getBinary (String string) {
+        switch (string) {
+            case "ADD":
+                return "0010";
+            case "BR":
+                return "0000";
+            case "BRNEG":
+                return "0101";
+            case "BRPOS":
+                return "0001";
+            case "BRZERO":
+                return "0100";
+            case "CALL":
+                return "1111";
+            case "DIVIDE":
+                return "1010";
+            case "LOAD":
+                return "0011";
+            case "MULT":
+                return "1110";
+            case "READ":
+                return "1100";
+            case "STORE":
+                return "0111";
+            case "SUB":
+                return "0110";
+            case "WRITE":
+                return "1000";
+            case "COPY":
+                return "1101";
+            case "RET":
+                return "10000"; // RET PRECISA DE TAMANHO DE OPCODE 5
+            case "STOP":
+                return "1011";
+            default:
+                return "";
+        }
+    }
+
+    public boolean isLabel (String string){
+        if (string.charAt(0) == '@' || string.charAt(0) == '&'){
+            return false;
+        } else if (string.charAt(0) > 48 && string.charAt(0) < 57) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isReallyLabel (String string){   //pra ser REALMENTE um label, tem que ter no máx 8 caract. e começar por letra
+        if (string.length() <= 8){
+            if ((string.charAt(0) >= 65 && string.charAt(0) <= 90) && (string.charAt(0) >= 97 && string.charAt(0) <= 122)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public String adressMode (String string){
+        if (string.charAt(0) == '@'){
+            return "imediato";
+        } else if (string.charAt(0) == '&') {
+            return "indireto";
+        }
+        return "direto";
+    }
+
+    public boolean isInTable (String string){
+        if (tabelaSimbolos.get(string) == null){
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
+    public boolean isUp80Char (String string){
+        if (string.length() > 80) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }
