@@ -25,20 +25,40 @@ public class Assembler {
 
         while (line!=null) {
             if (line.charAt(0) != '*') {
-                //tamanho = getLength(palavra[0]);
-                if (getLength(palavra[0]) == 1){
-                    if (isLabel(palavra[1]) && !isInTable(palavra[1])) {
-                        tabelaSimbolos.put(palavra[1], -1);
-                    } else {
+                switch (getLength(palavra[0])) {
+                    case 1:                             //OPCODE QUE PRECISA DE UM OPERANDO
+                        readOperando(palavra[1]);
+                        adressCounter.add(2);
+                        break;
+                    case 2:                            //OPCODE QUE PRECISA DE DOIS OPERANDOS
+                        readOperando(palavra[1]);
+                        readOperando(palavra[2]);
+                        adressCounter.add(3);
+                        break;
+                    case -1:                           //LABEL?
+                        if (isReallyLabel(palavra[0])){
+                            if (isCompleteInTable(palavra[0])){
+                                //ERRO - LABEL COM DOIS PONTEIROS
 
-                    }
-                    LER O OPERANDO
-
-                } else if (getLength(palavra[0]) == 2){
-                    LER OS DOIS OPERANDOS
-
-                } else if (getLength(palavra[0]) == -1){
-                    É UM LABEL
+                            } else {
+                                tabelaSimbolos.put(palavra[0], adressCounter.get());    //ADICIONA O LABEL E SEU ENDEREÇO NA TABELA
+                                                                                         //JÁ QUE ELE É O ENDEREÇO JÁ
+                                switch (getLength(palavra[1])) {                        // VERIFICA QUANTOS OPERANDOS TEM NO OPCODE
+                                    case 1:
+                                        readOperando(palavra[2]);
+                                        adressCounter.add(2);
+                                        break;
+                                    case 2:
+                                        readOperando(palavra[2]);
+                                        readOperando(palavra[3]);
+                                        adressCounter.add(3);
+                                        break;
+                                }
+                            }
+                        } else {
+                            //ERRO DE LABEL - MAIS DE 8 CARACT OU NÃO INICIA COM LETRA
+                        }
+                        break;
                 }
 
 
@@ -50,24 +70,13 @@ public class Assembler {
                     tabelaSimbolos.put(palavra[0], adressCounter.get());
                 }
                 break;
+            }                           //termina aqui o if do '*'
 
-                Integer texto = 1;
-                for ( ; tamanho > 0 ; tamanho--){
-                    if (tabelaSimbolos.get(palavra[texto]) == null){
-                        tabelaSimbolos.put(palavra[texto], -1);
-                    } else {
-                        //tabelaSimbolos.remove(palavra[texto]);
-                        tabelaSimbolos.put(palavra[texto], adressCounter.get());
-                    }
+            line = reader.readLine();   //lerá a proxima linha
 
-                }
-            }
+        }                               //fim do while
 
-            line = reader.readLine();
-
-        }
-
-    }
+    }                                   //fim da primeira leitura
 
     public int getLength (String string) {
         switch (string) {
@@ -156,6 +165,14 @@ public class Assembler {
         return false;
     }
 
+    public void readOperando (String string){               //LÊ O OPERANDO
+        if (isLabel(string) && isReallyLabel(string)) {
+            if (!isInTable(string)) {                       //SE JÁ TIVER NA TABELA TUDO BEM, NÃO É ERRO POIS ESTÁ NO OPERANDO
+                tabelaSimbolos.put(string, -1);
+            }
+        }
+    }
+
     public String adressMode (String string){
         if (string.charAt(0) == '@'){
             return "imediato";
@@ -171,7 +188,14 @@ public class Assembler {
         } else {
             return true;
         }
+    }
 
+    public boolean isCompleteInTable (String string){   //Se já estiver completo na tabela e o vermos de novo, é um erro.
+        if (tabelaSimbolos.get(string) == -1){
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public boolean isUp80Char (String string){
@@ -181,5 +205,7 @@ public class Assembler {
             return false;
         }
     }
+
+
 
 }
