@@ -105,7 +105,7 @@ public class SampleController implements Initializable {
     //Chama a funcao que escreve no arquivo interno
     public void fileWrite (){
         instrucoesLeitura = instructions.getText().replaceAll("\n", System.getProperty("line.separator"));
-        Writer.writeFile(instrucoesLeitura);
+        Writer.writeFile(instrucoesLeitura, "InputCode.txt");
     }
 
 
