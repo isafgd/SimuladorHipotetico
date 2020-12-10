@@ -19,11 +19,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 
+/*Classe controladora da Interface*/
 @Data
 public class SampleController implements Initializable {
-    int i = 0;
-
-    int insert = 0;
 
     ObservableList<String> executionModeList = FXCollections.observableArrayList("Continuo", "Semi-Continuo","Depuracao");
 
@@ -64,14 +62,9 @@ public class SampleController implements Initializable {
     @FXML
     private Button botaoReset;
 
-    @FXML
-    private Button botaoInput;
-
-    @FXML
-    private TextField inputText;
-
     public SampleController () throws IOException {}
 
+    //Inicializa os campos da interface
     @Override
     public void initialize (URL url, ResourceBundle rb){
         colunaEndereco.setCellValueFactory(new PropertyValueFactory<MemoryList,String>("enderecos"));
@@ -80,6 +73,7 @@ public class SampleController implements Initializable {
         executionMode.setItems(executionModeList);
     }
 
+    //Controla a acao que sera executado quando o botao insert eh acionado
     public void onInsertTextAction() throws IOException, InterruptedException {
         fileWrite();
         String executionModeValue = executionMode.getValue();
@@ -88,6 +82,7 @@ public class SampleController implements Initializable {
         cpu.executionMode(memory, reader, executionModeValue, list, console);
     }
 
+    //Controla a acao que sera executado quando o botao step eh acionado
     @FXML
     public void onBotaoStepAciotn() throws IOException {
         fileWrite();
@@ -98,21 +93,19 @@ public class SampleController implements Initializable {
         cpu.debugMode(memory,reader,list,console);
     }
 
+    //Controla a acao que sera executado quando o botao reset eh acionado
     @FXML
     public void onBotaoResetAciotn() throws IOException {
         memory = new Memory(list);
         console.clear();
     }
 
-    @FXML
-    public void onBotaoInputAction(){
-
-    }
 
     public ObservableList<MemoryList> getRegistradores(){
         return list;
     }
 
+    //Chama a funcao que escreve no arquivo interno
     public void fileWrite (){
         instrucoesLeitura = instructions.getText().replaceAll("\n", System.getProperty("line.separator"));
         Writer.writeFile(instrucoesLeitura);

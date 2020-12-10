@@ -1,12 +1,8 @@
 package executor;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
+import java.io.*;
 
-
+/*Escreve no arquivo InputCode*/
 public class Writer {
 
     public static void writeFile(String instructions){

@@ -30,6 +30,7 @@ public class CPU extends Application {
     @FXML
     private TextArea textArea;
 
+    /*Criacao da interface*/
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/sample.fxml"));
@@ -49,6 +50,7 @@ public class CPU extends Application {
         launch(args);
     }
 
+    /*Adiciona as intrucoes e os operandos na memoria*/
     public void initialMemory(Memory memory, ObservableList<MemoryList> list, TextArea console) throws IOException {
         Read reader = new Read();
         String line = reader.readLine();
@@ -80,7 +82,7 @@ public class CPU extends Application {
 
     }
 
-
+    /*Redireciona para o modo de execucao*/
     public static void executionMode(Memory memory, Read reader, String choiceString, ObservableList<MemoryList> list, TextArea console){
         int choice = 0;
         switch (choiceString){
@@ -115,6 +117,7 @@ public class CPU extends Application {
         }
     }
 
+    /*Execucao agendada a cada 5seg */
     public static void semiContinuousMode(Memory memory, Read reader, ObservableList<MemoryList> list, TextArea console){
         ScheduledService scheduledService = new ScheduledService() {
             @Override
@@ -149,6 +152,7 @@ public class CPU extends Application {
         execute(memory, attributes, list, console);
     }
 
+    /*Converte a instrucao para decimal*/
     public static ArrayList<Integer> convert (Memory memory, String line, String data,ObservableList<MemoryList> list){
         InstructionRecorder RI = (InstructionRecorder) memory.get(17);
         RI.setRi(getOpcode(line));
@@ -170,6 +174,7 @@ public class CPU extends Application {
         return attributes;
     }
 
+    /*Chama a instrucao correspondente*/
     public static void execute (Memory memory, ArrayList<Integer> attributes, ObservableList<MemoryList> list, TextArea console){
         InstructionRecorder RI = (InstructionRecorder) memory.get(17);
         Operations operation = new Operations();
@@ -211,7 +216,7 @@ public class CPU extends Application {
                 operation.stop();
                 break;
             case 12:
-                operation.read(attributes.get(0), attributes.get(1), memory, list);
+                operation.read(attributes.get(0), attributes.get(1), memory, list, "");
                 break;
             case 13:
                 operation.copy(attributes.get(1), attributes.get(2), attributes.get(0), memory, list);
@@ -226,11 +231,11 @@ public class CPU extends Application {
     }
 
     public static Integer getOpcode(String instruction) {
-        return Integer.parseInt(instruction.substring(12, 16), 2);
+        return Integer.parseInt(instruction.substring(11, 16), 2);
     }
 
     public static Integer getAddressMode(String instruction) {
-        return Integer.parseInt(instruction.substring(9, 12), 2);
+        return Integer.parseInt(instruction.substring(8, 11), 2);
     }
 
     public static Integer getFirstOP(String instruction) {
