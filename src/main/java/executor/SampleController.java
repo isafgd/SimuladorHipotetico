@@ -1,6 +1,5 @@
 package executor;
 
-import ReadingFile.Read;
 import executor.recorders.OperationMode;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -32,8 +31,6 @@ public class SampleController implements Initializable {
     private Memory memory = new Memory(list);
 
     private CPU cpu = new CPU();
-
-    private Read reader = new Read();
 
     @FXML
     private TextArea console;
@@ -78,19 +75,19 @@ public class SampleController implements Initializable {
         fileWrite();
         String executionModeValue = executionMode.getValue();
         System.out.println(instrucoesLeitura);
-        cpu.initialMemory(memory,list, console);
-        cpu.executionMode(memory, reader, executionModeValue, list, console);
+        //cpu.initialMemory(memory,list, console);
+        cpu.executionMode(memory, executionModeValue, list, console);
     }
 
     //Controla a acao que sera executado quando o botao step eh acionado
     @FXML
     public void onBotaoStepAciotn() throws IOException {
         fileWrite();
-        cpu.initialMemory(memory,list, console);
+        //cpu.initialMemory(memory,list, console);
         OperationMode MOP = (OperationMode) memory.get(16);
         MOP.setMop(2);
         list.set(16,new MemoryList("MOP",MOP.getMop().toString()));
-        cpu.debugMode(memory,reader,list,console);
+        cpu.debugMode(memory,list,console);
     }
 
     //Controla a acao que sera executado quando o botao reset eh acionado

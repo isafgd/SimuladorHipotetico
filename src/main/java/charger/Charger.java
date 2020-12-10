@@ -1,6 +1,6 @@
 package charger;
 
-import ReadingFile.Read;
+import executor.Reader;
 import executor.Memory;
 import executor.MemoryList;
 import javafx.collections.ObservableList;
@@ -11,7 +11,7 @@ import java.io.IOException;
 public class Charger {
 
     public void initialMemory(Memory memory, ObservableList<MemoryList> list, TextArea console) throws IOException {
-        Read reader = new Read();
+        Reader reader = new Reader("OutPutLigador.txt");
         String line = reader.readLine();
         Integer i = 19;
         Integer j = 240;
