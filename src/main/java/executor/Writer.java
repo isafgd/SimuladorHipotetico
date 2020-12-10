@@ -5,9 +5,9 @@ import java.io.*;
 /*Escreve no arquivo InputCode*/
 public class Writer {
 
-    public static void writeFile(String instructions){
+    public static void writeFile(String instructions, String fileName){
         FileWriter arq;
-        File output = new File("src/main/resources/InputCode.txt");
+        File output = new File("src/main/resources/txt/" + fileName);
         try {
             arq = new FileWriter(output);
             arq.write(instructions);

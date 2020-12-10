@@ -1,6 +1,6 @@
 package executor;
 
-import ReadingFile.Read;
+
 import executor.recorders.*;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -51,8 +51,8 @@ public class CPU extends Application {
     }
 
     /*Adiciona as intrucoes e os operandos na memoria*/
-    public void initialMemory(Memory memory, ObservableList<MemoryList> list, TextArea console) throws IOException {
-        Read reader = new Read();
+/*    public void initialMemory(Memory memory, ObservableList<MemoryList> list, TextArea console) throws IOException {
+        Reader reader = new Reader();
         String line = reader.readLine();
         Integer i = 19;
         Integer j = 240;
@@ -79,11 +79,10 @@ public class CPU extends Application {
         if (i == 239 || j == 499){
             console.setText("Memory Limit");
         }
-
-    }
+    }*/
 
     /*Redireciona para o modo de execucao*/
-    public static void executionMode(Memory memory, Read reader, String choiceString, ObservableList<MemoryList> list, TextArea console){
+    public static void executionMode(Memory memory, String choiceString, ObservableList<MemoryList> list, TextArea console){
         int choice = 0;
         switch (choiceString){
             case "Continuo":
@@ -100,15 +99,15 @@ public class CPU extends Application {
         MOP.setMop(choice);
         list.set(16,new MemoryList("MOP",MOP.getMop().toString()));
         if (choice==0){
-            continuousMode(memory, reader, list, console);
+            continuousMode(memory,list, console);
         }else{
             if(choice==1) {
-                semiContinuousMode(memory, reader, list, console);
+                semiContinuousMode(memory,list, console);
             }
         }
     }
 
-    public static void continuousMode(Memory memory, Read reader, ObservableList<MemoryList> list, TextArea console){
+    public static void continuousMode(Memory memory, ObservableList<MemoryList> list, TextArea console){
         ProgramCounter PC = (ProgramCounter) memory.get(14);
         AddressRecorder RE = (AddressRecorder) memory.get(18);
         while((String) memory.get(PC.getPc()) != null) {
@@ -118,7 +117,7 @@ public class CPU extends Application {
     }
 
     /*Execucao agendada a cada 5seg */
-    public static void semiContinuousMode(Memory memory, Read reader, ObservableList<MemoryList> list, TextArea console){
+    public static void semiContinuousMode(Memory memory,ObservableList<MemoryList> list, TextArea console){
         ScheduledService scheduledService = new ScheduledService() {
             @Override
             protected Task createTask() {
@@ -145,7 +144,7 @@ public class CPU extends Application {
         execute(memory, attributes, list, console);
     }
 
-    public static void debugMode(Memory memory, Read reader, ObservableList<MemoryList> list, TextArea console){
+    public static void debugMode(Memory memory, ObservableList<MemoryList> list, TextArea console){
         ProgramCounter PC = (ProgramCounter) memory.get(14);
         AddressRecorder RE = (AddressRecorder) memory.get(18);
         ArrayList<Integer> attributes = convert(memory, (String) memory.get(PC.getPc()), (String) memory.get(RE.getRe()),list);
