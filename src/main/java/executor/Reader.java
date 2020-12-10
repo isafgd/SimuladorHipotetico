@@ -11,8 +11,8 @@ public class Reader {
     private BufferedReader lerArq;
     private String caminho;
 
-    public Reader() throws FileNotFoundException{
-        caminho="src/main/resources/Example.txt";
+    public Reader(String name) throws FileNotFoundException{
+        caminho="src/main/resources/txt/"+name;
         arq = new FileReader(caminho);
         lerArq = new BufferedReader(arq);
     }
