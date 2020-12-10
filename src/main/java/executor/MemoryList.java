@@ -1,13 +1,12 @@
 package executor;
 
-
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
-public class Registradores {
+/*Espelho da memoria para a interface*/
+public class MemoryList {
 
     private SimpleStringProperty enderecos;
-    private SimpleIntegerProperty valor;
+    private SimpleStringProperty valor;
 
     public String getEnderecos() {
         return enderecos.get();
@@ -17,16 +16,16 @@ public class Registradores {
         this.enderecos =  enderecos;
     }
 
-    public Integer getValor() {
+    public String getValor() {
         return valor.get();
     }
 
-    public void setValor(SimpleIntegerProperty valor) {
+    public void setValor(SimpleStringProperty valor) {
         this.valor = valor;
     }
 
-    public Registradores(String enderecos, Integer valor) {
+    public MemoryList(String enderecos, String valor) {
         this.enderecos = new SimpleStringProperty(enderecos);
-        this.valor = new SimpleIntegerProperty(valor);
+        this.valor = new SimpleStringProperty(valor);
     }
 }

@@ -6,7 +6,7 @@ import lombok.Data;
 public class OperationMode {
 
     private final int size = 8;
-    int mop;
+    Integer mop;
 
     public OperationMode(){mop = -1;}
 
