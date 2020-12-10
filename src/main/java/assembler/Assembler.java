@@ -11,13 +11,78 @@ import java.util.List;
 
 @Data
 public class Assembler {
-    private LineCounter fontLineCounter;
-    private LineCounter lineCounter;
-    private AdressCounter adressCounter;
-    private HashMap<String, Integer> tabelaSimbolos;  //Tabela de Símbolos: Label / Adress
+    private LineCounter fontLineCounter_A;
+    private LineCounter lineCounter_A;
+    private AdressCounter adressCounter_A;
+    private HashMap<String, Integer> tabelaSimbolos_A;  //Tabela de Símbolos: Label / Adress
+    private HashMap<String, Integer> tabelaDefinicoes_A;  //Tabela de Definições: Label / Adress, temos que substituir elas no código binário
 
-    public void firstRead() throws IOException {
-        Read reader = new Read();
+    private LineCounter fontLineCounter_B;
+    private LineCounter lineCounter_B;
+    private AdressCounter adressCounter_B;
+    private HashMap<String, Integer> tabelaSimbolos_B;  //Tabela de Símbolos: Label / Adress
+    private HashMap<String, Integer> tabelaDefinicoes_B;  //Tabela de Símbolos: Label / Adress
+
+
+    //INICIAR TABELA A - iniciandoTabelaDefinicoes('A', nomeArquivoModuloA)
+    //INICIAR TABELA B - iniciandoTabelaDefinicoes('B', nomeArquivoModuloB)
+    //COMPLETAR TABELA A - completandoTabelaDefinicoes('A', nomeArquivoModuloA)
+    //COMPLETAR TABELA B - completandoTabelaDefinicoes('B', nomeArquivoModuloB)
+
+
+    public void completandoTabelaDefinicoes (char ab, String nomeArq) throws IOException {
+        Read reader = new Read(nomeArq);
+        String line = reader.readLine();
+
+        String[] palavra = line.split(" ");
+
+        while(isLabel(palavra[0])){                     //ENQUANTO NÃO TIVER A PRIMEIRA INSTRUÇÃO, NÃO CONTAMOS O ADRESS
+            line = reader.readLine();
+        }
+
+        while (line != null) {
+            switch (ab) {
+                case 'A':
+                    if(tabelaDefinicoes_A.containsKey(palavra[0])){
+                        tabelaDefinicoes_A.put(palavra[0], adressCounter_A.get());
+                        atualizarEndereco(adressCounter_A, palavra[1]);
+                    } else {
+                        atualizarEndereco(adressCounter_A, palavra[0]);
+                    }
+                case 'B':
+                    if(tabelaDefinicoes_B.containsKey(palavra[0])){
+                        tabelaDefinicoes_B.put(palavra[0], adressCounter_B.get());
+                        atualizarEndereco(adressCounter_B, palavra[1]);
+                    } else {
+                        atualizarEndereco(adressCounter_B, palavra[0]);
+                    }
+            }
+            line = reader.readLine();
+        }
+    }
+
+
+    public void iniciandoTabelaDefinicoes (char ab, String nomeArq) throws IOException {
+        Read reader = new Read(nomeArq);
+        String line = reader.readLine();
+        Integer tamanho = 0;
+
+        String[] palavra = line.split(" ");
+        while (line != null) {
+            if (palavra[0] == "EXTDEF") {
+                if (ab == 'A') {
+                    tabelaDefinicoes_A.put(palavra[1], -1);
+                } else {
+                    tabelaDefinicoes_B.put(palavra[1], -1);
+                }
+            }
+            line = reader.readLine();
+        }
+    }
+
+
+    public void firstRead(String nomeArq) throws IOException {
+        Read reader = new Read(nomeArq);
         String line = reader.readLine();
         Integer tamanho = 0;
 
@@ -42,7 +107,7 @@ public class Assembler {
 
                             } else {
                                 tabelaSimbolos.put(palavra[0], adressCounter.get());    //ADICIONA O LABEL E SEU ENDEREÇO NA TABELA
-                                                                                         //JÁ QUE ELE É O ENDEREÇO JÁ
+                                                                                        //JÁ QUE ELE É O ENDEREÇO JÁ
                                 switch (getLength(palavra[1])) {                        // VERIFICA QUANTOS OPERANDOS TEM NO OPCODE
                                     case 1:
                                         readOperando(palavra[2]);
@@ -78,6 +143,15 @@ public class Assembler {
 
     }                                   //fim da primeira leitura
 
+
+
+
+
+    public void atualizarEndereco (AdressCounter x, String instrucao){
+        x.add(getLength(instrucao) + 1);
+    }
+
+
     public int getLength (String string) {
         switch (string) {
             case "ADD":
@@ -111,37 +185,37 @@ public class Assembler {
     public String getBinary (String string) {
         switch (string) {
             case "ADD":
-                return "0010";
+                return "00010";
             case "BR":
-                return "0000";
+                return "00000";
             case "BRNEG":
-                return "0101";
+                return "00101";
             case "BRPOS":
-                return "0001";
+                return "00001";
             case "BRZERO":
-                return "0100";
+                return "00100";
             case "CALL":
-                return "1111";
+                return "01111";
             case "DIVIDE":
-                return "1010";
+                return "01010";
             case "LOAD":
-                return "0011";
+                return "00011";
             case "MULT":
-                return "1110";
+                return "01110";
             case "READ":
-                return "1100";
+                return "01100";
             case "STORE":
-                return "0111";
+                return "00111";
             case "SUB":
-                return "0110";
+                return "00110";
             case "WRITE":
-                return "1000";
+                return "01000";
             case "COPY":
-                return "1101";
+                return "01101";
             case "RET":
                 return "10000"; // RET PRECISA DE TAMANHO DE OPCODE 5
             case "STOP":
-                return "1011";
+                return "01011";
             default:
                 return "";
         }
