@@ -13,21 +13,81 @@ import java.util.List;
 public class Assembler {
     private LineCounter fontLineCounter_A;
     private LineCounter lineCounter_A;
-    private AdressCounter adressCounter_A;
-    private HashMap<String, Integer> tabelaSimbolos_A;  //Tabela de Símbolos: Label / Adress
-    private HashMap<String, Integer> tabelaDefinicoes_A;  //Tabela de Definições: Label / Adress, temos que substituir elas no código binário
+    private AdressCounter adressCounter_A;                          //REFATORAR TABELAS PRA SEREM CLASSES?
+    private HashMap<String, Integer> tabelaSimbolos_A;      //Tabela de Símbolos: Label / Adress
+    private HashMap<String, Integer> tabelaDefinicoes_A;    //Tabela de Definições: Label / Adress, temos que substituir elas no código binário
 
     private LineCounter fontLineCounter_B;
     private LineCounter lineCounter_B;
     private AdressCounter adressCounter_B;
-    private HashMap<String, Integer> tabelaSimbolos_B;  //Tabela de Símbolos: Label / Adress
-    private HashMap<String, Integer> tabelaDefinicoes_B;  //Tabela de Símbolos: Label / Adress
+    private HashMap<String, Integer> tabelaSimbolos_B;      //Tabela de Símbolos: Label / Adress
+    private HashMap<String, Integer> tabelaDefinicoes_B;    //Tabela de Símbolos: Label / Adress
 
-
+    //COMO FAZER RODAR CERTINHO?
     //INICIAR TABELA A - iniciandoTabelaDefinicoes('A', nomeArquivoModuloA)
     //INICIAR TABELA B - iniciandoTabelaDefinicoes('B', nomeArquivoModuloB)
     //COMPLETAR TABELA A - completandoTabelaDefinicoes('A', nomeArquivoModuloA)
     //COMPLETAR TABELA B - completandoTabelaDefinicoes('B', nomeArquivoModuloB)
+
+
+    public void main (String nomeArquivoA, String nomeArquivoB) throws IOException {
+        iniciandoTabelaDefinicoes('A', nomeArquivoA);
+        iniciandoTabelaDefinicoes('B', nomeArquivoB);
+        completandoTabelaDefinicoes('A', nomeArquivoA);
+        completandoTabelaDefinicoes('B', nomeArquivoB);
+
+
+
+    }
+    
+    public void completandoTabelaSimbolos (char ab, String nomeArq) throws IOException {
+        Read reader = new Read(nomeArq);
+        String line = reader.readLine();
+
+        String[] palavra = line.split(" ");
+
+        while(isLabel(palavra[0])){                     //ENQUANTO NÃO TIVER A PRIMEIRA INSTRUÇÃO, NÃO CONTAMOS O ADRESS
+            line = reader.readLine();
+        }
+
+        while (line != null) {
+            switch (ab) {
+                case 'A':
+                    if(tabelaDefinicoes_A.containsKey(palavra[0])){
+                        tabelaDefinicoes_A.put(palavra[0], adressCounter_A.get());
+                        atualizarEndereco(adressCounter_A, palavra[1]);
+                    } else {
+                        atualizarEndereco(adressCounter_A, palavra[0]);
+                    }
+                case 'B':
+                    if(tabelaDefinicoes_B.containsKey(palavra[0])){
+                        tabelaDefinicoes_B.put(palavra[0], adressCounter_B.get());
+                        atualizarEndereco(adressCounter_B, palavra[1]);
+                    } else {
+                        atualizarEndereco(adressCounter_B, palavra[0]);
+                    }
+            }
+            line = reader.readLine();
+        }
+    }
+
+
+    public void iniciandoTabelaSimbolos (char ab, String nomeArq) throws IOException {
+        Read reader = new Read(nomeArq);
+        String line = reader.readLine();
+
+        String[] palavra = line.split(" ");
+        while (line != null) {
+            if (palavra[0] == "EXTDEF") {
+                if (ab == 'A') {
+                    tabelaDefinicoes_A.put(palavra[1], -1);
+                } else {
+                    tabelaDefinicoes_B.put(palavra[1], -1);
+                }
+            }
+            line = reader.readLine();
+        }
+    }
 
 
     public void completandoTabelaDefinicoes (char ab, String nomeArq) throws IOException {
@@ -65,7 +125,6 @@ public class Assembler {
     public void iniciandoTabelaDefinicoes (char ab, String nomeArq) throws IOException {
         Read reader = new Read(nomeArq);
         String line = reader.readLine();
-        Integer tamanho = 0;
 
         String[] palavra = line.split(" ");
         while (line != null) {
@@ -81,10 +140,9 @@ public class Assembler {
     }
 
 
-    public void firstRead(String nomeArq) throws IOException {
+    public void firstRead(char ab, String nomeArq) throws IOException {
         Read reader = new Read(nomeArq);
         String line = reader.readLine();
-        Integer tamanho = 0;
 
         String[] palavra = line.split(" ");
 
@@ -279,6 +337,7 @@ public class Assembler {
             return false;
         }
     }
+
 
 
 
