@@ -11,7 +11,7 @@ import java.io.IOException;
 public class Charger {
 
     public void initialMemory(Memory memory, ObservableList<MemoryList> list, TextArea console) throws IOException {
-        Reader reader = new Reader("OutPutLigador.txt");
+        Reader reader = new Reader("OutputLigador.txt");
         String line = reader.readLine();
         Integer i = 19;
         Integer j = 240;
