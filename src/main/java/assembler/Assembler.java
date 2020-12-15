@@ -5,13 +5,11 @@ import java.math.BigInteger;
 import java.util.*;
 
 
-import ReadingFile.Read;
 import lombok.Data;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 @Data
 public class Assembler {
@@ -20,7 +18,6 @@ public class Assembler {
     private Map<String, Integer> labels; // rotulos
     private ArrayList<TabelaDefinicoes> definicoes = new ArrayList<> ();
     private ArrayList<TabelaDeUso> uso = new ArrayList<> ();
-
 
     public Assembler() {
         locationCounter = 0;
@@ -70,7 +67,7 @@ public class Assembler {
             // Le nova linha
             linha = bf.readLine();
             // Separa a linha nos tabs
-            textoSeparado = linha.split("\t");
+            textoSeparado = linha.split(" "); // mudar pra /t se der erro
         }
         // Atualiza locationCounter de acordo com o endereco inicial das instrucoes
         textoSeparado[1] = textoSeparado[1].substring(1);
@@ -103,7 +100,7 @@ public class Assembler {
             locationCounter += 4;
 
             switch (textoSeparado[1].charAt(0)) {
-                case '#':
+                case '#': // endereçamento imediato?
                     switch (textoSeparado[1].charAt(1)) {
                         case '$':
                             // hexadecimal
@@ -194,77 +191,146 @@ public class Assembler {
         arqObj.close();
     }
 
-    public void verificaOperacao(String palavra, FileWriter arq) throws IOException {
-        switch (palavra) {
+    public int getAmountOperands(String instrucao) throws IOException { // Pegar quantidade de operandos
+        int amountOperands = -1; // contador de operandos, SE FOR -1 PODE SER LABEL VERIFICAR
+        switch (instrucao) {
             case "ADD":
-                arq.write("1101" + "\t");
-                break;
-            case "ADDI":
-                arq.write("00000110" + "\t");
-                break;
-            case "AND":
-                arq.write("1100" + "\t");
-                break;
-            case "ANDI":
-                arq.write("00000010" + "\t");
-                break;
-            case "BRA":
-                arq.write("01100000" + "\t");
-                break;
-            case "CMP":
-                arq.write("1011" + "\t");
-                break;
-            case "CMPI":
-                arq.write("00001100" + "\t");
-                break;
-            case "DIVS":
-                arq.write("1000" + "\t");
-                break;
-            case "DIVU":
-                arq.write("1000" + "\t");
-                break;
-            case "JMP":
-                arq.write("0100111011" + "\t");
-                break;
-            case "LSL":
-                arq.write("1110" + "\t");
-                break;
-            case "LSR":
-                arq.write("1110" + "\t");
-                break;
-            case "MOVE":
-                arq.write("00" + "\t");
-                break;
-            case "MULS":
-                arq.write("1100" + "\t");
-                break;
-            case "MULU":
-                arq.write("1100" + "\t");
-                break;
-            case "NOP":
-                arq.write("0100111001110001");
-                break;
-            case "NEG":
-                arq.write("01000100" + "\t");
-                break;
-            case "NOT":
-                arq.write("01000110" + "\t");
-                break;
-            case "OR":
-                arq.write("1000" + "\t");
-                break;
-            case "ORI":
-                arq.write("00000000" + "\t");
-                break;
+            case "BR":
+            case "BRNEG":
+            case "BRPOS":
+            case "BRZERO":
+            case "DIVIDE":
+            case "LOAD":
+            case "MULT":
+            case "READ":
+            case "STORE":
             case "SUB":
-                arq.write("1001" + "\t");
+            case "WRITE":
+            case "CALL":
+                amountOperands = 1;
                 break;
-            case "SUBI":
-                arq.write("00000100" + "\t");
+            case "COPY":
+                amountOperands = 2;
                 break;
+            case "RET":
             case "STOP":
-                arq.write("0100111001110010" + "\t");
+                amountOperands = 0;
+                break;
         }
+        return amountOperands; // insere a quantidade de operandos desse return em um array
+    }
+
+    // FAZER MAP COM AS INSTRUÇÕES E BINÁRIO DE CADA UMA -> opcodeInstrucao <-
+    public void escreveBinarioTxt(String instrucao, FileWriter arq, ArrayList <Integer> operandos, Map <String, String> opcodeInstrucao) throws IOException {
+        // já envia os 32 bits pro txt
+        switch (instrucao) {
+            case "ADD":
+            case "BR":
+            case "BRNEG":
+            case "BRPOS":
+            case "BRZERO":
+            case "DIVIDE":
+            case "LOAD":
+            case "MULT":
+            case "READ":
+            case "STORE":
+            case "SUB":
+            case "WRITE":
+            case "CALL":
+                List <String> atributos = getEnderecamento(operandos.get(0));
+                arq.write("00000000"+atributos.get(0)+opcodeInstrucao.get(instrucao)+ atributos.get(1));
+                break;
+            case "COPY":
+                List <String> atributos2 = getEnderecamento(operandos.get(0), operandos.get(1));
+                arq.write("00000000"+atributos2.get(0) + opcodeInstrucao.get(instrucao) + atributos2.get(1) + atributos2.get(2));  // BITS -SIGNIFICATIVOS, ENDEREÇAMENTO, OPCODE, OPD1 E OPD2
+                break;
+            case "RET":
+            case "STOP":
+                arq.write("00000000"+"000"+opcodeInstrucao.get(instrucao));
+                break;
+            default:
+                arq.write("Instrução inválida.");
+        }
+    }
+
+    public List <String> getEnderecamento(Integer operando1) {
+        String resultado = "000";
+        String operando1String = operando1.toString();
+        char firstOp1 = operando1String.charAt(0);
+        char lastOp1 = operando1String.charAt(operando1String.length());
+
+        if(firstOp1 == '#')
+            resultado = "100";
+
+        if(lastOp1 == 'I')
+            resultado = "001";
+
+        List <String> resultList = removeSimbol(operando1.toString(), "0");
+        resultList.add(0, resultado); // primeiro item endereçamento, 2 opd1 e 3 opd2
+        return resultList;
+    }
+    public List <String> getEnderecamento(Integer operando1, Integer operando2) {
+        String resultado = "000";                                            // direto por default
+
+        String operando1String = operando1.toString();
+        char firstOp1 = operando1String.charAt(0);                           // Testa primeiro caractere
+        char lastOp1 = operando1String.charAt(operando1String.length());     // Testa ultimo operando
+
+        String operando2String = operando2.toString();
+        char firstOp2 = operando2String.charAt(0);
+        char lastOp2 = operando2String.charAt(operando2String.length());
+
+        if(firstOp2 == '#')                                                  // Verificações de endereçamento de operandos
+            if(firstOp1 != '#' && lastOp1 != 'I' )
+                resultado = "100"; // imediato
+            else resultado = "101";
+
+        if(lastOp2 == 'I')
+            if(firstOp1 != '#' && lastOp1 != 'I' )
+                resultado = "010";
+            else resultado = "011";
+
+        if(lastOp1 == 'I')
+                resultado = "001";
+
+        List <String> resultList = removeSimbol(operando1.toString(), operando2.toString());
+        resultList.add(0, resultado); // primeiro item endereçamento, 2 opd1 e 3 opd2
+        return resultList;
+
+    }
+
+    public List <String> removeSimbol (String operando1, String operando2) {
+        String newOpd1 = operando1;
+        String newOpd2 = operando2;
+
+        String operando1String = operando1.toString();
+        char firstOp1 = operando1String.charAt(0);                           // Testa primeiro caractere
+        char lastOp1 = operando1String.charAt(operando1String.length());     // Testa ultimo operando
+
+        String operando2String = operando2.toString();
+        char firstOp2 = operando2String.charAt(0);
+        char lastOp2 = operando2String.charAt(operando2String.length());
+
+        if(firstOp1 == '#')
+            newOpd1 = operando1.substring(1,operando1.length());
+
+        if(lastOp1 == 'I')
+            newOpd1 = operando1.substring(0, operando1.length() - 1);
+
+        if(firstOp2 == '#')
+            newOpd2 = operando1.substring(1,operando2.length());
+
+        if(lastOp2 == 'I')
+            newOpd2 = operando1.substring(0, operando2.length() - 1);
+
+        newOpd1 = Integer.toBinaryString(Integer.parseInt(newOpd1));
+        newOpd2 = Integer.toBinaryString(Integer.parseInt(newOpd2));
+
+        List <String> operandos = new ArrayList<>();
+        operandos.add(1, newOpd1);
+        operandos.add(2, newOpd2);
+
+        return operandos;
     }
 
     public ArrayList<TabelaDefinicoes> GetTabelaDeDefinicoes(){
@@ -273,6 +339,15 @@ public class Assembler {
 
     public ArrayList<TabelaDeUso> GetTabelaDeUso(){
         return uso;
+    }
+
+    public void escreveTabelaDefinicoes(){
+        GetTabelaDeDefinicoes();
+        // escrever em um arquivo txt para enviar pra Isa e pro Jonnhy, primeira coluna endereço e segunda de símbolo
+    }
+
+    public void escreveTabelaDeUso(){
+
     }
 
 }
