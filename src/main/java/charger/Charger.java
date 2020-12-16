@@ -13,31 +13,38 @@ public class Charger {
     public void initialMemory(Memory memory, ObservableList<MemoryList> list, TextArea console) throws IOException {
         Reader reader = new Reader("OutputLigador.txt");
         String line = reader.readLine();
-        Integer i = 19;
-        Integer j = 240;
-        while (line!=null && i<240 && j<500){
-            memory.set_string(i, line.substring(0, 16));
-            list.set(i, new MemoryList(i.toString(), line.substring(0, 16)));
-            if(line.length()==32){
-                memory.set_string(j, line.substring(16, 32));
-                list.set(j, new MemoryList(j.toString(), line.substring(16, 32)));
-                j++;
+        boolean limit = false;
+        while (line!=null && !limit){
+            String[] spliLine = line.split(";");
+            memory.set_string(Integer.parseInt(spliLine[0]), spliLine[1]);
+            list.set(Integer.parseInt(spliLine[0]), new MemoryList(spliLine[0], spliLine[1]));
+            if(spliLine.length==4){
+                memory.set_string(Integer.parseInt(spliLine[2]), spliLine[3]);
+                list.set(Integer.parseInt(spliLine[2]), new MemoryList(spliLine[2], spliLine[3]));
+                if (Integer.parseInt(spliLine[2]) == 499){
+                    limit=true;
+                    console.setText("Memory Limit Data");
+                }
             }else{
-                if(line.length()>32) {
-                    Integer k = j + 1;
-                    memory.set_string(j, line.substring(16, 32));
-                    list.set(j, new MemoryList(j.toString(), line.substring(16, 32)));
-                    memory.set_string(k, line.substring(32, 48));
-                    list.set(j, new MemoryList(k.toString(), line.substring(32, 48)));
-                    j = j + 2;
+                if(spliLine.length>4) {
+                    memory.set_string(Integer.parseInt(spliLine[2]), spliLine[3]);
+                    list.set(Integer.parseInt(spliLine[2]), new MemoryList(spliLine[2], spliLine[3]));
+                    memory.set_string(Integer.parseInt(spliLine[4]), line.substring(32, 48));
+                    list.set(Integer.parseInt(spliLine[4]), new MemoryList(spliLine[4], spliLine[5]));
+                    if (Integer.parseInt(spliLine[4]) == 499){
+                        limit=true;
+                        console.setText("Memory Limit Data");
+                    }
                 }
             }
-            i++;
             line = reader.readLine();
+
+            if (Integer.parseInt(spliLine[0]) == 239){
+                limit=true;
+                console.setText("Memory Limit Instructions");
+            }
         }
-        if (i == 239 || j == 499){
-            console.setText("Memory Limit");
-        }
+
     }
 
 }

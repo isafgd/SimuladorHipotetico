@@ -1,15 +1,17 @@
 package binder;
 
+import charger.Charger;
 import executor.Reader;
 import executor.Writer;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Binder {
 
-    private static StringBuilder instructions;
+    private static StringBuilder instructions = new StringBuilder();
 
     public void process () throws IOException {
 
@@ -23,20 +25,16 @@ public class Binder {
         List<Integer> address = firstRead(output1,19,240);
         Writer.writeFile(instructions.toString(), "OutputFirstStep1.txt");
 
-        Reader ligador1 = new Reader("OutputFirstStep1.txt");
-
-        instructions = null;
+        instructions.delete(0,instructions.length());
         firstRead(output2,address.get(0),address.get(1));
         Writer.writeFile(instructions.toString(), "OutputFirstStep2.txt");
 
-        Reader ligador2 = new Reader("OutputFirstStep1.txt");
-
-        instructions = null;
-
-        secondRead(ligador1,ligador2,tbl_uso1,tbl_definicao2);
-        secondRead(ligador2,ligador1,tbl_uso2,tbl_definicao1);
+        instructions.delete(0,instructions.length());
+        secondRead("OutputFirstStep1.txt","OutputFirstStep2.txt",tbl_uso1,tbl_definicao2);
+        secondRead("OutputFirstStep2.txt","OutputFirstStep1.txt",tbl_uso2,tbl_definicao1);
 
         Writer.writeFile(instructions.toString(), "OutputLigador.txt");
+
     }
 
     public List<Integer> firstRead (Reader output, Integer firstInstruction, Integer firstData){
@@ -142,12 +140,14 @@ public class Binder {
             line = output.readLine();
         }
 
-        finalAddress.set(0,firstInstruction);
-        finalAddress.set(1,firstData);
+        finalAddress.add(0,firstInstruction);
+        finalAddress.add(1,firstData);
         return finalAddress;
     }
 
-    public void secondRead (Reader output, Reader output_aux, Reader tbl_uso, Reader tbl_definicao){
+    public void secondRead (String arquivo, String arquivo_aux, Reader tbl_uso, Reader tbl_definicao) throws FileNotFoundException {
+        Reader output = new Reader(arquivo);
+        Reader output_aux = new Reader(arquivo_aux);
         String line = output.readLine();
         String tblUsoLine = tbl_uso.readLine();
         String tblDefLine = tbl_definicao.readLine();
@@ -158,49 +158,53 @@ public class Binder {
             StringBuilder newLine = new StringBuilder();
             String address = null;
             String[] splitLine = line.split(";");
-            if (splitLine[3].equals("0000000000000000")){
-                boolean test = true;
-                while (test) {
-                    String[] splitUso = tblUsoLine.split(";");
-                    if (splitUso[0].equals(Integer.toString(lineCont))) {
-                        String var = splitUso[1];
-                        boolean testDef = true;
-                        while (testDef){
-                            String[] splitDef = tblDefLine.split(";");
-                            if(splitDef[1].equals(var)){
-                                address = splitDef[0];
-                                testDef = false;
-                            }else{
-                                tblDefLine = tbl_definicao.readLine();
+            if (splitLine.length>2) {
+                if (splitLine[3].equals("0000000000000000")) {
+                    boolean test = true;
+                    while (test) {
+                        String[] splitUso = tblUsoLine.split(";");
+                        if (splitUso[0].equals(Integer.toString(lineCont))) {
+                            String var = splitUso[1];
+                            boolean testDef = true;
+                            while (testDef) {
+                                String[] splitDef = tblDefLine.split(";");
+                                if (splitDef[1].equals(var)) {
+                                    address = splitDef[0];
+                                    testDef = false;
+                                } else {
+                                    tblDefLine = tbl_definicao.readLine();
+                                }
                             }
+                            test = false;
+                        } else {
+                            tblUsoLine = tbl_uso.readLine();
                         }
-                        test = false;
-                    } else {
-                        tblUsoLine = tbl_uso.readLine();
                     }
-                }
 
-                int contAux = 0;
-                test = true;
-                while (test) {
-                    if (contAux == (Integer.parseInt(address))) {
-                        String[] splitAux = lineAux.split(";");
-                        newLine.append(splitLine[0]).append(";").append(splitLine[1]).append(";").append(splitLine[2]).append(";");
-                        String newOpd = toBinary((Integer.parseInt(splitAux[0])),16);
-                        newLine.append(newOpd);
-                        test = false;
-                    } else {
-                        lineAux = output_aux.readLine();
-                        contAux++;
+                    int contAux = 0;
+                    test = true;
+                    while (test) {
+                        if (contAux == (Integer.parseInt(address))) {
+                            String[] splitAux = lineAux.split(";");
+                            newLine.append(splitLine[0]).append(";").append(splitLine[1]).append(";").append(splitLine[2]).append(";");
+                            String newOpd = toBinary((Integer.parseInt(splitAux[0])), 16);
+                            newLine.append(newOpd);
+                            test = false;
+                        } else {
+                            lineAux = output_aux.readLine();
+                            contAux++;
+                        }
                     }
+                    instructions.append(newLine).append("\n");
+
+                }else {
+                    instructions.append(line).append("\n");
                 }
-                instructions.append(newLine).append("\n");
             }else{
                 instructions.append(line).append("\n");
             }
             line = output.readLine();
             lineCont++;
-
         }
 
     }
