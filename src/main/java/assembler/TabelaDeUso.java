@@ -1,7 +1,8 @@
 package assembler;
 
     public class TabelaDeUso {
-        private String simbolo,relocabilidade,operacao;
+        //Endereço (LocationCounter) e Símbolo
+        private String simbolo;
         private int LocationCounter;
 
         public String getSimbolo() {
@@ -10,22 +11,6 @@ package assembler;
 
         public void setSimbolo(String simbolo) {
             this.simbolo = simbolo;
-        }
-
-        public String getRelocabilidade() {
-            return relocabilidade;
-        }
-
-        public void setRelocabilidade(String relocabilidade) {
-            this.relocabilidade = relocabilidade;
-        }
-
-        public String getOperacao() {
-            return operacao;
-        }
-
-        public void setOperacao(String operacao) {
-            this.operacao = operacao;
         }
 
         public int getLocationCounter() {

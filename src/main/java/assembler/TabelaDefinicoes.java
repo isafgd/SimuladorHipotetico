@@ -1,7 +1,8 @@
 package assembler;
 
 public class TabelaDefinicoes {
-    private String simbolo,relocabilidade;
+    //Endereço (LocationCounter) e Símbolo
+    private String simbolo;
     private int endereco;
 
     public String getSimbolo() {
@@ -12,20 +13,12 @@ public class TabelaDefinicoes {
         return endereco;
     }
 
-    public String getRelocabilidade() {
-        return relocabilidade;
-    }
-
     public void setSimbolo(String simbolo) {
         this.simbolo = simbolo;
     }
 
     public void setEndereco(int endereco) {
         this.endereco = endereco;
-    }
-
-    public void setRelocabilidade(String relocabilidade) {
-        this.relocabilidade = relocabilidade;
     }
 
 

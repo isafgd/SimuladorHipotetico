@@ -14,6 +14,7 @@ import java.util.HashMap;
 @Data
 public class Assembler {
     private int locationCounter; // contador de localizacao
+    private int lineCounter; // contador de linhas
     private Map<String, Integer> tabSimbolo; // tabela de simbolos
     private Map<String, Integer> labels; // rotulos
     private ArrayList<TabelaDefinicoes> definicoes = new ArrayList<> ();
@@ -21,6 +22,7 @@ public class Assembler {
 
     public Assembler() {
         locationCounter = 0;
+        lineCounter = 0;
         tabSimbolo = new HashMap<>();
         labels = new HashMap<>();
     }
@@ -190,6 +192,83 @@ public class Assembler {
         // Fecha o arquivo
         arqObj.close();
     }
+//*******************************************************************************************************************************************************************************************************************************************************
+//*******************************************************************************************************************************************************************************************************************************************************
+    //TEMOS QUE VERIFICAR PSEUDOINSTRUÇÕES
+    //CONST, END*, EXTDEF, EXTR, SPACE, STACK, START*
+    //END e START marcam início e fim do módulo, a gente só deve ver em casos específicos
+
+
+
+    //Proposta dessa função:
+    //Recebe a linha inteira do comando e verifica inicialmente verifica o primeiro componente:
+    //Se for uma expressão de operação, vai verificar se os operandos são labels. Se forem, é verificada sua existência na tabela de símbolos para inserção
+    //Se for diretamente um label, verifica a existência dele na tabela, se não existir, insere com o endereço correspondente. Se existe, insere o endereço (ainda não feito)
+    //talvez seja melhor quebrar isso em mais funçções?
+    public void verifyLabels(String[] instrucao) throws IOException {
+        switch (instrucao[0]) {
+            case "ADD":
+            case "BR":
+            case "BRNEG":
+            case "BRPOS":
+            case "BRZERO":
+            case "DIVIDE":
+            case "LOAD":
+            case "MULT":
+            case "READ":
+            case "STORE":
+            case "SUB":
+            case "WRITE":
+            case "CALL":
+                    //lê o operando que vem depois
+                    //verifica rapidamente o tipo de operação para colocar a parte certa do label dentro da tabela de Símbolos, se já não estiver lá
+                    if('A' < instrucao[1].charAt(0)  || instrucao[1].charAt(0) > 'z') { //verifica se é um label
+                        if (!tabelaDeSimbolos.isIn(instrucao[1])) { //verifica se está na tabela de simbolos. isIn é inventado, não existe
+                            if (instrucao[1].substring((instrucao[1].length() - 2), instrucao[1].length()) != ",I")
+                                tabelaDeSimbolos.add(instrucao[1]); //verifica se o endereçamento indireto existe, se não existe, coloca o label inteiro na tabela de simbolos
+                            else
+                                tabelaDeSimbolos.add(, instrucao[1].substring(0, instrucao[1].length() - 1)); //se o enderçamento indireto existe, adiciona o label na tabela sem o final ,I
+                        }
+                    }
+                break;
+            case "COPY":
+                //lê o operando que vem depois
+                //verifica rapidamente o tipo de operação para colocar a parte certa do label dentro da tabela de Símbolos, se já não estiver lá
+                if('A' < instrucao[1].charAt(0)  || instrucao[1].charAt(0) > 'z') { //verifica se é um label
+                    if (!tabelaDeSimbolos.isIn(instrucao[1])) { //verifica se está na tabela de simbolos. isIn é inventado, não existe
+                        if (instrucao[1].substring((instrucao[1].length() - 2), instrucao[1].length()) != ",I")
+                            tabelaDeSimbolos.add(instrucao[1]); //verifica se o endereçamento indireto existe, se não existe, coloca o label inteiro na tabela de simbolos
+                        else
+                            tabelaDeSimbolos.add(instrucao[1].substring(0, instrucao[1].length() - 1)); //se o enderçamento indireto existe, adiciona o label na tabela sem o final ,I
+                    }
+                }
+                //lê o operando que vem depois 2
+                //verifica rapidamente o tipo de operação para colocar a parte certa do label dentro da tabela de Símbolos, se já não estiver lá 2
+                if('A' < instrucao[2].charAt(0)  || instrucao[2].charAt(0) > 'z') { //verifica se é um label
+                    if (!tabelaDeSimbolos.isIn(instrucao[2])) { //verifica se está na tabela de simbolos. isIn é inventado, não existe
+                        if (instrucao[1].substring((instrucao[2].length() - 2), instrucao[1].length()) != ",I")
+                            tabelaDeSimbolos.add(instrucao[2]); //verifica se o endereçamento indireto existe, se não existe, coloca o label inteiro na tabela de simbolos
+                        else
+                            tabelaDeSimbolos.add(instrucao[2].substring(0, instrucao[2].length() - 1)); //se o enderçamento indireto existe, adiciona o label na tabela sem o final ,I
+                    }
+                }
+                break;
+            case "RET":
+            case "STOP":
+                //pula pra próxima linha direto
+            //pseudointruções
+            case "EXTDEF":
+            case "EXTR":
+            case "STACK":
+                //Vai direto pros operandos ou pra próxima linha (depende do que tem depois
+                break;
+            default:
+                if('A' < instrucao[1].charAt(0)  || instrucao[1].charAt(0) > 'z' && !tabelaDeSimbolos.isIn(instrucao[0]) {tabelaDeSimbolos.add(instrucao[0], instructionCounter);}
+                //verifica se tem formato de um label (se é uma string começada por um caractere alfabético)
+                //se for, coloca ele na table de símbolos junto com o valor do adress counter
+                break;
+        }
+    }
 
     public int getAmountOperands(String instrucao) throws IOException { // Pegar quantidade de operandos
         int amountOperands = -1; // contador de operandos, SE FOR -1 PODE SER LABEL VERIFICAR
@@ -239,18 +318,26 @@ public class Assembler {
             case "CALL":
                 List <String> atributos = getEnderecamento(operandos.get(0));
                 arq.write("00000000"+atributos.get(0)+opcodeInstrucao.get(instrucao)+ atributos.get(1));
+                //atualizamos o location counter após escrever no binário?
+                //locationCounter += 8
                 break;
             case "COPY":
                 List <String> atributos2 = getEnderecamento(operandos.get(0), operandos.get(1));
                 arq.write("00000000"+atributos2.get(0) + opcodeInstrucao.get(instrucao) + atributos2.get(1) + atributos2.get(2));  // BITS -SIGNIFICATIVOS, ENDEREÇAMENTO, OPCODE, OPD1 E OPD2
+                //atualizamos o location counter após escrever no binário?
+                //locationCounter += 12
                 break;
             case "RET":
             case "STOP":
                 arq.write("00000000"+"000"+opcodeInstrucao.get(instrucao));
+                //atualizamos o location counter após escrever no binário?
+                //locationCounter += 4
                 break;
             default:
                 arq.write("Instrução inválida.");
         }
+        //como contador de linhas sempre vai ser 1 a mais que o anterior
+        ////lineCounter += 1
     }
 
     public List <String> getEnderecamento(Integer operando1) {
