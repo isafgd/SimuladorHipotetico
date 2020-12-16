@@ -19,12 +19,15 @@ public class Assembler {
     private Map<String, Integer> labels; // rotulos
     private ArrayList<TabelaDefinicoes> definicoes = new ArrayList<> ();
     private ArrayList<TabelaDeUso> uso = new ArrayList<> ();
+    private HashMap<String, Integer> tabelaDeSimbolos;
 
     public Assembler() {
         locationCounter = 0;
         lineCounter = 0;
         tabSimbolo = new HashMap<>();
         labels = new HashMap<>();
+        tabelaDeSimbolos = new HashMap<String, Integer>();
+
     }
 
     public void monta(String arq) throws FileNotFoundException, IOException {
@@ -205,7 +208,7 @@ public class Assembler {
     //Se for uma expressão de operação, vai verificar se os operandos são labels. Se forem, é verificada sua existência na tabela de símbolos para inserção
     //Se for diretamente um label, verifica a existência dele na tabela, se não existir, insere com o endereço correspondente. Se existe, insere o endereço (ainda não feito)
     //talvez seja melhor quebrar isso em mais funçções?
-    public void verifyLabels(String[] instrucao) throws IOException {
+    public void verifyLabels(String[] instrucao, int instructionCounter) throws IOException {
         switch (instrucao[0]) {
             case "ADD":
             case "BR":
@@ -223,39 +226,47 @@ public class Assembler {
                     //lê o operando que vem depois
                     //verifica rapidamente o tipo de operação para colocar a parte certa do label dentro da tabela de Símbolos, se já não estiver lá
                     if('A' < instrucao[1].charAt(0)  || instrucao[1].charAt(0) > 'z') { //verifica se é um label
-                        if (!tabelaDeSimbolos.isIn(instrucao[1])) { //verifica se está na tabela de simbolos. isIn é inventado, não existe
+                        if (!tabelaDeSimbolos.containsKey(instrucao[1])) { //verifica se está na tabela de simbolos
                             if (instrucao[1].substring((instrucao[1].length() - 2), instrucao[1].length()) != ",I")
-                                tabelaDeSimbolos.add(instrucao[1]); //verifica se o endereçamento indireto existe, se não existe, coloca o label inteiro na tabela de simbolos
+                                tabelaDeSimbolos.put(instrucao[1], null); //verifica se o endereçamento indireto existe, se não existe, coloca o label inteiro na tabela de simbolos
                             else
-                                tabelaDeSimbolos.add(, instrucao[1].substring(0, instrucao[1].length() - 1)); //se o enderçamento indireto existe, adiciona o label na tabela sem o final ,I
+                                tabelaDeSimbolos.put(instrucao[1].substring(0, instrucao[1].length() - 1), null); //se o enderçamento indireto existe, adiciona o label na tabela sem o final ,I
                         }
                     }
+                //atualizamos o location counter?
+                //locationCounter += 8
                 break;
             case "COPY":
                 //lê o operando que vem depois
                 //verifica rapidamente o tipo de operação para colocar a parte certa do label dentro da tabela de Símbolos, se já não estiver lá
                 if('A' < instrucao[1].charAt(0)  || instrucao[1].charAt(0) > 'z') { //verifica se é um label
-                    if (!tabelaDeSimbolos.isIn(instrucao[1])) { //verifica se está na tabela de simbolos. isIn é inventado, não existe
+                    if (!tabelaDeSimbolos.containsKey(instrucao[1])) { //verifica se está na tabela de simbolos
                         if (instrucao[1].substring((instrucao[1].length() - 2), instrucao[1].length()) != ",I")
-                            tabelaDeSimbolos.add(instrucao[1]); //verifica se o endereçamento indireto existe, se não existe, coloca o label inteiro na tabela de simbolos
+                            tabelaDeSimbolos.put(instrucao[1], null); //verifica se o endereçamento indireto existe, se não existe, coloca o label inteiro na tabela de simbolos
                         else
-                            tabelaDeSimbolos.add(instrucao[1].substring(0, instrucao[1].length() - 1)); //se o enderçamento indireto existe, adiciona o label na tabela sem o final ,I
+                            tabelaDeSimbolos.put(instrucao[1].substring(0, instrucao[1].length() - 1), null); //se o enderçamento indireto existe, adiciona o label na tabela sem o final ,I
                     }
                 }
+                //atualizamos o location counter após escrever no binário?
+                //locationCounter += 12
                 //lê o operando que vem depois 2
                 //verifica rapidamente o tipo de operação para colocar a parte certa do label dentro da tabela de Símbolos, se já não estiver lá 2
                 if('A' < instrucao[2].charAt(0)  || instrucao[2].charAt(0) > 'z') { //verifica se é um label
-                    if (!tabelaDeSimbolos.isIn(instrucao[2])) { //verifica se está na tabela de simbolos. isIn é inventado, não existe
+                    if (!tabelaDeSimbolos.containsKey(instrucao[2])) { //verifica se está na tabela de simbolos
                         if (instrucao[1].substring((instrucao[2].length() - 2), instrucao[1].length()) != ",I")
-                            tabelaDeSimbolos.add(instrucao[2]); //verifica se o endereçamento indireto existe, se não existe, coloca o label inteiro na tabela de simbolos
+                            tabelaDeSimbolos.put(instrucao[2], null); //verifica se o endereçamento indireto existe, se não existe, coloca o label inteiro na tabela de simbolos
                         else
-                            tabelaDeSimbolos.add(instrucao[2].substring(0, instrucao[2].length() - 1)); //se o enderçamento indireto existe, adiciona o label na tabela sem o final ,I
+                            tabelaDeSimbolos.put(instrucao[2].substring(0, instrucao[2].length() - 1), null); //se o enderçamento indireto existe, adiciona o label na tabela sem o final ,I
                     }
                 }
+                //atualizamos o location counter?
+                //locationCounter += 12
                 break;
             case "RET":
             case "STOP":
                 //pula pra próxima linha direto
+                //atualizamos o location counter?
+                //locationCounter += 8
             //pseudointruções
             case "EXTDEF":
             case "EXTR":
@@ -263,7 +274,7 @@ public class Assembler {
                 //Vai direto pros operandos ou pra próxima linha (depende do que tem depois
                 break;
             default:
-                if('A' < instrucao[1].charAt(0)  || instrucao[1].charAt(0) > 'z' && !tabelaDeSimbolos.isIn(instrucao[0]) {tabelaDeSimbolos.add(instrucao[0], instructionCounter);}
+                if('A' < instrucao[1].charAt(0)  || instrucao[1].charAt(0) > 'z' && !tabelaDeSimbolos.containsKey(instrucao[1])) {tabelaDeSimbolos.put(instrucao[0], instructionCounter);}
                 //verifica se tem formato de um label (se é uma string começada por um caractere alfabético)
                 //se for, coloca ele na table de símbolos junto com o valor do adress counter
                 break;
