@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import java.util.*;
 
 
+import com.sun.org.apache.bcel.internal.generic.RETURN;
 import lombok.Data;
 
 import java.io.IOException;
@@ -21,6 +22,7 @@ public class Assembler {
     private HashMap <String, Integer> tabelaUso;
     private HashMap <String, Integer> tabelaDefinicoes;
     private HashMap<String, Integer> tabelaDeSimbolos;
+    private HashMap<String, Integer> instrucoes;
 
     public Assembler() {
         locationCounter = 0;
@@ -28,6 +30,7 @@ public class Assembler {
         tabelaUso = new HashMap<>();
         tabelaDeSimbolos = new HashMap<>();
         tabelaDeSimbolos = new HashMap<>();
+        instrucoes = new HashMap<>();
     }
 
     public void monta(String arq) throws FileNotFoundException, IOException {
@@ -182,17 +185,46 @@ public class Assembler {
     }
 //*******************************************************************************************************************************************************************************************************************************************************
 //*******************************************************************************************************************************************************************************************************************************************************
-    //TEMOS QUE VERIFICAR PSEUDOINSTRUÇÕES
-    //CONST, END*, EXTDEF, EXTR, SPACE, STACK, START*
-    //END e START marcam início e fim do módulo, a gente só deve ver em casos específicos
+    public void funcionaGit () {
+        
+    }
 
+    //todas as palavras que não forem uma dessas são labels
+    public HashMap intructionsListInit (HashMap instrucoes) {
+        instrucoes.put("ADD", 2);
+        instrucoes.put("BR", 2);
+        instrucoes.put("BRNEG", 2);
+        instrucoes.put("BRPOS", 2);
+        instrucoes.put("BRZERO", 2);
+        instrucoes.put("DIVIDE", 2);
+        instrucoes.put("LOAD", 2);
+        instrucoes.put("MULT", 2);
+        instrucoes.put("READ", 2);
+        instrucoes.put("STORE", 2);
+        instrucoes.put("SUB", 2);
+        instrucoes.put("WRITE", 2);
+        instrucoes.put("CALL", 2);
+        instrucoes.put("STOP", 1);
+        instrucoes.put("COPY", 3);
+        instrucoes.put("RET", 1);
+        instrucoes.put("EXTDEF", 1);
+        instrucoes.put("EXTR", 0);
+        instrucoes.put("START", 1);
+        instrucoes.put("END", 1);
+        instrucoes.put("STACK", 1);
+        instrucoes.put("SPACE", 0);
+        instrucoes.put("CONST", 1);
 
+        return instrucoes;
+
+    }
 
     //Proposta dessa função:
     //Recebe a linha inteira do comando e verifica inicialmente verifica o primeiro componente:
     //Se for uma expressão de operação, vai verificar se os operandos são labels. Se forem, é verificada sua existência na tabela de símbolos para inserção
     //Se for diretamente um label, verifica a existência dele na tabela, se não existir, insere com o endereço correspondente. Se existe, insere o endereço (ainda não feito)
     //talvez seja melhor quebrar isso em mais funçções?
+
     public void verifyLabels(String[] instrucao, int instructionCounter) throws IOException {
         switch (instrucao[0]) {
             case "ADD":
