@@ -15,19 +15,19 @@ import java.util.HashMap;
 public class Assembler {
     private int locationCounter; // contador de localizacao
     private int lineCounter; // contador de linhas
-    private Map<String, Integer> tabSimbolo; // tabela de simbolos
     private Map<String, Integer> labels; // rotulos
-    private ArrayList<TabelaDefinicoes> definicoes = new ArrayList<> ();
-    private ArrayList<TabelaDeUso> uso = new ArrayList<> ();
+    //private ArrayList<TabelaDefinicoes> definicoes = new ArrayList<> ();
+    //private ArrayList<TabelaDeUso> uso = new ArrayList<> ();
+    private HashMap <String, Integer> tabelaUso;
+    private HashMap <String, Integer> tabelaDefinicoes;
     private HashMap<String, Integer> tabelaDeSimbolos;
 
     public Assembler() {
         locationCounter = 0;
         lineCounter = 0;
-        tabSimbolo = new HashMap<>();
-        labels = new HashMap<>();
-        tabelaDeSimbolos = new HashMap<String, Integer>();
-
+        tabelaUso = new HashMap<>();
+        tabelaDeSimbolos = new HashMap<>();
+        tabelaDeSimbolos = new HashMap<>();
     }
 
     public void monta(String arq) throws FileNotFoundException, IOException {
@@ -47,27 +47,12 @@ public class Assembler {
         TabelaDefinicoes Definicoes_temp;
         TabelaDeUso Uso_temp;
         // Enquanto nao encontra o inicio das instrucoes
-        while (!textoSeparado[0].equals("ORG")) {
-            if(textoSeparado[0].equals("INTERN")){ // Variavel global definida internamente
-                // Guarda na tabela de definicoes
-                Definicoes_temp = new TabelaDefinicoes();
-                Definicoes_temp.setSimbolo(textoSeparado[1]);
-                Definicoes_temp.setRelocabilidade("R");
-                Definicoes_temp.setEndereco(Integer.parseInt(textoSeparado[3].substring(1)));
-                definicoes.add(Definicoes_temp);
-                // Guarda no mapa de rotulos
-                labels.put(textoSeparado[1], Integer.parseInt(textoSeparado[3].substring(1)));
-            }
-            else if (textoSeparado[0].equals("EXTR")){ // Variavel global definida externamente
+        while (!textoSeparado[0].equals("START")) {
+            if (textoSeparado[0].equals("EXTDEF")){ // Variavel global definida externamente
                 // Guarda na tabela de uso
-                Uso_temp = new TabelaDeUso();
-                Uso_temp.setSimbolo(textoSeparado[1]);
-                Uso_temp.setOperacao("+");
-                Uso_temp.setRelocabilidade("R");
-                Uso_temp.setLocationCounter(0);
-                uso.add(Uso_temp);
+                tabelaDefinicoes.put(textoSeparado[1], locationCounter);
                 // Guarda no mapa de rotulos
-                labels.put(textoSeparado[1], Integer.parseInt("0"));
+                tabelaDeSimbolos.put(textoSeparado[1], locationCounter);
             }
             // Le nova linha
             linha = bf.readLine();
@@ -102,7 +87,7 @@ public class Assembler {
                     break;
                 }
             }
-            locationCounter += 4;
+            locationCounter += 1;
 
             switch (textoSeparado[1].charAt(0)) {
                 case '#': // endereçamento imediato?
@@ -136,7 +121,7 @@ public class Assembler {
                     arqObj.write(labels.get(textoSeparado[1]) + "\t");
                     break;
             }
-            locationCounter += 4;
+            locationCounter += 1;
 
             if (textoSeparado.length == 3) {
                 switch (textoSeparado[2].charAt(0)) {
@@ -180,7 +165,7 @@ public class Assembler {
                         arqObj.write((labels.get(textoSeparado[2])) + "\t");
                         break;
                 }
-                locationCounter += 4;
+                locationCounter += 1;
             }
 
             arqObj.write("\n");
@@ -234,7 +219,7 @@ public class Assembler {
                         }
                     }
                 //atualizamos o location counter?
-                //locationCounter += 8
+                //locationCounter += 2
                 break;
             case "COPY":
                 //lê o operando que vem depois
@@ -248,7 +233,7 @@ public class Assembler {
                     }
                 }
                 //atualizamos o location counter após escrever no binário?
-                //locationCounter += 12
+                //locationCounter += 3
                 //lê o operando que vem depois 2
                 //verifica rapidamente o tipo de operação para colocar a parte certa do label dentro da tabela de Símbolos, se já não estiver lá 2
                 if('A' < instrucao[2].charAt(0)  || instrucao[2].charAt(0) > 'z') { //verifica se é um label
@@ -260,23 +245,36 @@ public class Assembler {
                     }
                 }
                 //atualizamos o location counter?
-                //locationCounter += 12
+                //locationCounter += 3
                 break;
             case "RET":
+                break;
             case "STOP":
+                //começa a guardar os valores dos labels
                 //pula pra próxima linha direto
                 //atualizamos o location counter?
-                //locationCounter += 8
+                //locationCounter += 2
             //pseudointruções
             case "EXTDEF":
+                //se acha esse comando, quer dizer que esse símbolo declarado aqui é usado no outro módulo
+                //colocar na tabela de definições
+                tabelaDefinicoes.put(instrucao[0], lineCounter);
             case "EXTR":
+                //se achar esse comando, quer dizer que esse símbolo foi definido no outro módulo
+                //deve ser colocado na tabela de uso
+                tabelaUso.put(instrucao[0], lineCounter);
             case "STACK":
-                //Vai direto pros operandos ou pra próxima linha (depende do que tem depois
+                //??????????????
                 break;
             default:
-                if('A' < instrucao[1].charAt(0)  || instrucao[1].charAt(0) > 'z' && !tabelaDeSimbolos.containsKey(instrucao[1])) {tabelaDeSimbolos.put(instrucao[0], instructionCounter);}
                 //verifica se tem formato de um label (se é uma string começada por um caractere alfabético)
                 //se for, coloca ele na table de símbolos junto com o valor do adress counter
+                if('A' < instrucao[0].charAt(0)  || instrucao[0].charAt(0) > 'z' && !tabelaDeSimbolos.containsKey(instrucao[1])) {tabelaDeSimbolos.put(instrucao[0], instructionCounter);}
+
+                for(int i = 0; i < (instrucao.length - 1); i++) { //como tem um label na posição 0 da instrução, ele move a string pra que o label, que já tá pronto, suma e faz de novo a a função
+                    instrucao[i] = instrucao[i+1];
+                }
+                verifyLabels(instrucao, locationCounter);
                 break;
         }
     }
@@ -330,19 +328,19 @@ public class Assembler {
                 List <String> atributos = getEnderecamento(operandos.get(0));
                 arq.write("00000000"+atributos.get(0)+opcodeInstrucao.get(instrucao)+ atributos.get(1));
                 //atualizamos o location counter após escrever no binário?
-                //locationCounter += 8
+                //locationCounter += 2
                 break;
             case "COPY":
                 List <String> atributos2 = getEnderecamento(operandos.get(0), operandos.get(1));
                 arq.write("00000000"+atributos2.get(0) + opcodeInstrucao.get(instrucao) + atributos2.get(1) + atributos2.get(2));  // BITS -SIGNIFICATIVOS, ENDEREÇAMENTO, OPCODE, OPD1 E OPD2
                 //atualizamos o location counter após escrever no binário?
-                //locationCounter += 12
+                //locationCounter += 3
                 break;
             case "RET":
             case "STOP":
                 arq.write("00000000"+"000"+opcodeInstrucao.get(instrucao));
                 //atualizamos o location counter após escrever no binário?
-                //locationCounter += 4
+                //locationCounter += 1
                 break;
             default:
                 arq.write("Instrução inválida.");
