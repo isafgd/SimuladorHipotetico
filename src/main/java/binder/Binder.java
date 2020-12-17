@@ -1,6 +1,5 @@
 package binder;
 
-import charger.Charger;
 import executor.Reader;
 import executor.Writer;
 
@@ -46,79 +45,46 @@ public class Binder {
             StringBuilder newLine = new StringBuilder();
             int addressMode = Integer.parseInt(line.substring(8, 11), 2);
             if(line.length()==32){
-                if(addressMode==4){
-                    newLine.append(firstInstruction.toString());
-                    newLine.append(";");
-                    newLine.append(line.substring(0,16));
-                    newLine.append(";");
-                    newLine.append(firstData.toString());
-                    newLine.append(";");
-                    newLine.append(line.substring(16,32));
-
+                if(addressMode==4 || line.substring(16, 32).equals("0000000000000000")){
+                    newLine = rideLine(line.substring(0,16),line.substring(16,32),firstInstruction,firstData);
                     firstData++;
                     firstInstruction++;
                 }
                 else{
-                    int opd = Integer.parseInt(line.substring(16, 32),  2);
-                    int newOpd = opd + increment;
-                    String binOpd = toBinary(newOpd,16);
-                    newLine.append(firstInstruction.toString());
-                    newLine.append(";");
-                    newLine.append(line.substring(0,16));
-                    newLine.append(";");
-                    newLine.append(firstData.toString());
-                    newLine.append(";");
-                    newLine.append(binOpd);
-
+                    String binOpd = setOpd(line.substring(16, 32),increment);
+                    newLine = rideLine(line.substring(0, 16),binOpd,firstInstruction,firstData);
                     firstData++;
                     firstInstruction++;
                 }
             }else if (line.length()==48){
                 if (addressMode==4){
-                    int opd = Integer.parseInt(line.substring(16, 32),  2);
-                    int newOpd = opd + increment;
-                    String binOpd = toBinary(newOpd,16);
-                    newLine.append(firstInstruction.toString());
-                    newLine.append(";");
-                    newLine.append(line.substring(0,16));
-                    newLine.append(";");
-                    newLine.append(firstData.toString());
-                    newLine.append(";");
-                    newLine.append(binOpd);
-
+                    String binOpd = setOpd(line.substring(16, 32),increment);
+                    newLine = rideLine(line.substring(0,16),binOpd,firstInstruction,firstData);
                     firstData++;
 
-                    newLine.append(";");
-                    newLine.append(firstData.toString());
-                    newLine.append(";");
-                    newLine.append(line.substring(32,48));
-
+                    rideLineSingle(newLine,line.substring(32,48),firstData);
                     firstData++;
                     firstInstruction++;
                 }else {
-                    int opd = Integer.parseInt(line.substring(16, 32), 2);
-                    int newOpd = opd + increment;
-                    String binOpd = toBinary(newOpd, 16);
-                    newLine.append(firstInstruction.toString());
-                    newLine.append(";");
-                    newLine.append(line.substring(0, 16));
-                    newLine.append(";");
-                    newLine.append(firstData.toString());
-                    newLine.append(";");
-                    newLine.append(binOpd);
+                    if(!line.substring(16, 32).equals("0000000000000000")) {
+                        String binOpd = setOpd(line.substring(16, 32),increment);
+                        newLine = rideLine(line.substring(0, 16),binOpd,firstInstruction,firstData);
+                        firstData++;
+                    }else{
+                        newLine = rideLine(line.substring(0,16),line.substring(16,32),firstInstruction,firstData);
+                        firstData++;
+                    }
 
-                    firstData++;
-
-                    int opd2 = Integer.parseInt(line.substring(32, 48), 2);
-                    int newOpd2 = opd2 + increment;
-                    String binOpd2 = toBinary(newOpd2, 16);
-                    newLine.append(";");
-                    newLine.append(firstData.toString());
-                    newLine.append(";");
-                    newLine.append(binOpd2);
-
-                    firstData++;
-                    firstInstruction++;
+                    if(!line.substring(16, 32).equals("0000000000000000")) {
+                        String binOpd2 = setOpd(line.substring(32, 48),increment);
+                        rideLineSingle(newLine,binOpd2,firstData);
+                        firstData++;
+                        firstInstruction++;
+                    }else{
+                        rideLineSingle(newLine,line.substring(32,48),firstData);
+                        firstData++;
+                        firstInstruction++;
+                    }
                 }
 
             }else{
@@ -136,7 +102,7 @@ public class Binder {
                     firstInstruction++;
                 }
             }
-            instructions.append(newLine+"\n");
+            instructions.append(newLine).append("\n");
             line = output.readLine();
         }
 
@@ -216,6 +182,33 @@ public class Binder {
                     Integer.toBinaryString(x)).replaceAll(" ", "0");
         }
         return null;
+    }
+
+    public StringBuilder rideLine (String line1, String line2,Integer instructionAddress, Integer dataAddress){
+        StringBuilder newLine = new StringBuilder();
+
+        newLine.append(instructionAddress.toString());
+        newLine.append(";");
+        newLine.append(line1);
+        newLine.append(";");
+        newLine.append(dataAddress.toString());
+        newLine.append(";");
+        newLine.append(line2);
+
+        return newLine;
+    }
+
+    public void rideLineSingle (StringBuilder newLine, String line, Integer dataAddress){
+        newLine.append(";");
+        newLine.append(dataAddress.toString());
+        newLine.append(";");
+        newLine.append(line);
+    }
+
+    public String setOpd (String line, Integer increment){
+        int opd = Integer.parseInt(line, 2);
+        int newOpd = opd + increment;
+        return toBinary(newOpd, 16);
     }
 
 }
