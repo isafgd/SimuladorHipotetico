@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import java.util.*;
 
 
+import ReadingFile.Read;
 import com.sun.org.apache.bcel.internal.generic.RETURN;
 import lombok.Data;
 
@@ -19,16 +20,16 @@ public class Assembler {
     private Map<String, Integer> labels; // rotulos
     //private ArrayList<TabelaDefinicoes> definicoes = new ArrayList<> ();
     //private ArrayList<TabelaDeUso> uso = new ArrayList<> ();
-    private HashMap <String, Integer> tabelaUso;
-    private HashMap <String, Integer> tabelaDefinicoes;
-    private HashMap<String, Integer> tabelaDeSimbolos;
-    private HashMap<String, Integer> instrucoes;
+    private Map<String, Integer> tabelaUso;
+    private Map<String, Integer> tabelaDefinicoes;
+    private Map<String, Integer> tabelaDeSimbolos;
+    private Map<String, Integer> instrucoes;
 
     public Assembler() {
         locationCounter = 0;
         lineCounter = 0;
         tabelaUso = new HashMap<>();
-        tabelaDeSimbolos = new HashMap<>();
+        tabelaDefinicoes = new HashMap<>();
         tabelaDeSimbolos = new HashMap<>();
         instrucoes = new HashMap<>();
     }
@@ -185,12 +186,13 @@ public class Assembler {
     }
 //*******************************************************************************************************************************************************************************************************************************************************
 //*******************************************************************************************************************************************************************************************************************************************************
-    public void funcionaGit () {
-        
+    public void preencheListaSimbolos () throws FileNotFoundException{
+        Read reader = new Read();
     }
 
+
     //todas as palavras que não forem uma dessas são labels
-    public HashMap intructionsListInit (HashMap instrucoes) {
+    public void intructionsListInit () {
         instrucoes.put("ADD", 2);
         instrucoes.put("BR", 2);
         instrucoes.put("BRNEG", 2);
@@ -214,9 +216,6 @@ public class Assembler {
         instrucoes.put("STACK", 1);
         instrucoes.put("SPACE", 0);
         instrucoes.put("CONST", 1);
-
-        return instrucoes;
-
     }
 
     //Proposta dessa função:
