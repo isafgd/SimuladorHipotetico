@@ -217,15 +217,16 @@ public class Assembler {
 //        }
 //    }
 
-
-    public void preencheListaSimbolos () throws FileNotFoundException{
+//RAQUEL MEXEU AQUI
+    public void preencheListaSimbolos () throws FileNotFoundException {
         Reader reader = new Reader("EntradaTeste.txt");
         Integer cont = 0;
         String linha = reader.readLine();
-        while(linha!=null) {
+        while (linha != null) {
             String[] args = linha.split(" ");
-            if(args[0].equals("EXTDEF")){
-                tabelaDefinicoes.put(args[1],-1);
+            args = removeAdressType(args);  //tira todos as formas de endereçamento presentes
+            if (args[0].equals("EXTDEF")) {
+                tabelaDefinicoes.put(args[1], -1);
             }
             for (String arg : args)
                 existe(arg, cont);
@@ -233,21 +234,67 @@ public class Assembler {
             linha = reader.readLine();
         }
         Set<String> set = tabelaDefinicoes.keySet();
-        for(String key: set){
-            tabelaDefinicoes.replace(key,tabelaDeSimbolos.get(key));
+        for (String key : set) {
+            tabelaDefinicoes.replace(key, tabelaDeSimbolos.get(key));
         }
+    }
 
+    //considerando que label só pode ter endereçamente indireto, ele verifica se tem , e I no fim de cada uma das strings do array
+    public String[] removeAdressType (String [] argumento) {
+        for (int i = 0; i < argumento.length; i++){ //percorre as strings que estão no array
+            if(!instrucoes.containsKey(argumento[0])) { //verifica se é uma instrução
+                if(argumento[i].charAt(argumento[i].length()) == 'I' && argumento[i].charAt(argumento[i].length()-1) == ',') { //se não é instrução, verifica se tem endereçamento indireto
+                    argumento[i] = argumento[i].substring(0, argumento[i].length()-1); //es tiver endereçamento indireto, coloca uma nova string igual a primeira, mas sem ",I" no fim no array
+                }
+            }
+        }
+        return argumento; //retorna a nova string, semelhante a original, porém agora os operandos estão sem a marcasção do tipo de enderelamento
     }
 
     public void existe(String argumento,Integer cont){
         if(!instrucoes.containsKey(argumento)){
-            if(!tabelaDeSimbolos.containsKey(argumento))
-                tabelaDeSimbolos.put(argumento,cont);
-            else
-                if(tabelaDeSimbolos.get(argumento) == -1)
-                    tabelaDeSimbolos.replace(argumento,cont);
+            if(('A' < argumento.charAt(0) && argumento.charAt(0) < 'Z') || ('a' < argumento.charAt(0) && argumento.charAt(0) < 'a')) { //VERIFICA SE É UM LABEL, OU SEJA, VERIFICA SE COMEÇA POR CARACTERE ALFABÉTICO
+                if (!tabelaDeSimbolos.containsKey(argumento))
+                    tabelaDeSimbolos.put(argumento, cont);
+                else if (tabelaDeSimbolos.get(argumento) == -1)
+                    tabelaDeSimbolos.replace(argumento, cont);
+            }
         }
     }
+//RAQUEL TERMINOU DE MEXER
+
+//ORIGINAL
+//    public void preencheListaSimbolos () throws FileNotFoundException{
+//        Reader reader = new Reader("EntradaTeste.txt");
+//        Integer cont = 0;
+//        String linha = reader.readLine();
+//        while(linha!=null) {
+//            String[] args = linha.split(" ");
+//            if(args[0].equals("EXTDEF")){
+//                tabelaDefinicoes.put(args[1],-1);
+//            }
+//            for (String arg : args)
+//                existe(arg, cont);
+//
+//            linha = reader.readLine();
+//        }
+//        Set<String> set = tabelaDefinicoes.keySet();
+//        for(String key: set){
+//            tabelaDefinicoes.replace(key,tabelaDeSimbolos.get(key));
+//        }
+//
+//    }
+
+//    public void existe(String argumento,Integer cont){
+//        if(!instrucoes.containsKey(argumento)){
+//            if(!tabelaDeSimbolos.containsKey(argumento))
+//                tabelaDeSimbolos.put(argumento,cont);
+//            else
+//                if(tabelaDeSimbolos.get(argumento) == -1)
+//                    tabelaDeSimbolos.replace(argumento,cont);
+//        }
+//    }
+// ORIGINAL
 
 
     //todas as palavras que não forem uma dessas são labels
