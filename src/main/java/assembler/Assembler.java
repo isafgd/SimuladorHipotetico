@@ -19,7 +19,8 @@ public class Assembler {
     private Map<String, Integer> labels; // rotulos
     //private ArrayList<TabelaDefinicoes> definicoes = new ArrayList<> ();
     //private ArrayList<TabelaDeUso> uso = new ArrayList<> ();
-    private Map<String, Integer> tabelaUso;
+    private ArrayList<String> tabelaUso;
+    private Map<String, Integer> tabelaUsoAux;
     private Map<String, Integer> tabelaDefinicoes;
     private Map<String, Integer> tabelaDeSimbolos;
     private Map<String, Integer> instrucoes;
@@ -27,10 +28,11 @@ public class Assembler {
     public Assembler() {
         locationCounter = 0;
         lineCounter = 0;
-        tabelaUso = new HashMap<>();
+        tabelaUsoAux = new HashMap<>();
         tabelaDefinicoes = new HashMap<>();
         tabelaDeSimbolos = new HashMap<>();
         instrucoes = new HashMap<>();
+        tabelaUso = new ArrayList<String>();
     }
 
     public void monta(String arq) throws FileNotFoundException, IOException {
@@ -218,26 +220,54 @@ public class Assembler {
 //    }
 
 //RAQUEL MEXEU AQUI
-    public void preencheListaSimbolos () throws FileNotFoundException {
-        Reader reader = new Reader("EntradaTeste.txt");
-        Integer cont = 0;
-        String linha = reader.readLine();
-        while (linha != null) {
-            String[] args = linha.split(" ");
-            args = removeAdressType(args);  //tira todos as formas de endereçamento presentes
-            if (args[0].equals("EXTDEF")) {
-                tabelaDefinicoes.put(args[1], -1);
-            }
-            for (String arg : args)
-                existe(arg, cont);
+public void preencheListaSimbolos () throws FileNotFoundException {
+    Reader reader = new Reader("EntradaTeste.txt");
+    Integer cont = 0;
+    String linha = reader.readLine();
+    while (linha != null) {
+        String[] args = linha.split(" ");
+        args = removeAdressType(args);  //tira todos as formas de endereçamento presentes
+        //alguém pelo amor me ajuda a avaliar essa merda aqui
+        if(args[1].equals("EXTR")) { //como o EXTR é só "label extr" sempre, aqui ele identifica o extr, coloca o label dele numa tabela auxiliar e passa direto pra próxima linha
+            tabelaUsoAux.put(args[0], -1); //coloca na tabela auxiliar
+            linha = reader.readLine(); // lê a próxima linha
+            args = removeAdressType(linha.split(" "));  //formata; depois disso tudo só segue como se nada tivesse acontecido
+        }
+        //**
+        if (args[0].equals("EXTDEF")) {
+            tabelaDefinicoes.put(args[1], -1);
+        }
+        for (String arg : args)
+            existe(arg, cont);
 
-            linha = reader.readLine();
-        }
-        Set<String> set = tabelaDefinicoes.keySet();
-        for (String key : set) {
-            tabelaDefinicoes.replace(key, tabelaDeSimbolos.get(key));
-        }
+        linha = reader.readLine();
     }
+    Set<String> set = tabelaDefinicoes.keySet();
+    for (String key: set) {
+        tabelaDefinicoes.replace(key, tabelaDeSimbolos.get(key));
+    }
+}
+
+//    public void preencheListaSimbolos () throws FileNotFoundException {
+//        Reader reader = new Reader("EntradaTeste.txt");
+//        Integer cont = 0;
+//        String linha = reader.readLine();
+//        while (linha != null) {
+//            String[] args = linha.split(" ");
+//            args = removeAdressType(args);  //tira todos as formas de endereçamento presentes
+//            if (args[0].equals("EXTDEF")) {
+//                tabelaDefinicoes.put(args[1], -1);
+//            }
+//            for (String arg : args)
+//                existe(arg, cont);
+//
+//            linha = reader.readLine();
+//        }
+//        Set<String> set = tabelaDefinicoes.keySet();
+//        for (String key: set) {
+//            tabelaDefinicoes.replace(key, tabelaDeSimbolos.get(key));
+//        }
+//    }
 
     //considerando que label só pode ter endereçamente indireto, ele verifica se tem , e I no fim de cada uma das strings do array
     public String[] removeAdressType (String [] argumento) {
@@ -248,19 +278,32 @@ public class Assembler {
                 }
             }
         }
-        return argumento; //retorna a nova string, semelhante a original, porém agora os operandos estão sem a marcasção do tipo de enderelamento
+        return argumento; //retorna a nova string, semelhante a original, porém agora os operandos estão sem a marcasção do tipo de endereçamento
     }
-
     public void existe(String argumento,Integer cont){
         if(!instrucoes.containsKey(argumento)){
             if(('A' < argumento.charAt(0) && argumento.charAt(0) < 'Z') || ('a' < argumento.charAt(0) && argumento.charAt(0) < 'a')) { //VERIFICA SE É UM LABEL, OU SEJA, VERIFICA SE COMEÇA POR CARACTERE ALFABÉTICO
-                if (!tabelaDeSimbolos.containsKey(argumento))
-                    tabelaDeSimbolos.put(argumento, cont);
-                else if (tabelaDeSimbolos.get(argumento) == -1)
-                    tabelaDeSimbolos.replace(argumento, cont);
+                if(!tabelaUsoAux.containsKey(argumento)) { //verifica se o argumento é um dos símbolos da tabela de uso, se não for, coloca na tabela de símbolos normalmente
+                    if (!tabelaDeSimbolos.containsKey(argumento))
+                        tabelaDeSimbolos.put(argumento, cont);
+                    else if (tabelaDeSimbolos.get(argumento) == -1)
+                        tabelaDeSimbolos.replace(argumento, cont);
+                } else tabelaUso.add(argumento+";"+Integer.toString(cont)); //se for um símbolo da tabela de uso, coloca na verdadeira tabela de uso (esse formato "simbolo;endereço" é o que a isa pediu no output das tabelas)
             }
         }
     }
+
+//    public void existe(String argumento,Integer cont){
+//        if(!instrucoes.containsKey(argumento)){
+//            if(('A' < argumento.charAt(0) && argumento.charAt(0) < 'Z') || ('a' < argumento.charAt(0) && argumento.charAt(0) < 'a')) { //VERIFICA SE É UM LABEL, OU SEJA, VERIFICA SE COMEÇA POR CARACTERE ALFABÉTICO
+//                if (!tabelaDeSimbolos.containsKey(argumento))
+//                    tabelaDeSimbolos.put(argumento, cont);
+//                else if (tabelaDeSimbolos.get(argumento) == -1)
+//                    tabelaDeSimbolos.replace(argumento, cont);
+//            }
+//        }
+//    }
+
 //RAQUEL TERMINOU DE MEXER
 
 //ORIGINAL
