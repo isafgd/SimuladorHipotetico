@@ -14,24 +14,25 @@ import java.util.HashMap;
 
 @Data
 public class Assembler {
-    private int locationCounter; // contador de localizacao
+    private int adressCounter; // contador de localizacao
     private int lineCounter; // contador de linhas
-    private Map<String, Integer> labels; // rotulos
-    //private ArrayList<TabelaDefinicoes> definicoes = new ArrayList<> ();
-    //private ArrayList<TabelaDeUso> uso = new ArrayList<> ();
+    private int instructionsBegin; //controlador para não precisar ler o arquivotodo do zero
     private ArrayList<String> tabelaUso;
     private Map<String, Integer> tabelaUsoAux;
     private Map<String, Integer> tabelaDefinicoes;
     private Map<String, Integer> tabelaDeSimbolos;
     private Map<String, Integer> instrucoes;
+    private Map<String, Integer> pseudoinstrucoes;
 
     public Assembler() {
-        locationCounter = 0;
+        adressCounter = 0;
         lineCounter = 0;
+        instructionsBegin = 0;
         tabelaUsoAux = new HashMap<>();
         tabelaDefinicoes = new HashMap<>();
         tabelaDeSimbolos = new HashMap<>();
         instrucoes = new HashMap<>();
+        pseudoinstrucoes = new HashMap<>();
         tabelaUso = new ArrayList<String>();
     }
 
@@ -222,24 +223,26 @@ public class Assembler {
 //RAQUEL MEXEU AQUI
 public void preencheListaSimbolos () throws FileNotFoundException {
     Reader reader = new Reader("EntradaTeste.txt");
-    Integer cont = 0;
     String linha = reader.readLine();
     while (linha != null) {
         String[] args = linha.split(" ");
         args = removeAdressType(args);  //tira todos as formas de endereçamento presentes
-        //alguém pelo amor me ajuda a avaliar essa merda aqui
-        if(args[1].equals("EXTR")) { //como o EXTR é só "label extr" sempre, aqui ele identifica o extr, coloca o label dele numa tabela auxiliar e passa direto pra próxima linha
-            tabelaUsoAux.put(args[0], -1); //coloca na tabela auxiliar
+        while(pseudoinstrucoes.containsKey(args[0]) || pseudoinstrucoes.containsKey(args[1])) {
+            if (args[1].equals("EXTR")) { //como o EXTR é só "label extr" sempre, aqui ele identifica o extr, coloca o label dele numa tabela auxiliar
+                tabelaUsoAux.put(args[0], -1); //coloca na tabela auxiliar
+            }
+            if (args[0].equals("EXTDEF")) {
+                tabelaDefinicoes.put(args[1], -1);
+            }
+            lineCounter +=1;
             linha = reader.readLine(); // lê a próxima linha
             args = removeAdressType(linha.split(" "));  //formata; depois disso tudo só segue como se nada tivesse acontecido
-        }
-        //**
-        if (args[0].equals("EXTDEF")) {
-            tabelaDefinicoes.put(args[1], -1);
+            instructionsBegin = lineCounter;
         }
         for (String arg : args)
-            existe(arg, cont);
+            existe(arg, adressCounter);
 
+        lineCounter +=1;
         linha = reader.readLine();
     }
     Set<String> set = tabelaDefinicoes.keySet();
@@ -247,6 +250,35 @@ public void preencheListaSimbolos () throws FileNotFoundException {
         tabelaDefinicoes.replace(key, tabelaDeSimbolos.get(key));
     }
 }
+//public void preencheListaSimbolos () throws FileNotFoundException {
+//    Reader reader = new Reader("EntradaTeste.txt");
+//    Integer cont = 0;
+//    String linha = reader.readLine();
+//    while (linha != null) {
+//        String[] args = linha.split(" ");
+//        args = removeAdressType(args);  //tira todos as formas de endereçamento presentes
+//        //alguém pelo amor me ajuda a avaliar essa merda aqui
+//        if(args[1].equals("EXTR")) { //como o EXTR é só "label extr" sempre, aqui ele identifica o extr, coloca o label dele numa tabela auxiliar e passa direto pra próxima linha
+//            tabelaUsoAux.put(args[0], -1); //coloca na tabela auxiliar
+//            linha = reader.readLine(); // lê a próxima linha
+//            args = removeAdressType(linha.split(" "));  //formata; depois disso tudo só segue como se nada tivesse acontecido
+//        }
+//        //**
+//        if (args[0].equals("EXTDEF")) {
+//            tabelaDefinicoes.put(args[1], -1);
+//        }
+//        for (String arg : args)
+//            existe(arg, cont);
+//
+//        linha = reader.readLine();
+//    }
+//    Set<String> set = tabelaDefinicoes.keySet();
+//    for (String key: set) {
+//        tabelaDefinicoes.replace(key, tabelaDeSimbolos.get(key));
+//    }
+//}
+
+
 
 //    public void preencheListaSimbolos () throws FileNotFoundException {
 //        Reader reader = new Reader("EntradaTeste.txt");
@@ -304,6 +336,33 @@ public void preencheListaSimbolos () throws FileNotFoundException {
 //        }
 //    }
 
+    public void pseudoinstructionsListInit () {
+        pseudoinstrucoes.put("EXTDEF", 1);
+        pseudoinstrucoes.put("EXTR", 0);
+        pseudoinstrucoes.put("STACK", 1);
+        pseudoinstrucoes.put("START", 1);
+    }
+    //todas as palavras que não forem uma dessas são labels
+    public void intructionsListInit () {
+        instrucoes.put("ADD", 2);
+        instrucoes.put("BR", 2);
+        instrucoes.put("BRNEG", 2);
+        instrucoes.put("BRPOS", 2);
+        instrucoes.put("BRZERO", 2);
+        instrucoes.put("DIVIDE", 2);
+        instrucoes.put("LOAD", 2);
+        instrucoes.put("MULT", 2);
+        instrucoes.put("READ", 2);
+        instrucoes.put("STORE", 2);
+        instrucoes.put("SUB", 2);
+        instrucoes.put("WRITE", 2);
+        instrucoes.put("CALL", 2);
+        instrucoes.put("STOP", 1);
+        instrucoes.put("COPY", 3);
+        instrucoes.put("RET", 1);
+        pseudoinstrucoes.put("SPACE", 0);
+        pseudoinstrucoes.put("CONST", 1);
+        pseudoinstrucoes.put("END", 1);
 //RAQUEL TERMINOU DE MEXER
 
 //ORIGINAL
