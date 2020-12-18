@@ -5,8 +5,7 @@ import java.math.BigInteger;
 import java.util.*;
 
 
-import ReadingFile.Read;
-import com.sun.org.apache.bcel.internal.generic.RETURN;
+import executor.Reader;
 import lombok.Data;
 
 import java.io.IOException;
@@ -186,8 +185,68 @@ public class Assembler {
     }
 //*******************************************************************************************************************************************************************************************************************************************************
 //*******************************************************************************************************************************************************************************************************************************************************
+    public void assemblerMain(){
+        //primeira leitura do arquivo
+        try {
+            preencheListaSimbolos();
+        }catch (FileNotFoundException e){
+            System.out.print("Nao foi possivel ler os labels, por causa: " + e.getMessage());
+        }
+        //
+
+    }
+
+//    public void preencheListaSimbolos () throws FileNotFoundException{
+//        Reader reader = new Reader("EntradaTeste.txt");
+//        Integer cont = 0;
+//        String linha = reader.readLine();
+//        while(linha!=null) {
+//            String[] args = linha.split(" ");
+//            if(args.length==2){
+//                if(!instrucoes.containsKey(args[0])){
+//                    if(!tabelaDeSimbolos.containsKey(args[0]))
+//                        tabelaDeSimbolos.put(args[0],cont);
+//                }else
+//                    if (args[0].equals("EXTDEF")){
+//                        tabelaDefinicoes.put(args[1],-1);
+//
+//                    }
+//            }
+//
+//            linha = reader.readLine();
+//        }
+//    }
+
+
     public void preencheListaSimbolos () throws FileNotFoundException{
-        Read reader = new Read();
+        Reader reader = new Reader("EntradaTeste.txt");
+        Integer cont = 0;
+        String linha = reader.readLine();
+        while(linha!=null) {
+            String[] args = linha.split(" ");
+            if(args[0].equals("EXTDEF")){
+                tabelaDefinicoes.put(args[1],-1);
+            }
+            for (String arg : args)
+                existe(arg, cont);
+
+            linha = reader.readLine();
+        }
+        Set<String> set = tabelaDefinicoes.keySet();
+        for(String key: set){
+            tabelaDefinicoes.replace(key,tabelaDeSimbolos.get(key));
+        }
+
+    }
+
+    public void existe(String argumento,Integer cont){
+        if(!instrucoes.containsKey(argumento)){
+            if(!tabelaDeSimbolos.containsKey(argumento))
+                tabelaDeSimbolos.put(argumento,cont);
+            else
+                if(tabelaDeSimbolos.get(argumento) == -1)
+                    tabelaDeSimbolos.replace(argumento,cont);
+        }
     }
 
 
