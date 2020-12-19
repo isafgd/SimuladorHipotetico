@@ -11,10 +11,10 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="executor.SampleController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1450.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="executor.SampleController">
     <children>
-        <Button fx:id="botaoReset" layoutX="879.0" layoutY="130.0" mnemonicParsing="false" prefHeight="68.0" prefWidth="95.0" onAction="#onBotaoResetAciotn" text="Reset"/>
-        <TableView fx:id="tableView" editable="true" layoutX="31.0" layoutY="130.0" prefHeight="590.0" prefWidth="306.0">
+        <Button fx:id="botaoReset" layoutX="1311.0" layoutY="130.0" mnemonicParsing="false" onAction="#onBotaoResetAction" prefHeight="68.0" prefWidth="95.0" text="Reset" />
+        <TableView fx:id="tableView" editable="true" layoutX="31.0" layoutY="130.0" prefHeight="749.0" prefWidth="306.0">
             <columns>
                 <TableColumn fx:id="colunaEndereco" maxWidth="153.60000610351562" minWidth="148.0" prefWidth="148.80001831054688" text="Endereços" />
                 <TableColumn fx:id="colunaValor" prefWidth="156.80001831054688" text="Valores" />
@@ -28,39 +28,53 @@
                 <Font name="System Bold" size="30.0" />
             </font>
         </Label>
-        <Label alignment="CENTER" layoutX="783.0" layoutY="49.0" prefHeight="49.0" prefWidth="161.0" text="Controls" textAlignment="CENTER">
+        <Label alignment="CENTER" layoutX="1215.0" layoutY="49.0" prefHeight="49.0" prefWidth="161.0" text="Controls" textAlignment="CENTER">
             <font>
                 <Font name="System Bold" size="30.0" />
             </font>
         </Label>
-        <Button fx:id="botaoStep" layoutX="757.0" layoutY="130.0" mnemonicParsing="false" onAction="#onBotaoStepAciotn" prefHeight="68.0" prefWidth="95.0" text="Step" />
-        <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="836.0" layoutY="736.0" pickOnBounds="true" preserveRatio="true">
+        <Button fx:id="botaoStep" layoutX="1189.0" layoutY="130.0" mnemonicParsing="false" onAction="#onBotaoStepAction" prefHeight="68.0" prefWidth="95.0" text="Step" />
+        <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="1268.0" layoutY="736.0" pickOnBounds="true" preserveRatio="true">
             <image>
                 <Image url="@../png/computacao-1.png" />
             </image>
         </ImageView>
-        <Label alignment="CENTER" layoutX="783.0" layoutY="242.0" prefHeight="49.0" prefWidth="161.0" text="Output" textAlignment="CENTER">
+        <Label alignment="CENTER" layoutX="1215.0" layoutY="242.0" prefHeight="49.0" prefWidth="161.0" text="Output" textAlignment="CENTER">
             <font>
                 <Font name="System Bold" size="30.0" />
             </font>
         </Label>
-        <TextArea fx:id="instructions" layoutX="396.0" layoutY="130.0" prefHeight="590.0" prefWidth="289.0" />
-        <Label alignment="CENTER" layoutX="446.0" layoutY="49.0" prefHeight="49.0" prefWidth="189.0" text="Instructions" textAlignment="CENTER">
+        <TextArea fx:id="instructions" layoutX="430.0" layoutY="131.0" prefHeight="340.0" prefWidth="289.0" />
+        <Label alignment="CENTER" layoutX="480.0" layoutY="50.0" prefHeight="49.0" prefWidth="189.0" text="First Module" textAlignment="CENTER">
             <font>
                 <Font name="System Bold" size="30.0" />
             </font>
         </Label>
-        <ChoiceBox fx:id="executionMode" layoutX="790.0" layoutY="473.0" prefWidth="150.0" />
-        <Label alignment="CENTER" layoutX="784.0" layoutY="393.0" prefHeight="49.0" prefWidth="161.0" text="Execution Mode" textAlignment="CENTER">
+        <ChoiceBox fx:id="executionMode" layoutX="1189.0" layoutY="458.0" prefWidth="150.0" />
+        <Label alignment="CENTER" layoutX="1216.0" layoutY="393.0" prefHeight="49.0" prefWidth="161.0" text="Execution Mode" textAlignment="CENTER">
             <font>
                 <Font name="System Bold" size="20.0" />
             </font>
         </Label>
-        <Button fx:id="insertText" layoutX="609.0" layoutY="736.0" mnemonicParsing="false" onAction="#onInsertTextAction" prefHeight="49.0" prefWidth="76.0" text="Insert" />
-        <TextArea fx:id="console" layoutX="811.0" layoutY="304.0" prefHeight="49.0" prefWidth="109.0">
+        <Button fx:id="insertFirstModule" layoutX="537.0" layoutY="480.0" mnemonicParsing="false" onAction="#onInsertTextAction" prefHeight="49.0" prefWidth="76.0" text="Insert" />
+        <TextArea fx:id="console" layoutX="1192.0" layoutY="304.0" prefHeight="49.0" prefWidth="212.0">
             <font>
                 <Font size="16.0" />
             </font>
         </TextArea>
+      <TextArea fx:id="instructions1" layoutX="808.0" layoutY="131.0" prefHeight="340.0" prefWidth="289.0" />
+      <Label alignment="CENTER" layoutX="847.0" layoutY="50.0" prefHeight="49.0" prefWidth="212.0" text="Second Module" textAlignment="CENTER">
+         <font>
+            <Font name="System Bold" size="30.0" />
+         </font>
+      </Label>
+      <Button fx:id="insertSecondModule" layoutX="915.0" layoutY="480.0" mnemonicParsing="false" onAction="#onInsertTextAction2" prefHeight="49.0" prefWidth="76.0" text="Insert" />
+      <TextArea fx:id="console1" layoutX="430.0" layoutY="539.0" prefHeight="340.0" prefWidth="289.0" />
+      <TextArea fx:id="console2" layoutX="808.0" layoutY="539.0" prefHeight="340.0" prefWidth="289.0" />
+      <Button fx:id="botaoCarregador" layoutX="1311.0" layoutY="632.0" mnemonicParsing="false" onAction="#onBotaoCarregadorAction" prefHeight="68.0" prefWidth="95.0" text="Loader" />
+      <Button fx:id="botaoLigador" layoutX="1189.0" layoutY="632.0" mnemonicParsing="false" onAction="#onBotaoLigadorAction" prefHeight="68.0" prefWidth="95.0" text="Connector" />
+      <Button fx:id="botaoMontador" layoutX="1311.0" layoutY="539.0" mnemonicParsing="false" onAction="#onBotaoMontadorAction" prefHeight="68.0" prefWidth="95.0" text="Assembler" />
+      <Button fx:id="botaoMacro" layoutX="1189.0" layoutY="539.0" mnemonicParsing="false" onAction="#onBotaoMacroAction" prefHeight="68.0" prefWidth="95.0" text="Macros" />
+      <Button fx:id="botaoOk" layoutX="1368.0" layoutY="458.0" mnemonicParsing="false" onAction="#onBotaoOkAction" text="OK" />
     </children>
 </Pane>

@@ -1,4 +1,4 @@
-package charger;
+package loader;
 
 import executor.Reader;
 import executor.Memory;
@@ -8,7 +8,7 @@ import javafx.scene.control.TextArea;
 
 import java.io.IOException;
 
-public class Charger {
+public class Loader {
 
     public void initialMemory(Memory memory, ObservableList<MemoryList> list, TextArea console) throws IOException {
         Reader reader = new Reader("OutputLigador.txt");

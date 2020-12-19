@@ -35,14 +35,14 @@ public class CPU extends Application {
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/sample.fxml"));
         primaryStage.setTitle("Simulador");
-        Scene scene = new Scene(root, 1000, 900);
+        Scene scene = new Scene(root, 1000, 1450);
         primaryStage.setScene(scene);
         scene.getStylesheets().add(getClass().getResource("/css/Style.css").toExternalForm());
         primaryStage.initStyle(StageStyle.UTILITY);
-        primaryStage.setMinHeight(950);
-        primaryStage.setMaxHeight(950);
-        primaryStage.setMaxWidth(1050);
-        primaryStage.setMinWidth(1050);
+        primaryStage.setMinHeight(1000);
+        primaryStage.setMaxHeight(1000);
+        primaryStage.setMaxWidth(1450);
+        primaryStage.setMinWidth(1450);
         primaryStage.show();
     }
 
@@ -159,7 +159,7 @@ public class CPU extends Application {
         ArrayList<Integer> attributes = new ArrayList<Integer>();
         if (RI.getRi()!=9 && RI.getRi()!=13 && RI.getRi()!=11) {
             attributes.add(getAddressMode(line));
-            attributes.add(getFirstOP(data));
+                attributes.add(getFirstOP(data));
         }else{
             if (RI.getRi() == 13){
                 attributes.add(getAddressMode(line));

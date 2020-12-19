@@ -1,18 +1,19 @@
-package binder;
+package connector;
 
 import executor.Reader;
 import executor.Writer;
+import javafx.scene.control.TextArea;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Binder {
+public class Connector {
 
     private static StringBuilder instructions = new StringBuilder();
 
-    public void process () throws IOException {
+    public void process (TextArea console1, TextArea console2) throws IOException {
 
         Reader output1 = new Reader("Output1Montador.txt");
         Reader output2 = new Reader("Output2Montador.txt");
@@ -34,6 +35,8 @@ public class Binder {
 
         Writer.writeFile(instructions.toString(), "OutputLigador.txt");
 
+        console1.setText(instructions.toString());
+        console2.setText(instructions.toString());
     }
 
     public List<Integer> firstRead (Reader output, Integer firstInstruction, Integer firstData){

@@ -1,5 +1,6 @@
 package executor;
 
+import connector.Connector;
 import executor.recorders.OperationMode;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -10,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
+import loader.Loader;
 import lombok.Data;
 
 
@@ -24,25 +26,41 @@ public class SampleController implements Initializable {
 
     ObservableList<String> executionModeList = FXCollections.observableArrayList("Continuo", "Semi-Continuo","Depuracao");
 
-    private String instrucoesLeitura;
-
     private ObservableList<MemoryList> list = FXCollections.observableArrayList();
 
     private Memory memory = new Memory(list);
 
     private CPU cpu = new CPU();
 
+    private Loader loader = new Loader();
+
+    private Connector connector = new Connector();
+
+    private MacroProcessing macro = new MacroProcessing();
+
     @FXML
     private TextArea console;
+
+    @FXML
+    private TextArea console1;
+
+    @FXML
+    private TextArea console2;
 
     @FXML
     private TextArea instructions;
 
     @FXML
+    private TextArea instructions1;
+
+    @FXML
     private ChoiceBox<String> executionMode;
 
     @FXML
-    private Button insertText;
+    private Button insertFirstModule;
+
+    @FXML
+    private Button insertSecondModule;
 
     @FXML
     private TableView<MemoryList> tableView;
@@ -59,6 +77,21 @@ public class SampleController implements Initializable {
     @FXML
     private Button botaoReset;
 
+    @FXML
+    private Button botaoMacro;
+
+    @FXML
+    private Button botaoMontador;
+
+    @FXML
+    private Button botaoLigador;
+
+    @FXML
+    private Button botaoCarregador;
+
+    @FXML
+    private Button botaoOk;
+
     public SampleController () throws IOException {}
 
     //Inicializa os campos da interface
@@ -71,19 +104,19 @@ public class SampleController implements Initializable {
     }
 
     //Controla a acao que sera executado quando o botao insert eh acionado
-    public void onInsertTextAction() throws IOException, InterruptedException {
-        fileWrite();
-        String executionModeValue = executionMode.getValue();
-        System.out.println(instrucoesLeitura);
-        //cpu.initialMemory(memory,list, console);
-        cpu.executionMode(memory, executionModeValue, list, console);
+    public void onInsertTextAction(){
+        String instrucoesLeitura = instructions.getText().replaceAll("\n", System.getProperty("line.separator"));
+        fileWrite("Modulo1.txt", instrucoesLeitura);
+    }
+
+    public void onInsertTextAction2(){
+        String instrucoesLeitura = instructions1.getText().replaceAll("\n", System.getProperty("line.separator"));
+        fileWrite("Modulo2.txt", instrucoesLeitura);
     }
 
     //Controla a acao que sera executado quando o botao step eh acionado
     @FXML
-    public void onBotaoStepAciotn() throws IOException {
-        fileWrite();
-        //cpu.initialMemory(memory,list, console);
+    public void onBotaoStepAction() throws IOException {
         OperationMode MOP = (OperationMode) memory.get(16);
         MOP.setMop(2);
         list.set(16,new MemoryList("MOP",MOP.getMop().toString()));
@@ -92,9 +125,39 @@ public class SampleController implements Initializable {
 
     //Controla a acao que sera executado quando o botao reset eh acionado
     @FXML
-    public void onBotaoResetAciotn() throws IOException {
+    public void onBotaoMacroAction() throws IOException {
+        macro.convertToObjectFont();
+    }
+
+    @FXML
+    public void onBotaoMontadorAction() throws IOException {
+
+    }
+
+    @FXML
+    public void onBotaoLigadorAction() throws IOException {
+        connector.process(console1,console2);
+    }
+
+    @FXML
+    public void onBotaoCarregadorAction() throws IOException {
+        console1.clear();
+        console2.clear();
+        loader.initialMemory(memory,list,console);
+    }
+
+    @FXML
+    public void onBotaoResetAction() throws IOException {
         memory = new Memory(list);
         console.clear();
+        console1.clear();
+        console2.clear();
+    }
+
+    @FXML
+    public void onBotaoOkAction() throws IOException {
+        String executionModeValue = executionMode.getValue();
+        cpu.executionMode(memory, executionModeValue, list, console);
     }
 
 
@@ -103,9 +166,8 @@ public class SampleController implements Initializable {
     }
 
     //Chama a funcao que escreve no arquivo interno
-    public void fileWrite (){
-        instrucoesLeitura = instructions.getText().replaceAll("\n", System.getProperty("line.separator"));
-        Writer.writeFile(instrucoesLeitura, "InputCode.txt");
+    public void fileWrite (String fileName, String instrucoesLeitura){
+        Writer.writeFile(instrucoesLeitura, fileName);
     }
 
 
