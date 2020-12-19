@@ -256,12 +256,25 @@ public class Assembler {
             }
 
             insereLabels(args, lineCounter);
+            if(args.length > 1) { //verifica se a linha tem mais de uma string (ex.: se não é só um STOP) pra saber se tem operandos nela
+                insereTabelaUso(args, extLabels); //função responsável por inserir as coisas na tabela de uso
+            }
             lineCounter += 1;
             linha = reader.readLine();
         }
         Set<String> set = tabelaDefinicoes.keySet();
         for (String key : set) {
             tabelaDefinicoes.replace(key, tabelaDeSimbolos.get(key));
+        }
+
+    }
+
+    public void insereTabelaUso(String[] args, List<ExtLabel> extLabels) { //função responsável por inserir as coisas na tabela de uso
+        for(int m = 0; m < args.length; m++) { //itera sobre a linha para verificar cada uma das partes
+            for(int n = 0; n < extLabels.size(); n++) { //itera sobre a lista de itens do tipo ExtLabel
+                if(extLabels.get(n).nome.equals(args[m])) //verifica a igualdade entre o nome do Extlabel e o args nas posições correspondentes
+                    extLabels.get(n).posicoes.add(lineCounter); //se forem iguais, quer dizer que aquele label é externo e sua posição deve ser adicionada na tabela como um uso do símbolo
+            }
         }
     }
 //public void preencheListaSimbolos () throws FileNotFoundException {
