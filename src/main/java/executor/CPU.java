@@ -1,6 +1,6 @@
+/*
 package executor;
 
-import ReadingFile.Read;
 import executor.recorders.*;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -30,7 +30,9 @@ public class CPU extends Application {
     @FXML
     private TextArea textArea;
 
-    /*Criacao da interface*/
+    */
+/*Criacao da interface*//*
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/sample.fxml"));
@@ -50,7 +52,9 @@ public class CPU extends Application {
         launch(args);
     }
 
-    /*Adiciona as intrucoes e os operandos na memoria*/
+    */
+/*Adiciona as intrucoes e os operandos na memoria*//*
+
     public void initialMemory(Memory memory, ObservableList<MemoryList> list, TextArea console) throws IOException {
         Read reader = new Read();
         String line = reader.readLine();
@@ -82,7 +86,9 @@ public class CPU extends Application {
 
     }
 
-    /*Redireciona para o modo de execucao*/
+    */
+/*Redireciona para o modo de execucao*//*
+
     public static void executionMode(Memory memory, Read reader, String choiceString, ObservableList<MemoryList> list, TextArea console){
         int choice = 0;
         switch (choiceString){
@@ -117,7 +123,9 @@ public class CPU extends Application {
         }
     }
 
-    /*Execucao agendada a cada 5seg */
+    */
+/*Execucao agendada a cada 5seg *//*
+
     public static void semiContinuousMode(Memory memory, Read reader, ObservableList<MemoryList> list, TextArea console){
         ScheduledService scheduledService = new ScheduledService() {
             @Override
@@ -152,7 +160,9 @@ public class CPU extends Application {
         execute(memory, attributes, list, console);
     }
 
-    /*Converte a instrucao para decimal*/
+    */
+/*Converte a instrucao para decimal*//*
+
     public static ArrayList<Integer> convert (Memory memory, String line, String data,ObservableList<MemoryList> list){
         InstructionRecorder RI = (InstructionRecorder) memory.get(17);
         RI.setRi(getOpcode(line));
@@ -174,7 +184,9 @@ public class CPU extends Application {
         return attributes;
     }
 
-    /*Chama a instrucao correspondente*/
+    */
+/*Chama a instrucao correspondente*//*
+
     public static void execute (Memory memory, ArrayList<Integer> attributes, ObservableList<MemoryList> list, TextArea console){
         InstructionRecorder RI = (InstructionRecorder) memory.get(17);
         Operations operation = new Operations();
@@ -263,3 +275,4 @@ public class CPU extends Application {
     }
 
 }
+*/

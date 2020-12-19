@@ -1,6 +1,6 @@
+/*
 package executor;
 
-import ReadingFile.Read;
 import executor.recorders.OperationMode;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,7 +19,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 
-/*Classe controladora da Interface*/
+*/
+/*Classe controladora da Interface*//*
+
 @Data
 public class SampleController implements Initializable {
 
@@ -112,4 +114,4 @@ public class SampleController implements Initializable {
     }
 
 
-}
+}*/
