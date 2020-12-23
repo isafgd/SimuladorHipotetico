@@ -3,6 +3,7 @@ package executor;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class MacroProcessing {
 
@@ -14,8 +15,8 @@ public class MacroProcessing {
         macros = new HashMap<>();
     }
 
-    public void convertToObjectFont () throws FileNotFoundException {
-            Reader reader = new Reader("RawFontFile.txt");
+    public void convertToObjectFont (String num) throws FileNotFoundException {
+            Reader reader = new Reader("RawFile"+ num + ".txt");
             fileContent.append(reader.readLine() + "\n\n");
             reader.readLine();
             String[] arr;
@@ -23,7 +24,7 @@ public class MacroProcessing {
             while(line != null){
                 if(line.equals("MACRO")){
                     String key = reader.readLine();
-                    arr = key.split(" ", 3);
+                    arr = key.split(" ");
                     StringBuilder value = new StringBuilder();
                     String aux = reader.readLine();
                     while(!aux.equals("MEND")){
@@ -42,7 +43,9 @@ public class MacroProcessing {
                 line = reader.readLine();
             }
 
-            Writer.writeFile(fileContent.toString(),"ProcessedFontFile.txt" );
+
+            removeSimbols();
+            Writer.writeFile(fileContent.toString(),"Montador"+ num + ".txt" );
 
     }
 
@@ -60,7 +63,7 @@ public class MacroProcessing {
                 if (macros.containsKey(method)) {
                     fileContent.append(macros.get(line));
                 } else {
-                    fileContent.append(line.substring(1,line.length()) + "\n");
+                        fileContent.append(line + "\n");
                 }
                 line = reader.readLine();
             }else {
@@ -69,6 +72,22 @@ public class MacroProcessing {
             }
         }
 
+    }
+    public void removeSimbols(){
+        StringBuilder processedArgs = new StringBuilder();
+        String arg = fileContent.toString();
+        String[] args = arg.split("\n");
+        for(int i = 0; i< args.length;i++){
+            if(!"".equals(args[i])) {
+                if (args[i].charAt(0) == '&') {
+                    processedArgs.append(args[i].substring(1) + "\n");
+                } else
+                    processedArgs.append(args[i] + "\n");
+            }else
+                processedArgs.append(args[i] + "\n");
+        }
+        fileContent.delete(0,fileContent.length()) ;
+        fileContent.append(processedArgs.toString());
     }
 
 }
