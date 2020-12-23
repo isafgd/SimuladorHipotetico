@@ -6,6 +6,7 @@ import java.util.*;
 
 
 import executor.Reader;
+import executor.Writer;
 import lombok.Data;
 
 import java.io.IOException;
@@ -40,194 +41,9 @@ public class Assembler {
         extLabels = new ArrayList<>();
     }
 
-    /*public void monta(String arq) throws FileNotFoundException, IOException {
-        // Leitura do arquivo de entrada
-        BufferedReader bf = new BufferedReader(new FileReader(arq + ".txt"));
-
-        // Cria o arquivo temporario
-        FileWriter arqObj = new FileWriter("objeto" + "_" + arq + ".txt");
-
-        // Le a primeira linha
-        String linha = bf.readLine();
-
-        // Separa a linha nos tabs
-        String[] textoSeparado = linha.split("\t");
-
-        // Cria variaveis temporarias
-        TabelaDefinicoes Definicoes_temp;
-        TabelaDeUso Uso_temp;
-        // Enquanto nao encontra o inicio das instrucoes
-        while (!textoSeparado[0].equals("START")) {
-            if (textoSeparado[0].equals("EXTDEF")) { // Variavel global definida externamente
-                // Guarda na tabela de uso
-                tabelaDefinicoes.put(textoSeparado[1], locationCounter);
-                // Guarda no mapa de rotulos
-                tabelaDeSimbolos.put(textoSeparado[1], locationCounter);
-            }
-            // Le nova linha
-            linha = bf.readLine();
-            // Separa a linha nos tabs
-            textoSeparado = linha.split(" "); // mudar pra /t se der erro
-        }
-        // Atualiza locationCounter de acordo com o endereco inicial das instrucoes
-        textoSeparado[1] = textoSeparado[1].substring(1);
-        locationCounter = Integer.parseInt(textoSeparado[1]);
-
-        // Le primeira instrucao
-        linha = bf.readLine();
-
-        // Separa a linha nos tabs
-        textoSeparado = linha.split("\t");
-
-        // Enquanto nao terminam as instrucoes
-        while (!textoSeparado[0].equals("END")) {
-
-            // se encontra w na instrucao, ignora-o
-            if (textoSeparado[0].charAt(textoSeparado[0].length() - 1) == 'W') {
-                verificaOperacao(textoSeparado[0].substring(0, textoSeparado[0].length() - 2), arqObj);
-            } else {
-                verificaOperacao(textoSeparado[0], arqObj);
-            }
-            // Atualiza endereco de ocorrencia na tabela de uso
-            for (int i = 0; i < uso.size(); i++) {
-                if (uso.get(i).getSimbolo().equals(textoSeparado[1])) {
-                    Uso_temp = uso.get(i);
-                    Uso_temp.setLocationCounter(locationCounter);
-                    uso.set(i, Uso_temp);
-                    break;
-                }
-            }
-            locationCounter += 1;
-
-            switch (textoSeparado[1].charAt(0)) {
-                case '#': // endereçamento imediato?
-                    switch (textoSeparado[1].charAt(1)) {
-                        case '$':
-                            // hexadecimal
-                            textoSeparado[1] = textoSeparado[1].substring(2);
-                            arqObj.write((new BigInteger(textoSeparado[1], 16) + "\t"));
-                            break;
-                        case '@':
-                            // octal
-                            textoSeparado[1] = textoSeparado[1].substring(2);
-                            arqObj.write(new BigInteger(textoSeparado[1], 8) + "\t");
-                            //break;
-                        case '%':
-                            // binario
-                            textoSeparado[1] = textoSeparado[1].substring(2);
-                            arqObj.write(textoSeparado[1] + "\t");
-                            break;
-                        default:
-                            // decimal
-                            textoSeparado[1] = textoSeparado[1].substring(1);
-                            arqObj.write(Integer.parseInt(textoSeparado[1]) + "\t");
-                            break;
-                    }
-                    break;
-                case 'D':
-                    arqObj.write(Integer.parseInt(textoSeparado[1].substring(1)) + "\t");
-                    break;
-                default:
-                    arqObj.write(labels.get(textoSeparado[1]) + "\t");
-                    break;
-            }
-            locationCounter += 1;
-
-            if (textoSeparado.length == 3) {
-                switch (textoSeparado[2].charAt(0)) {
-                    case '#':
-                        switch (textoSeparado[2].charAt(1)) {
-                            case '$':
-                                // hexadecimal
-                                textoSeparado[2] = textoSeparado[2].substring(2);
-                                arqObj.write(new BigInteger(textoSeparado[2], 16) + "\t");
-                                break;
-                            case '@':
-                                // octal
-                                textoSeparado[2] = textoSeparado[2].substring(2);
-                                arqObj.write(new BigInteger(textoSeparado[2], 8) + "\t");
-                                //break;
-                            case '%':
-                                // binario
-                                textoSeparado[2] = textoSeparado[2].substring(2);
-                                arqObj.write(textoSeparado[2] + "\t");
-                                break;
-                            default:
-                                // decimal
-                                textoSeparado[2] = textoSeparado[2].substring(1);
-                                arqObj.write(Integer.parseInt(textoSeparado[2]) + "\t");
-                                break;
-                        }
-                        break;
-                    case 'D':
-                        arqObj.write((Integer.parseInt(textoSeparado[2].substring(1))) + "\t");
-                        break;
-                    default:
-                        // Atualiza endereco de ocorrencia na tabela de uso
-                        for (int i = 0; i < uso.size(); i++) {
-                            if (uso.get(i).getSimbolo().equals(textoSeparado[1])) {
-                                Uso_temp = uso.get(i);
-                                Uso_temp.setLocationCounter(locationCounter);
-                                uso.set(i, Uso_temp);
-                                break;
-                            }
-                        }
-                        arqObj.write((labels.get(textoSeparado[2])) + "\t");
-                        break;
-                }
-                locationCounter += 1;
-            }
-
-            arqObj.write("\n");
-
-            // Le nova linha
-            linha = bf.readLine();
-            // Separa a linha nos tabs
-            textoSeparado = linha.split("\t");
-
-        }
-
-        // Fecha o arquivo
-        arqObj.close();
-    }
-*/
-    //*******************************************************************************************************************************************************************************************************************************************************
-//*******************************************************************************************************************************************************************************************************************************************************
-  /*  public void assemblerMain() {
-        //primeira leitura do arquivo
-        try {
-            preencheListaSimbolos();
-        } catch (FileNotFoundException e) {
-            System.out.print("Nao foi possivel ler os labels, por causa: " + e.getMessage());
-        }
-        //
-
-    }*/
-
-/*    public void preencheListaSimbolos () throws FileNotFoundException{
-        Reader reader = new Reader("EntradaTeste.txt");
-        Integer cont = 0;
-        String linha = reader.readLine();
-        while(linha!=null) {
-            String[] args = linha.split(" ");
-            if(args.length==2){
-                if(!instrucoes.containsKey(args[0])){
-                    if(!tabelaDeSimbolos.containsKey(args[0]))
-                        tabelaDeSimbolos.put(args[0],cont);
-                }else
-                    if (args[0].equals("EXTDEF")){
-                        tabelaDefinicoes.put(args[1],-1);
-
-                    }
-            }
-
-            linha = reader.readLine();
-        }
-    }*/
-
     //PRIMEIRA LEITURA: PREENCHE TABELAS
-    public void primeiraLeitura() throws FileNotFoundException, IOException {
-        Reader reader = new Reader("EntradaTeste.txt");
+    public void primeiraLeitura(String num) throws FileNotFoundException, IOException {
+        Reader reader = new Reader("Modulo" + num + ".txt");
         String linha = reader.readLine();
         boolean flag = false;
         String ext = "";
@@ -270,14 +86,15 @@ public class Assembler {
         }
         Set<String> set = tabelaDefinicoes.keySet();
         for (String key : set) {
-            tabelaDefinicoes.replace(key, tabelaDeSimbolos.get(key));
+            if(tabelaDeSimbolos.containsKey(key))
+                tabelaDefinicoes.replace(key, tabelaDeSimbolos.get(key));
         }
 
     }
 
-    public void segundaLeitura() throws IOException{
+    public void segundaLeitura(String num) throws IOException{
         StringBuilder builder = new StringBuilder();
-        Reader reader = new Reader("EntradaTeste.txt");
+        Reader reader = new Reader("Modulo" + num + ".txt");
         String linha = reader.readLine();
 
         while(linha!= null){
@@ -305,6 +122,24 @@ public class Assembler {
 
             linha = reader.readLine();
         }
+
+        StringBuilder builderDefinicoes = new StringBuilder();
+        StringBuilder builderUso = new StringBuilder();
+
+        Set<String> set = tabelaDefinicoes.keySet();
+        for (String key : set) {
+           builderDefinicoes.append(tabelaDefinicoes.get(key).toString()+";"+key+"\n");
+        }
+
+        for(ExtLabel label : extLabels){
+            for(int i = 0; i<label.posicoes.size(); i++){
+                builderUso.append(label.posicoes.get(i) + ";" + label.nome + "\n");
+            }
+        }
+
+        Writer.writeFile(builder.toString(), "Output" + num + "Montador.txt");
+        Writer.writeFile(builder.toString(), "TabelaDefinicao" + num + ".txt");
+        Writer.writeFile(builder.toString(), "TabelaUso" + num + ".txt");
 
     }
 
@@ -389,35 +224,6 @@ public class Assembler {
         instrucoes.put("END", 1);
     }
 
-        /*public int getAmountOperands (String instrucao) throws IOException { // Pegar quantidade de operandos
-            int amountOperands = -1; // contador de operandos, SE FOR -1 PODE SER LABEL VERIFICAR
-            switch (instrucao) {
-                case "ADD":
-                case "BR":
-                case "BRNEG":
-                case "BRPOS":
-                case "BRZERO":
-                case "DIVIDE":
-                case "LOAD":
-                case "MULT":
-                case "READ":
-                case "STORE":
-                case "SUB":
-                case "WRITE":
-                case "CALL":
-                    amountOperands = 1;
-                    break;
-                case "COPY":
-                    amountOperands = 2;
-                    break;
-                case "RET":
-                case "STOP":
-                    amountOperands = 0;
-                    break;
-            }
-            return amountOperands; // insere a quantidade de operandos desse return em um array
-        }*/
-
         // FAZER MAP COM AS INSTRUÇÕES E BINÁRIO DE CADA UMA -> opcodeInstrucao <-
         public void escreveBinarioTxt (String [] args, StringBuilder builder) throws IOException {
             String result;
@@ -447,6 +253,9 @@ public class Assembler {
                 case "RET":
                 case "STOP":
                     result = "00000000" + "000" + tabelaOpCode.get(args[0]) + "\n";
+                    break;
+                case "END":
+                    result ="";
                     break;
                 default:
                     if(args[1].equals("CONST")) {
@@ -555,10 +364,10 @@ public class Assembler {
                 newOpd1 = operando1.substring(0, operando1.length() - 1);
 
             if (firstOp2.equals("#"))
-                newOpd2 = operando1.substring(1, operando2.length());
+                newOpd2 = operando2.substring(1);
 
             if (lastOp2.equals(",I"))
-                newOpd2 = operando1.substring(0, operando2.length() - 1);
+                newOpd2 = operando2.substring(0, operando2.length() - 1);
 
 
             if(tabelaDeSimbolos.containsKey(newOpd1))

@@ -10,8 +10,8 @@ public class AssemblerMain {
         assembler.pseudoinstructionsListInit();
         assembler.createOpcodeInstructions();
         assembler.intructionsListInit();
-        assembler.primeiraLeitura();
-        assembler.segundaLeitura();
+        assembler.primeiraLeitura("1");
+        assembler.segundaLeitura("1");
 
     }
 }
