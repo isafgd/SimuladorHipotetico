@@ -1,3 +1,4 @@
+/*
 package executor;
 
 import connector.Connector;
@@ -20,7 +21,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 
-/*Classe controladora da Interface*/
+*/
+/*Classe controladora da Interface*//*
+
 @Data
 public class SampleController implements Initializable {
 
@@ -171,4 +174,4 @@ public class SampleController implements Initializable {
     }
 
 
-}
+}*/
