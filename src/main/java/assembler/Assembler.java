@@ -22,6 +22,9 @@ public class Assembler {
     private Map<String, Integer> tabelaDeSimbolos;
     private Map<String, Integer> instrucoes;
     private Map<String, Integer> pseudoinstrucoes;
+    private Map<String,String> tabelaOpCode;
+    private Map<String,Integer> tabelaConst;
+    List<ExtLabel> extLabels;
 
     public Assembler() {
         adressCounter = 0;
@@ -31,7 +34,10 @@ public class Assembler {
         tabelaDeSimbolos = new HashMap<>();
         instrucoes = new HashMap<>();
         pseudoinstrucoes = new HashMap<>();
-        tabelaUso = new ArrayList<String>();
+        tabelaUso = new ArrayList<>();
+        tabelaOpCode = new HashMap<>();
+        tabelaConst = new HashMap<>();
+        extLabels = new ArrayList<>();
     }
 
     /*public void monta(String arq) throws FileNotFoundException, IOException {
@@ -187,7 +193,7 @@ public class Assembler {
 */
     //*******************************************************************************************************************************************************************************************************************************************************
 //*******************************************************************************************************************************************************************************************************************************************************
-    public void assemblerMain() {
+  /*  public void assemblerMain() {
         //primeira leitura do arquivo
         try {
             preencheListaSimbolos();
@@ -196,7 +202,7 @@ public class Assembler {
         }
         //
 
-    }
+    }*/
 
 /*    public void preencheListaSimbolos () throws FileNotFoundException{
         Reader reader = new Reader("EntradaTeste.txt");
@@ -219,13 +225,12 @@ public class Assembler {
         }
     }*/
 
-    //RAQUEL MEXEU AQUI
-    public void preencheListaSimbolos() throws FileNotFoundException {
+    //PRIMEIRA LEITURA: PREENCHE TABELAS
+    public void primeiraLeitura() throws FileNotFoundException, IOException {
         Reader reader = new Reader("EntradaTeste.txt");
         String linha = reader.readLine();
         boolean flag = false;
         String ext = "";
-        List<ExtLabel> extLabels = new ArrayList<>();
         lineCounter = 0;
         while (linha != null) {
             String[] args = linha.split(" ");
@@ -259,6 +264,7 @@ public class Assembler {
             if(args.length > 1) { //verifica se a linha tem mais de uma string (ex.: se não é só um STOP) pra saber se tem operandos nela
                 insereTabelaUso(args, extLabels); //função responsável por inserir as coisas na tabela de uso
             }
+            //escreveBinarioTxt(linha,new FileWriter("Example.txt"));
             lineCounter += 1;
             linha = reader.readLine();
         }
@@ -269,6 +275,41 @@ public class Assembler {
 
     }
 
+    public void segundaLeitura() throws IOException{
+        StringBuilder builder = new StringBuilder();
+        Reader reader = new Reader("EntradaTeste.txt");
+        String linha = reader.readLine();
+
+        while(linha!= null){
+            String[] args = linha.split(" ");
+            if(args.length >=2) {
+                while (pseudoinstrucoes.containsKey(args[0]) || pseudoinstrucoes.containsKey(args[1])){
+                    linha = reader.readLine();
+                    args = removeAdressType(linha.split(" "));
+                }
+            }
+            for(int i = 0; i< args.length;i++){
+                if(!instrucoes.containsKey(args[i])){
+                    if(tabelaDeSimbolos.containsKey(args[i]))
+                        args[i] = tabelaDeSimbolos.get(args[i]).toString();
+                    else{
+                        for (ExtLabel label : extLabels){
+                            if(label.nome.equals(args[i])){
+                                args[i] = "0";
+                            }
+                        }
+                    }
+                }
+            }
+            escreveBinarioTxt(args,builder);
+
+            linha = reader.readLine();
+        }
+
+    }
+
+
+
     public void insereTabelaUso(String[] args, List<ExtLabel> extLabels) { //função responsável por inserir as coisas na tabela de uso
         for(int m = 0; m < args.length; m++) { //itera sobre a linha para verificar cada uma das partes
             for(int n = 0; n < extLabels.size(); n++) { //itera sobre a lista de itens do tipo ExtLabel
@@ -277,55 +318,6 @@ public class Assembler {
             }
         }
     }
-//public void preencheListaSimbolos () throws FileNotFoundException {
-//    Reader reader = new Reader("EntradaTeste.txt");
-//    Integer cont = 0;
-//    String linha = reader.readLine();
-//    while (linha != null) {
-//        String[] args = linha.split(" ");
-//        args = removeAdressType(args);  //tira todos as formas de endereçamento presentes
-//        //alguém pelo amor me ajuda a avaliar essa merda aqui
-//        if(args[1].equals("EXTR")) { //como o EXTR é só "label extr" sempre, aqui ele identifica o extr, coloca o label dele numa tabela auxiliar e passa direto pra próxima linha
-//            tabelaUsoAux.put(args[0], -1); //coloca na tabela auxiliar
-//            linha = reader.readLine(); // lê a próxima linha
-//            args = removeAdressType(linha.split(" "));  //formata; depois disso tudo só segue como se nada tivesse acontecido
-//        }
-//        //**
-//        if (args[0].equals("EXTDEF")) {
-//            tabelaDefinicoes.put(args[1], -1);
-//        }
-//        for (String arg : args)
-//            existe(arg, cont);
-//
-//        linha = reader.readLine();
-//    }
-//    Set<String> set = tabelaDefinicoes.keySet();
-//    for (String key: set) {
-//        tabelaDefinicoes.replace(key, tabelaDeSimbolos.get(key));
-//    }
-//}
-
-
-//    public void preencheListaSimbolos () throws FileNotFoundException {
-//        Reader reader = new Reader("EntradaTeste.txt");
-//        Integer cont = 0;
-//        String linha = reader.readLine();
-//        while (linha != null) {
-//            String[] args = linha.split(" ");
-//            args = removeAdressType(args);  //tira todos as formas de endereçamento presentes
-//            if (args[0].equals("EXTDEF")) {
-//                tabelaDefinicoes.put(args[1], -1);
-//            }
-//            for (String arg : args)
-//                existe(arg, cont);
-//
-//            linha = reader.readLine();
-//        }
-//        Set<String> set = tabelaDefinicoes.keySet();
-//        for (String key: set) {
-//            tabelaDefinicoes.replace(key, tabelaDeSimbolos.get(key));
-//        }
-//    }
 
     //considerando que label só pode ter endereçamente indireto, ele verifica se tem , e I no fim de cada uma das strings do array
     public String[] removeAdressType(String[] argumento) {
@@ -341,6 +333,9 @@ public class Assembler {
 
     public void insereLabels(String[] argumento,Integer cont) {
         if (!instrucoes.containsKey(argumento[0])) {
+            if(argumento[1].equals("CONST")){
+                tabelaConst.put(argumento[0],Integer.parseInt(argumento[2]));
+            }
             tabelaDeSimbolos.put(argumento[0], cont);
         }
     }
@@ -350,6 +345,25 @@ public class Assembler {
         pseudoinstrucoes.put("EXTR", 0);
         pseudoinstrucoes.put("STACK", 1);
         pseudoinstrucoes.put("START", 1);
+    }
+
+    public void createOpcodeInstructions(){
+        tabelaOpCode.put("ADD","00010");
+        tabelaOpCode.put("BR","00000");
+        tabelaOpCode.put("BRNEG","00101");
+        tabelaOpCode.put("BRPOS","00001");
+        tabelaOpCode.put("BRZERO","00100");
+        tabelaOpCode.put("CALL","01111");
+        tabelaOpCode.put("COPY","01101");
+        tabelaOpCode.put("DIVIDE","01010");
+        tabelaOpCode.put("LOAD","00011");
+        tabelaOpCode.put("MULT","01110");
+        tabelaOpCode.put("READ","01100");
+        tabelaOpCode.put("RET","10000");
+        tabelaOpCode.put("STOP","01011");
+        tabelaOpCode.put("STORE","00111");
+        tabelaOpCode.put("SUB","00110");
+        tabelaOpCode.put("WRITE","01000");
     }
 
     //todas as palavras que não forem uma dessas são labels
@@ -374,76 +388,8 @@ public class Assembler {
         instrucoes.put("CONST", 1);
         instrucoes.put("END", 1);
     }
-//RAQUEL TERMINOU DE MEXER
 
-//ORIGINAL
-//    public void preencheListaSimbolos () throws FileNotFoundException{
-//        Reader reader = new Reader("EntradaTeste.txt");
-//        Integer cont = 0;
-//        String linha = reader.readLine();
-//        while(linha!=null) {
-//            String[] args = linha.split(" ");
-//            if(args[0].equals("EXTDEF")){
-//                tabelaDefinicoes.put(args[1],-1);
-//            }
-//            for (String arg : args)
-//                existe(arg, cont);
-//
-//            linha = reader.readLine();
-//        }
-//        Set<String> set = tabelaDefinicoes.keySet();
-//        for(String key: set){
-//            tabelaDefinicoes.replace(key,tabelaDeSimbolos.get(key));
-//        }
-//
-//    }
-
-//    public void existe(String argumento,Integer cont){
-//        if(!instrucoes.containsKey(argumento)){
-//            if(!tabelaDeSimbolos.containsKey(argumento))
-//                tabelaDeSimbolos.put(argumento,cont);
-//            else
-//                if(tabelaDeSimbolos.get(argumento) == -1)
-//                    tabelaDeSimbolos.replace(argumento,cont);
-//        }
-//    }
-// ORIGINAL
-
-
-        //todas as palavras que não forem uma dessas são labels
-       /* public void intructionsListInit () {
-            instrucoes.put("ADD", 2);
-            instrucoes.put("BR", 2);
-            instrucoes.put("BRNEG", 2);
-            instrucoes.put("BRPOS", 2);
-            instrucoes.put("BRZERO", 2);
-            instrucoes.put("DIVIDE", 2);
-            instrucoes.put("LOAD", 2);
-            instrucoes.put("MULT", 2);
-            instrucoes.put("READ", 2);
-            instrucoes.put("STORE", 2);
-            instrucoes.put("SUB", 2);
-            instrucoes.put("WRITE", 2);
-            instrucoes.put("CALL", 2);
-            instrucoes.put("STOP", 1);
-            instrucoes.put("COPY", 3);
-            instrucoes.put("RET", 1);
-            instrucoes.put("EXTDEF", 1);
-            instrucoes.put("EXTR", 0);
-            instrucoes.put("START", 1);
-            instrucoes.put("END", 1);
-            instrucoes.put("STACK", 1);
-            instrucoes.put("SPACE", 0);
-            instrucoes.put("CONST", 1);
-        }*/
-
-        //Proposta dessa função:
-        //Recebe a linha inteira do comando e verifica inicialmente verifica o primeiro componente:
-        //Se for uma expressão de operação, vai verificar se os operandos são labels. Se forem, é verificada sua existência na tabela de símbolos para inserção
-        //Se for diretamente um label, verifica a existência dele na tabela, se não existir, insere com o endereço correspondente. Se existe, insere o endereço (ainda não feito)
-        //talvez seja melhor quebrar isso em mais funçções?
-
-        public int getAmountOperands (String instrucao) throws IOException { // Pegar quantidade de operandos
+        /*public int getAmountOperands (String instrucao) throws IOException { // Pegar quantidade de operandos
             int amountOperands = -1; // contador de operandos, SE FOR -1 PODE SER LABEL VERIFICAR
             switch (instrucao) {
                 case "ADD":
@@ -470,13 +416,13 @@ public class Assembler {
                     break;
             }
             return amountOperands; // insere a quantidade de operandos desse return em um array
-        }
+        }*/
 
         // FAZER MAP COM AS INSTRUÇÕES E BINÁRIO DE CADA UMA -> opcodeInstrucao <-
-        public void escreveBinarioTxt (String instrucao, FileWriter
-        arq, ArrayList < Integer > operandos, Map < String, String > opcodeInstrucao) throws IOException {
+        public void escreveBinarioTxt (String [] args, StringBuilder builder) throws IOException {
+            String result;
             // já envia os 32 bits pro txt
-            switch (instrucao) {
+            switch (args[0]) {
                 case "ADD":
                 case "BR":
                 case "BRNEG":
@@ -490,108 +436,166 @@ public class Assembler {
                 case "SUB":
                 case "WRITE":
                 case "CALL":
-                    List<String> atributos = getEnderecamento(operandos.get(0));
-                    arq.write("00000000" + atributos.get(0) + opcodeInstrucao.get(instrucao) + atributos.get(1));
-                    //atualizamos o location counter após escrever no binário?
-                    //locationCounter += 2
+                    List<String> atributos = getEnderecamento(args[1]);
+                    result = "00000000" + atributos.get(0) + tabelaOpCode.get(args[0]) + atributos.get(1) + "\n";
+                    //("00000000" + atributos.get(0) + tabelaOpCode.get(args[0]) + atributos.get(1) + "\n");
                     break;
                 case "COPY":
-                    List<String> atributos2 = getEnderecamento(operandos.get(0), operandos.get(1));
-                    arq.write("00000000" + atributos2.get(0) + opcodeInstrucao.get(instrucao) + atributos2.get(1) + atributos2.get(2));  // BITS -SIGNIFICATIVOS, ENDEREÇAMENTO, OPCODE, OPD1 E OPD2
-                    //atualizamos o location counter após escrever no binário?
-                    //locationCounter += 3
+                    List<String> atributos2 = getEnderecamento(args[1], args[2]);
+                    result = "00000000" + atributos2.get(0) + tabelaOpCode.get(args[0]) + atributos2.get(1) + atributos2.get(2) + "\n";  // BITS -SIGNIFICATIVOS, ENDEREÇAMENTO, OPCODE, OPD1 E OPD2
                     break;
                 case "RET":
                 case "STOP":
-                    arq.write("00000000" + "000" + opcodeInstrucao.get(instrucao));
-                    //atualizamos o location counter após escrever no binário?
-                    //locationCounter += 1
+                    result = "00000000" + "000" + tabelaOpCode.get(args[0]) + "\n";
                     break;
                 default:
-                    arq.write("Instrução inválida.");
+                    if(args[1].equals("CONST")) {
+                        result = convertToBinary(Integer.parseInt(args[2]));
+                        result = "1" + result.substring(1);
+                    }else{
+                        String[] args2 = new String[args.length-1];
+                        for(int i = 0; i < args.length-1; i++){
+                            args2[i] = args[i+1];
+                        }
+                        escreveBinarioTxt(args2,builder);
+                        result = "" ;
+                    }
+                    break;
             }
-            //como contador de linhas sempre vai ser 1 a mais que o anterior
-            ////lineCounter += 1
+            builder.append(result);
         }
 
-        public List<String> getEnderecamento (Integer operando1){
+        public List<String> getEnderecamento (String operando){
             String resultado = "000";
-            String operando1String = operando1.toString();
-            char firstOp1 = operando1String.charAt(0);
-            char lastOp1 = operando1String.charAt(operando1String.length());
+            String lastOp1;
+            char firstOp1 = operando.charAt(0);
+            if(operando.length()>=2)
+                lastOp1 = operando.substring(operando.length() - 2);
+            else
+                lastOp1 = operando;
 
             if (firstOp1 == '#')
                 resultado = "100";
 
-            if (lastOp1 == 'I')
+            if (lastOp1.equals(",I"))
                 resultado = "001";
 
-            List<String> resultList = removeSimbol(operando1.toString(), "0");
-            resultList.add(0, resultado); // primeiro item endereçamento, 2 opd1 e 3 opd2
+
+            List<String> resultList = new ArrayList<>();
+            resultList.add(resultado);
+            resultList = removeSimbol(operando, "",resultList);
             return resultList;
         }
-        public List<String> getEnderecamento (Integer operando1, Integer operando2){
-            String resultado = "000";                                            // direto por default
+        public List<String> getEnderecamento (String operando1, String operando2){
+            String resultado = "000";// direto por default
+            String lastOp1;
+            String lastOp2;
+            char firstOp1 = operando1.charAt(0);
+            char firstOp2 = operando2.charAt(0);
 
-            String operando1String = operando1.toString();
-            char firstOp1 = operando1String.charAt(0);                           // Testa primeiro caractere
-            char lastOp1 = operando1String.charAt(operando1String.length());     // Testa ultimo operando
+            if(operando1.length()>=2)
+                 lastOp1 = operando1.substring(operando1.length() - 2);     // Testa ultimo operando
+            else
+                 lastOp1 = operando1;
 
-            String operando2String = operando2.toString();
-            char firstOp2 = operando2String.charAt(0);
-            char lastOp2 = operando2String.charAt(operando2String.length());
+            if(operando2.length()>=2)
+                lastOp2 = operando2.substring(operando2.length()-2);
+            else
+                lastOp2 = operando2;
 
             if (firstOp2 == '#')                                                  // Verificações de endereçamento de operandos
-                if (firstOp1 != '#' && lastOp1 != 'I')
-                    resultado = "100"; // imediato
-                else resultado = "101";
+                if (lastOp1.equals(",I"))
+                    resultado = "101";
+                else resultado = "100";
 
-            if (lastOp2 == 'I')
-                if (firstOp1 != '#' && lastOp1 != 'I')
-                    resultado = "010";
-                else resultado = "011";
+            if (lastOp2.equals(",I"))
+                if (lastOp1.equals(",I"))
+                    resultado = "011";
+                else resultado = "010";
 
-            if (lastOp1 == 'I')
+            if (lastOp1.equals(",I"))
                 resultado = "001";
 
-            List<String> resultList = removeSimbol(operando1.toString(), operando2.toString());
-            resultList.add(0, resultado); // primeiro item endereçamento, 2 opd1 e 3 opd2
+            List<String> resultList = new ArrayList<>();
+            resultList.add(resultado);
+            resultList = removeSimbol(operando1, operando2,resultList);
             return resultList;
 
         }
 
-        public List<String> removeSimbol (String operando1, String operando2){
+        public List<String> removeSimbol (String operando1, String operando2,List<String> operandos) {
             String newOpd1 = operando1;
             String newOpd2 = operando2;
 
-            String operando1String = operando1.toString();
-            char firstOp1 = operando1String.charAt(0);                           // Testa primeiro caractere
-            char lastOp1 = operando1String.charAt(operando1String.length());     // Testa ultimo operando
+            String lastOp1;
+            String lastOp2;
+            char firstOp1 = operando1.charAt(0);
+            String firstOp2;
+            if(operando1.length()>=2)
+                lastOp1 = operando1.substring(operando1.length() - 2);     // Testa ultimo operando
+            else
+                lastOp1 = operando1;
 
-            String operando2String = operando2.toString();
-            char firstOp2 = operando2String.charAt(0);
-            char lastOp2 = operando2String.charAt(operando2String.length());
+            if(operando2.length()>0) {
+                firstOp2 = operando2.substring(0, 1);
+                if(operando2.length()>=2)
+                    lastOp2 = operando2.substring(operando2.length() - 2);
+                else
+                    lastOp2 = operando2;
+            } else {
+                firstOp2 = "";
+                lastOp2 = "";
+            }
+
 
             if (firstOp1 == '#')
-                newOpd1 = operando1.substring(1, operando1.length());
+                newOpd1 = operando1.substring(1);
 
-            if (lastOp1 == 'I')
+            if (lastOp1.equals(",I"))
                 newOpd1 = operando1.substring(0, operando1.length() - 1);
 
-            if (firstOp2 == '#')
+            if (firstOp2.equals("#"))
                 newOpd2 = operando1.substring(1, operando2.length());
 
-            if (lastOp2 == 'I')
+            if (lastOp2.equals(",I"))
                 newOpd2 = operando1.substring(0, operando2.length() - 1);
 
-            newOpd1 = Integer.toBinaryString(Integer.parseInt(newOpd1));
-            newOpd2 = Integer.toBinaryString(Integer.parseInt(newOpd2));
 
-            List<String> operandos = new ArrayList<>();
-            operandos.add(1, newOpd1);
-            operandos.add(2, newOpd2);
+            if(tabelaDeSimbolos.containsKey(newOpd1))
+                newOpd1 = convertToBinary((tabelaDeSimbolos.get(newOpd1)));
+            else
+                newOpd1 = convertToBinary(Integer.parseInt(newOpd1));
+
+            if(tabelaDeSimbolos.containsKey(newOpd2))
+                newOpd2 = convertToBinary(tabelaDeSimbolos.get(newOpd2));
+            else
+                if (!"".equals(newOpd2))
+                    newOpd2 = convertToBinary(Integer.parseInt(newOpd2));
+
+
+
+            operandos.add(newOpd1);
+            operandos.add(newOpd2);
 
             return operandos;
+        }
+
+        public String convertToBinary(Integer arg){
+            String result;
+            result = preencheZeros(Integer.toBinaryString(arg));
+            if(arg<0){
+                result = result.substring(1);
+                result = "1"+result;
+            }
+            return result;
+        }
+
+        public String preencheZeros(String arg){
+            int limit = arg.length();
+            for (int i = 0; i<16-limit;i++){
+                arg = "0" + arg;
+            }
+            return arg;
         }
 
 }
