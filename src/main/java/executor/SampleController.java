@@ -126,7 +126,9 @@ public class SampleController implements Initializable {
     //Controla a acao que sera executado quando o botao reset eh acionado
     @FXML
     public void onBotaoMacroAction() throws IOException {
-        macro.convertToObjectFont();
+        Writer.writeFile(instructions.getText(),"RawFile1.txt");
+        Writer.writeFile(instructions1.getText(),"RawFile2.txt");
+        macro.processMacro(console1,console2);
     }
 
     @FXML

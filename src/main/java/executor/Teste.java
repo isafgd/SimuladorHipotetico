@@ -6,6 +6,6 @@ public class Teste {
 
     public static void main (String []args) throws FileNotFoundException {
         MacroProcessing macro = new MacroProcessing();
-        macro.convertToObjectFont("1");
+        //macro.convertToObjectFont("1");
     }
 }

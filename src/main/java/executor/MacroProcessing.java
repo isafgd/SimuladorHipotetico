@@ -1,5 +1,7 @@
 package executor;
 
+import javafx.scene.control.TextArea;
+
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +17,12 @@ public class MacroProcessing {
         macros = new HashMap<>();
     }
 
-    public void convertToObjectFont (String num) throws FileNotFoundException {
+    public void processMacro(TextArea console1,TextArea console2)throws  FileNotFoundException{
+        convertToObjectFont("1",console1);
+        convertToObjectFont("2",console2);
+    }
+
+    public void convertToObjectFont (String num,TextArea console) throws FileNotFoundException {
             Reader reader = new Reader("RawFile"+ num + ".txt");
             fileContent.append(reader.readLine() + "\n\n");
             reader.readLine();
@@ -45,7 +52,9 @@ public class MacroProcessing {
 
 
             removeSimbols();
-            Writer.writeFile(fileContent.toString(),"Montador"+ num + ".txt" );
+            Writer.writeFile(fileContent.toString(),"Modulo"+ num + ".txt" );
+            console.setText(fileContent.toString());
+            fileContent.delete(0,fileContent.length());
 
     }
 
