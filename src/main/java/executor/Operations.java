@@ -11,7 +11,7 @@ import static java.lang.System.exit;
 
 /*
                                address
-String instruction = "[000000000[000][0000]][0000000000000000][0000000000000000]"
+String instruction = "[00000000[000][00000]][0000000000000000][0000000000000000]"
                                      opcode        opd1               opd2
 */
 
