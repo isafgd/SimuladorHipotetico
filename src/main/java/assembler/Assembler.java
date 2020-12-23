@@ -138,8 +138,8 @@ public class Assembler {
         }
 
         Writer.writeFile(builder.toString(), "Output" + num + "Montador.txt");
-        Writer.writeFile(builder.toString(), "TabelaDefinicao" + num + ".txt");
-        Writer.writeFile(builder.toString(), "TabelaUso" + num + ".txt");
+        Writer.writeFile(builderDefinicoes.toString(), "TabelaDefinicao" + num + ".txt");
+        Writer.writeFile(builderUso.toString(), "TabelaUso" + num + ".txt");
 
     }
 
