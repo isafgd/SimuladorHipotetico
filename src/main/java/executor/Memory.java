@@ -96,8 +96,6 @@ public class Memory {
                 SP.setPointer(11);
                 list.set(13,new MemoryList("SP", SP.getPointer().toString()));
             }else{
-                memory.set(SP.getPointer(),null);
-                list.set(SP.getPointer(),new MemoryList(SP.getPointer().toString(), "0"));
                 int index = SP.getPointer();
                 index--;
                 SP.setPointer(index);

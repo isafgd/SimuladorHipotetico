@@ -173,8 +173,8 @@ public class CPU extends Application {
             case 8:
                 operation.write(attributes.get(1), attributes.get(0), memory, list, console);
                 break;
-            case 9:
-                operation.ret((ProgramCounter) memory.get(14), (StackPointer) memory.get(13), memory, list, console);
+            case 16:
+                operation.ret((StackPointer) memory.get(13), (ProgramCounter) memory.get(14), memory, list, console);
                 break;
             case 10:
                 operation.divide((Accumulator) memory.get(15), attributes.get(1), attributes.get(0), memory, list);

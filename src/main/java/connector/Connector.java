@@ -17,10 +17,6 @@ public class Connector {
 
         Reader output1 = new Reader("Output1Montador.txt");
         Reader output2 = new Reader("Output2Montador.txt");
-        Reader tbl_uso1 = new Reader("TabelaUso1.txt");
-        Reader tbl_uso2 = new Reader("TabelaUso2.txt");
-        Reader tbl_definicao1 = new Reader("TabelaDefinicao1.txt");
-        Reader tbl_definicao2 = new Reader("TabelaDefinicao2.txt");
 
         List<Integer> address = firstRead(output1,19,240);
         Writer.writeFile(instructions.toString(), "OutputFirstStep1.txt");
@@ -30,8 +26,8 @@ public class Connector {
         Writer.writeFile(instructions.toString(), "OutputFirstStep2.txt");
 
         instructions.delete(0,instructions.length());
-        secondRead("OutputFirstStep1.txt","OutputFirstStep2.txt",tbl_uso1,tbl_definicao2);
-        secondRead("OutputFirstStep2.txt","OutputFirstStep1.txt",tbl_uso2,tbl_definicao1);
+        secondRead("OutputFirstStep1.txt","OutputFirstStep2.txt","TabelaUso1.txt","TabelaDefinicao2.txt");
+        secondRead("OutputFirstStep2.txt","OutputFirstStep1.txt","TabelaUso2.txt","TabelaDefinicao1.txt");
 
         Writer.writeFile(instructions.toString(), "OutputLigador.txt");
 
@@ -113,9 +109,11 @@ public class Connector {
         return finalAddress;
     }
 
-    public void secondRead (String arquivo, String arquivo_aux, Reader tbl_uso, Reader tbl_definicao) throws FileNotFoundException {
+    public void secondRead (String arquivo, String arquivo_aux, String tbl_uso_arquivo, String tbl_definicao_arquivo) throws FileNotFoundException {
         Reader output = new Reader(arquivo);
         Reader output_aux = new Reader(arquivo_aux);
+        Reader tbl_uso = new Reader(tbl_uso_arquivo);
+        Reader tbl_definicao = new Reader(tbl_definicao_arquivo);
         String line = output.readLine();
         String tblUsoLine = tbl_uso.readLine();
         String tblDefLine = tbl_definicao.readLine();
@@ -163,6 +161,8 @@ public class Connector {
                             contAux++;
                         }
                     }
+                    output_aux = new Reader(arquivo_aux);
+                    lineAux = output_aux.readLine();
                     instructions.append(newLine).append("\n");
 
                 }else {
@@ -171,6 +171,7 @@ public class Connector {
             }else{
                 instructions.append(line).append("\n");
             }
+
             line = output.readLine();
             lineCont++;
         }

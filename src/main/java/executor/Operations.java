@@ -270,15 +270,19 @@ public class Operations {
         back++;
         pc.setPc(back);
         list.set(14, new MemoryList("PC", pc.getPc().toString()));
+        AddressRecorder RE = (AddressRecorder) memory.get(18);
+        RE.setRe(RE.getRe() + 1);
+        list.set(18, new MemoryList("RE", RE.getRe().toString()));
     }
 
-    public void ret (ProgramCounter pc, StackPointer sp, Memory memory, ObservableList<MemoryList> list, TextArea console) {
-        int back = pc.getPc();
-        pc.setPc(memory.pop(sp,console, list));
+    public void ret (StackPointer sp, ProgramCounter pc, Memory memory, ObservableList<MemoryList> list, TextArea console) {
+        pc.setPc((Integer) memory.get(memory.pop(sp,console, list)));
+        memory.set_element(sp.getPointer(),null);
+        list.set(sp.getPointer(),new MemoryList(sp.getPointer().toString(), "0"));
         list.set(14, new MemoryList("PC", pc.getPc().toString()));
-        back++;
-        pc.setPc(back);
-        list.set(14, new MemoryList("PC", pc.getPc().toString()));
+        AddressRecorder RE = (AddressRecorder) memory.get(18);
+        RE.setRe(RE.getRe() + 1);
+        list.set(18, new MemoryList("RE", RE.getRe().toString()));
     }
 
 }
