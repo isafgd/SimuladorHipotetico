@@ -1,6 +1,6 @@
-/*
 package executor;
 
+import assembler.Assembler;
 import connector.Connector;
 import executor.recorders.OperationMode;
 import javafx.collections.FXCollections;
@@ -21,9 +21,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 
-*/
-/*Classe controladora da Interface*//*
-
 @Data
 public class SampleController implements Initializable {
 
@@ -40,6 +37,8 @@ public class SampleController implements Initializable {
     private Connector connector = new Connector();
 
     private MacroProcessing macro = new MacroProcessing();
+
+    private Assembler montador = new Assembler();
 
     @FXML
     private TextArea console;
@@ -109,12 +108,12 @@ public class SampleController implements Initializable {
     //Controla a acao que sera executado quando o botao insert eh acionado
     public void onInsertTextAction(){
         String instrucoesLeitura = instructions.getText().replaceAll("\n", System.getProperty("line.separator"));
-        fileWrite("Modulo1.txt", instrucoesLeitura);
+        fileWrite("RawFile1.txt", instrucoesLeitura);
     }
 
     public void onInsertTextAction2(){
         String instrucoesLeitura = instructions1.getText().replaceAll("\n", System.getProperty("line.separator"));
-        fileWrite("Modulo2.txt", instrucoesLeitura);
+        fileWrite("RawFile2.txt", instrucoesLeitura);
     }
 
     //Controla a acao que sera executado quando o botao step eh acionado
@@ -129,14 +128,12 @@ public class SampleController implements Initializable {
     //Controla a acao que sera executado quando o botao reset eh acionado
     @FXML
     public void onBotaoMacroAction() throws IOException {
-        Writer.writeFile(instructions.getText(),"RawFile1.txt");
-        Writer.writeFile(instructions1.getText(),"RawFile2.txt");
         macro.processMacro(console1,console2);
     }
 
     @FXML
     public void onBotaoMontadorAction() throws IOException {
-
+        montador.process(console1,console2);
     }
 
     @FXML
@@ -176,4 +173,4 @@ public class SampleController implements Initializable {
     }
 
 
-}*/
+}

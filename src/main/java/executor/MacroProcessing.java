@@ -24,7 +24,7 @@ public class MacroProcessing {
 
     public void convertToObjectFont (String num,TextArea console) throws FileNotFoundException {
             Reader reader = new Reader("RawFile"+ num + ".txt");
-            fileContent.append(reader.readLine() + "\n\n");
+            fileContent.append(reader.readLine() + "\n");
             reader.readLine();
             String[] arr;
             String line = reader.readLine();

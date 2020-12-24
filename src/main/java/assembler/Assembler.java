@@ -7,11 +7,13 @@ import java.util.*;
 
 import executor.Reader;
 import executor.Writer;
+import javafx.scene.control.TextArea;
 import lombok.Data;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 @Data
 public class Assembler {
@@ -39,6 +41,16 @@ public class Assembler {
         tabelaOpCode = new HashMap<>();
         tabelaConst = new HashMap<>();
         extLabels = new ArrayList<>();
+    }
+
+    public void process(TextArea console1,TextArea console2) throws  IOException{
+        pseudoinstructionsListInit();
+        createOpcodeInstructions();
+        intructionsListInit();
+        primeiraLeitura("1");
+        segundaLeitura("1",console1);
+        primeiraLeitura("2");
+        segundaLeitura("2",console2);
     }
 
     //PRIMEIRA LEITURA: PREENCHE TABELAS
@@ -92,7 +104,7 @@ public class Assembler {
 
     }
 
-    public void segundaLeitura(String num) throws IOException{
+    public void segundaLeitura(String num, TextArea console) throws IOException{
         StringBuilder builder = new StringBuilder();
         Reader reader = new Reader("Modulo" + num + ".txt");
         String linha = reader.readLine();
@@ -137,9 +149,19 @@ public class Assembler {
             }
         }
 
+        console.setText(builder.toString());
+
         Writer.writeFile(builder.toString(), "Output" + num + "Montador.txt");
         Writer.writeFile(builderDefinicoes.toString(), "TabelaDefinicao" + num + ".txt");
         Writer.writeFile(builderUso.toString(), "TabelaUso" + num + ".txt");
+
+        builder.delete(0,builder.length());
+        builder.delete(0,builder.length());
+        builder.delete(0,builder.length());
+
+        extLabels = new ArrayList<>();
+        tabelaDeSimbolos = new HashMap<>();
+        tabelaDefinicoes = new HashMap<>();
 
     }
 
@@ -260,7 +282,7 @@ public class Assembler {
                 default:
                     if(args[1].equals("CONST")) {
                         result = convertToBinary(Integer.parseInt(args[2]));
-                        result = "1" + result.substring(1);
+                        result = "1" + result.substring(1)+ "\n";
                     }else{
                         String[] args2 = new String[args.length-1];
                         for(int i = 0; i < args.length-1; i++){
