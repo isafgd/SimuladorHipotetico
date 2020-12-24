@@ -50,38 +50,6 @@ public class CPU extends Application {
         launch(args);
     }
 
-    /*Adiciona as intrucoes e os operandos na memoria*/
-/*    public void initialMemory(Memory memory, ObservableList<MemoryList> list, TextArea console) throws IOException {
-        Reader reader = new Reader();
-        String line = reader.readLine();
-        Integer i = 19;
-        Integer j = 240;
-        while (line!=null && i<240 && j<500){
-            memory.set_string(i, line.substring(0, 16));
-            list.set(i, new MemoryList(i.toString(), line.substring(0, 16)));
-            if(line.length()==32){
-                memory.set_string(j, line.substring(16, 32));
-                list.set(j, new MemoryList(j.toString(), line.substring(16, 32)));
-                j++;
-            }else{
-                if(line.length()>32) {
-                    Integer k = j + 1;
-                    memory.set_string(j, line.substring(16, 32));
-                    list.set(j, new MemoryList(j.toString(), line.substring(16, 32)));
-                    memory.set_string(k, line.substring(32, 48));
-                    list.set(j, new MemoryList(k.toString(), line.substring(32, 48)));
-                    j = j + 2;
-                }
-            }
-            i++;
-            line = reader.readLine();
-        }
-        if (i == 239 || j == 499){
-            console.setText("Memory Limit");
-        }
-    }*/
-
-    /*Redireciona para o modo de execucao*/
     public static void executionMode(Memory memory, String choiceString, ObservableList<MemoryList> list, TextArea console){
         int choice = 0;
         switch (choiceString){

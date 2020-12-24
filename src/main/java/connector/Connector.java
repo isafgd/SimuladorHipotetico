@@ -94,8 +94,7 @@ public class Connector {
                 if (line.charAt(0) == '1'){
                     newLine.append(firstData.toString());
                     newLine.append(";");
-                    newLine.append("0");
-                    newLine.append(line.substring(1,16));
+                    newLine.append(line.substring(0,16));
 
                     firstData++;
                 }else{

@@ -151,6 +151,8 @@ public class SampleController implements Initializable {
     @FXML
     public void onBotaoResetAction() throws IOException {
         memory = new Memory(list);
+        fileWrite("RawFile1.txt"," ");
+        fileWrite("RawFile2.txt"," ");
         console.clear();
         console1.clear();
         console2.clear();

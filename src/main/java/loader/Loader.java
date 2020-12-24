@@ -16,8 +16,14 @@ public class Loader {
         boolean limit = false;
         while (line!=null && !limit){
             String[] spliLine = line.split(";");
-            memory.set_string(Integer.parseInt(spliLine[0]), spliLine[1]);
-            list.set(Integer.parseInt(spliLine[0]), new MemoryList(spliLine[0], spliLine[1]));
+            if(spliLine[1].charAt(0) == '1'){
+                Integer constante = Integer.parseInt(spliLine[1].substring(1,16), 2);
+                memory.set_element(Integer.parseInt(spliLine[0]), constante);
+                list.set(Integer.parseInt(spliLine[0]), new MemoryList(spliLine[0],constante.toString()));
+            }else {
+                memory.set_string(Integer.parseInt(spliLine[0]), spliLine[1]);
+                list.set(Integer.parseInt(spliLine[0]), new MemoryList(spliLine[0], spliLine[1]));
+            }
             if(spliLine.length==4){
                 memory.set_string(Integer.parseInt(spliLine[2]), spliLine[3]);
                 list.set(Integer.parseInt(spliLine[2]), new MemoryList(spliLine[2], spliLine[3]));
