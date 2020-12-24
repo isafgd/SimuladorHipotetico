@@ -79,7 +79,7 @@ public class CPU extends Application {
         ProgramCounter PC = (ProgramCounter) memory.get(14);
         AddressRecorder RE = (AddressRecorder) memory.get(18);
         while((String) memory.get(PC.getPc()) != null) {
-            ArrayList<Integer> attributes = convert(memory, (String) memory.get(PC.getPc()), (String) memory.get(RE.getRe()),list);
+            ArrayList<Integer> attributes = convert(memory, (String) memory.get(PC.getPc()), (Integer) memory.get(RE.getRe()),list);
             execute(memory, attributes, list, console);
         }
     }
@@ -108,33 +108,33 @@ public class CPU extends Application {
     public static void executeSemiContinuos(Memory memory, ObservableList<MemoryList> list, TextArea console){
         ProgramCounter PC = (ProgramCounter) memory.get(14);
         AddressRecorder RE = (AddressRecorder) memory.get(18);
-        ArrayList<Integer> attributes = convert(memory, (String) memory.get(PC.getPc()), (String) memory.get(RE.getRe()),list);
+        ArrayList<Integer> attributes = convert(memory, (String) memory.get(PC.getPc()), (Integer) memory.get(RE.getRe()),list);
         execute(memory, attributes, list, console);
     }
 
     public static void debugMode(Memory memory, ObservableList<MemoryList> list, TextArea console){
         ProgramCounter PC = (ProgramCounter) memory.get(14);
         AddressRecorder RE = (AddressRecorder) memory.get(18);
-        ArrayList<Integer> attributes = convert(memory, (String) memory.get(PC.getPc()), (String) memory.get(RE.getRe()),list);
+        ArrayList<Integer> attributes = convert(memory, (String) memory.get(PC.getPc()), (Integer) memory.get(RE.getRe()),list);
         execute(memory, attributes, list, console);
     }
 
     /*Converte a instrucao para decimal*/
-    public static ArrayList<Integer> convert (Memory memory, String line, String data,ObservableList<MemoryList> list){
+    public static ArrayList<Integer> convert (Memory memory, String line, Integer data,ObservableList<MemoryList> list){
         InstructionRecorder RI = (InstructionRecorder) memory.get(17);
         RI.setRi(getOpcode(line));
         list.set(17,new MemoryList("RI", RI.getRi().toString()));
         ArrayList<Integer> attributes = new ArrayList<Integer>();
         if (RI.getRi()!=9 && RI.getRi()!=13 && RI.getRi()!=11) {
             attributes.add(getAddressMode(line));
-                attributes.add(getFirstOP(data));
+                attributes.add(data);
         }else{
             if (RI.getRi() == 13){
                 attributes.add(getAddressMode(line));
-                attributes.add(getFirstOP(data));
+                attributes.add(data);
                 AddressRecorder RE = (AddressRecorder) memory.get(18);
                 RE.setRe(RE.getRe() + 1);
-                attributes.add(getSecondOP((String) memory.get(RE.getRe())));
+                attributes.add((Integer) memory.get(RE.getRe()));
             }
         }
 
@@ -203,22 +203,6 @@ public class CPU extends Application {
 
     public static Integer getAddressMode(String instruction) {
         return Integer.parseInt(instruction.substring(8, 11), 2);
-    }
-
-    public static Integer getFirstOP(String instruction) {
-        if (isNegative(instruction,0)){
-            return (Integer.parseInt(instruction.substring(1, 16),  2) * -1);
-        }else{
-            return Integer.parseInt(instruction.substring(1, 16),  2);
-        }
-    }
-
-    public static Integer getSecondOP(String instruction) {
-        if (isNegative(instruction,0)){
-            return (Integer.parseInt(instruction.substring(1, 16), 2) * -1);
-        }else{
-            return Integer.parseInt(instruction.substring(1, 16), 2);
-        }
     }
 
     public static Boolean isNegative(String instruction, int bit){
